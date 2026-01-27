@@ -1,0 +1,136 @@
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { ConfirmMessage, ToastMessage } from '@/helper/message.ts';
+import dayjs from 'dayjs';
+import noticeService from '@/services/notice.service.ts';
+import { router } from '@/router';
+
+const noticeList = ref([]);
+const isVisibleCreateModal = ref(false);
+const isLoadingPage = ref(false);
+
+onMounted(async () => {
+    await getNoticeList();
+});
+
+async function getNoticeList() {
+    try {
+        isLoadingPage.value = true;
+        const { data: record, error } = await noticeService.getNoticeList();
+        noticeList.value = record;
+    } catch (e) {
+        console.error(e);
+        ToastMessage.error(e);
+    } finally {
+        isLoadingPage.value = false;
+    }
+}
+
+function confirmDeleteNotice(id: number) {
+    ConfirmMessage({ message: '이 글을 정말 삭제하시겠습니까?' })
+        .then(() => {
+            deleteNotice(id);
+        })
+        .catch((e) => {
+            console.error(e);
+        });
+}
+
+async function deleteNotice(id: number) {
+    try {
+        const { error } = await noticeService.deleteNotice(id);
+        ToastMessage.success('Success');
+        await getNoticeList();
+    } catch (e) {
+        console.error(e);
+        ToastMessage.error(e);
+    }
+}
+
+function visibleCrateModal() {
+    isVisibleCreateModal.value = true;
+}
+
+function goToNoticeDetail(id: number) {
+    router.push({ name: 'notice-detail', params: { id } });
+}
+</script>
+
+<template>
+    <section class="page-area">
+        <q-btn :to="{ name: 'create-notice' }" label="공지사항 쓰기" color="primary" class="button-create" />
+        <q-table
+            flat
+            bordered
+            :rows="noticeList"
+            row-key="index"
+            no-data-label="No data"
+            :virtual-scroll-item-size="48"
+            :virtual-scroll-slice-size="100"
+            virtual-scroll
+            :rows-per-page-options="[10]"
+            class="page-list-table"
+        >
+            <template v-slot:header>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Body</th>
+                    <th>Create at</th>
+                    <th>Delete</th>
+                </tr>
+            </template>
+            <template v-slot:body="notice">
+                <tr @click="goToNoticeDetail(notice.row.id)" class="cursor-pointer">
+                    <td>{{ notice.row.id }}</td>
+                    <td>{{ notice.row.title }}</td>
+                    <td>{{ notice.row.body }}</td>
+                    <td>{{ dayjs.utc(notice.row.created_at).local().format('YYYY-MM-DD hh:mm:ss A') }}</td>
+                    <td>
+                        <q-btn @click.stop="confirmDeleteNotice(notice.row.id)" label="글 삭제" color="primary" />
+                    </td>
+                </tr>
+            </template>
+            <template v-slot:no-data>
+                <div class="no-data">No data</div>
+            </template>
+        </q-table>
+    </section>
+
+    <q-dialog v-model="isVisibleCreateModal" class="post-modal-area"> </q-dialog>
+</template>
+
+<style scoped>
+.page-area {
+    > .button-create {
+        margin-bottom: 10px;
+    }
+
+    .page-list-table {
+        td {
+            &:nth-child(1) {
+                width: 10%;
+                text-align: center;
+            }
+
+            &:nth-child(2) {
+                width: 20%;
+            }
+
+            &:nth-child(3) {
+                width: auto;
+            }
+
+            &:nth-child(4) {
+                width: 20%;
+                text-align: center;
+            }
+
+            &:nth-child(5) {
+                width: 10%;
+                text-align: center;
+            }
+        }
+    }
+}
+</style>
