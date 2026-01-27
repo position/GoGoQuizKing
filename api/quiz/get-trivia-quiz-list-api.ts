@@ -1,17 +1,12 @@
 import type { FetchOptions } from 'ofetch';
-import type { TransactionHistoryList, TransactionHistoryPayload } from '~/model/payment';
 
-interface GetTransactionHistoryRequest extends TransactionHistoryPayload {}
-interface GetTransactionHistoryResponse extends TransactionHistoryList {}
-
-export default async function getTransactionHistoryApi(
-    data: GetTransactionHistoryRequest,
-    options?: FetchOptions,
-) {
+export default async function getTriviaQuizListApi(data: any, options?: FetchOptions) {
     const $api = useNuxtApp().$api;
+    const config = useRuntimeConfig();
 
-    return await $api<GetTransactionHistoryResponse>('/Balance/TransactionHistories', {
+    return await $api<any>('/questions', {
         ...options,
+        baseURL: config.public.triviaApi,
         method: 'GET',
         params: data,
     });

@@ -1,8 +1,10 @@
 <template>
-    <QuizList />
+    <TraviaQuizList />
 </template>
 
 <script setup lang="ts">
+import TraviaQuizList from '~/components/quiz/TraviaQuizList.vue';
+
 definePageMeta({
     title: 'English Quiz List',
 });

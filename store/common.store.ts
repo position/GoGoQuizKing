@@ -1,22 +1,19 @@
-import { defineStore } from 'pinia';
-import dayjs from 'dayjs';
-
 interface CommonStore {
     tempTitle: string;
     isMenuCollapse: boolean;
-    serverTime: dayjs.Dayjs;
+    serverTime: string;
 }
 
 export const useCommonStore = defineStore('common', {
     state: (): CommonStore => ({
         tempTitle: '',
         isMenuCollapse: true,
-        serverTime: dayjs.utc(),
+        serverTime: '',
     }),
     getters: {},
     actions: {},
     persist: {
-        storage: sessionStorage,
+        storage: piniaPluginPersistedstate.sessionStorage(),
         paths: ['tempTitle', 'isMenuCollapse'],
     },
 });

@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ToastMessage } from '@/helper/message.ts';
-import authService from '@/services/auth.service.ts';
+import { ToastMessage } from '@/helper/message';
+const supabase = useSupabaseClient();
+const $q = useQuasar();
 
 async function login() {
     try {
-        const res = await authService.signInWithOAuth('kakao');
+        const res = await supabase.auth.signInWithOAuth({
+            provider: 'kakao',
+            options: {
+                redirectTo: 'http://localhost:3000',
+            },
+        });
+
         ToastMessage.success('Success');
     } catch (e) {
         console.error(e);
@@ -15,7 +22,12 @@ async function login() {
 
 <template>
     <div class="login-container">
-        <q-card flat bordered class="login-area q-mb-md" :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'">
+        <q-card
+            flat
+            bordered
+            class="login-area q-mb-md"
+            :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
+        >
             <q-card-section>
                 <div class="row items-center no-wrap">
                     <div class="col">

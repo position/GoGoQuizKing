@@ -20,9 +20,11 @@ async function logout() {
 
 <template>
     <q-drawer v-model="isMenuCollapse" show-if-above :width="200" :breakpoint="400">
-        <q-scroll-area :style="`height: calc(100% - ${userInfoHeight}); margin-top: ${userInfoHeight}`">
+        <q-scroll-area
+            :style="`height: calc(100% - ${userInfoHeight}); margin-top: ${userInfoHeight}`"
+        >
             <q-list padding>
-                <q-item :to="{ name: 'notice-list' }" clickable v-ripple>
+                <q-item :to="{ path: '/notice/notice-list' }" clickable v-ripple>
                     <q-item-section avatar>
                         <q-icon name="inbox" />
                     </q-item-section>
@@ -30,7 +32,7 @@ async function logout() {
                     <q-item-section>공지사항</q-item-section>
                 </q-item>
 
-                <q-item :to="{ name: 'quiz' }" clickable v-ripple>
+                <q-item :to="{ path: '/quiz/quiz-list' }" clickable v-ripple>
                     <q-item-section avatar>
                         <q-icon name="star" />
                     </q-item-section>
@@ -38,7 +40,7 @@ async function logout() {
                     <q-item-section>Quiz</q-item-section>
                 </q-item>
 
-                <q-item :to="{ name: 'ranking' }" clickable v-ripple>
+                <q-item :to="{ path: '/ranking' }" clickable v-ripple>
                     <q-item-section avatar>
                         <q-icon name="drafts" />
                     </q-item-section>
@@ -57,16 +59,36 @@ async function logout() {
         </q-scroll-area>
 
         <section class="user-info-container absolute-top" :style="`height: ${userInfoHeight}`">
-            <div class="before-login-area" v-if="!isLogin">
+            <div v-if="!isLogin" class="before-login-area">
                 <p>로그인 해주세요!</p>
-                <q-btn :to="{ name: 'login' }" push outline rounded label="Login" class="button-login" />
+                <q-btn
+                    :to="{ path: '/login' }"
+                    push
+                    outline
+                    rounded
+                    label="Login"
+                    class="button-login"
+                />
             </div>
             <div v-else class="user-info-area absolute-bottom bg-transparent">
                 <dl class="user-info">
                     <dt class="profile">
-                        <q-avatar size="56px"><img v-if="userInfo?.avatar_url" :src="userInfo.avatar_url" :alt="userInfo.user_name" /></q-avatar>
-                        <q-avatar v-if="userInfo?.provider === DTO.Enums.AppProvider.Kakaotalk" size="20px" class="sns-icon">
-                            <img :src="`${$assets}/img/icon-kakao-logo.svg`" :alt="userInfo?.user_name" loading="lazy" />
+                        <q-avatar size="56px"
+                            ><img
+                                v-if="userInfo?.avatar_url"
+                                :src="userInfo.avatar_url"
+                                :alt="userInfo.user_name"
+                        /></q-avatar>
+                        <q-avatar
+                            v-if="userInfo?.provider === DTO.Enums.AppProvider.Kakaotalk"
+                            size="20px"
+                            class="sns-icon"
+                        >
+                            <img
+                                :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
+                                :alt="userInfo?.user_name"
+                                loading="lazy"
+                            />
                         </q-avatar>
                     </dt>
                     <dd class="user-name">
@@ -74,7 +96,16 @@ async function logout() {
                     </dd>
                 </dl>
                 <div class="user-email">{{ userInfo.email }}</div>
-                <q-btn @click="logout" label="Logout" icon="fas fa-arrow-right-from-bracket" color="primary" push outline rounded class="button-logout" />
+                <q-btn
+                    @click="logout"
+                    label="Logout"
+                    icon="fas fa-arrow-right-from-bracket"
+                    color="primary"
+                    push
+                    outline
+                    rounded
+                    class="button-logout"
+                />
             </div>
         </section>
     </q-drawer>
@@ -128,5 +159,10 @@ async function logout() {
             margin: 0 auto;
         }
     }
+}
+
+.q-item.q-router-link--active,
+.q-item--active {
+    color: var(--color-secondary);
 }
 </style>

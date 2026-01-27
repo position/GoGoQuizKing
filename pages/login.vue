@@ -1,12 +1,12 @@
 <template>
-    <h2 class="title">$END$</h2>
-    <div class="content"></div>
+    <Login />
 </template>
 
 <script setup lang="ts">
-
+definePageMeta({
+    name: 'Sign In',
+    isRequireLogout: true,
+});
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

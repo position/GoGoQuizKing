@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { ConfirmMessage, ToastMessage } from '@/helper/message.ts';
+import { ConfirmMessage, ToastMessage } from '~/helper/message';
 import dayjs from 'dayjs';
-import noticeService from '@/services/notice.service.ts';
-import { router } from '@/router';
 
+const router = useRouter();
 const noticeList = ref([]);
 const isVisibleCreateModal = ref(false);
 const isLoadingPage = ref(false);
+const supabase = useSupabaseClient();
 
 onMounted(async () => {
     await getNoticeList();
@@ -16,7 +16,13 @@ onMounted(async () => {
 async function getNoticeList() {
     try {
         isLoadingPage.value = true;
-        const { data: record, error } = await noticeService.getNoticeList();
+
+        const { data: record, error } = await supabase
+            .from('notice')
+            .select('*')
+            .order('created_at', { ascending: false })
+            // .range((pages - 1) * pageSize, pages * pageSize - 1)
+            .throwOnError();
         noticeList.value = record;
     } catch (e) {
         console.error(e);
@@ -38,7 +44,7 @@ function confirmDeleteNotice(id: number) {
 
 async function deleteNotice(id: number) {
     try {
-        const { error } = await noticeService.deleteNotice(id);
+        const { error } = await supabase.from('notice').delete().eq('id', id).throwOnError();
         ToastMessage.success('Success');
         await getNoticeList();
     } catch (e) {
@@ -52,13 +58,13 @@ function visibleCrateModal() {
 }
 
 function goToNoticeDetail(id: number) {
-    router.push({ name: 'notice-detail', params: { id } });
+    router.push({ path: `./notice-detail/${id}` });
 }
 </script>
 
 <template>
     <section class="page-area">
-        <q-btn :to="{ name: 'create-notice' }" label="공지사항 쓰기" color="primary" class="button-create" />
+        <q-btn to="./create-notice" label="공지사항 쓰기" color="primary" class="button-create" />
         <q-table
             flat
             bordered
@@ -85,9 +91,17 @@ function goToNoticeDetail(id: number) {
                     <td>{{ notice.row.id }}</td>
                     <td>{{ notice.row.title }}</td>
                     <td>{{ notice.row.body }}</td>
-                    <td>{{ dayjs.utc(notice.row.created_at).local().format('YYYY-MM-DD hh:mm:ss A') }}</td>
                     <td>
-                        <q-btn @click.stop="confirmDeleteNotice(notice.row.id)" label="글 삭제" color="primary" />
+                        {{
+                            dayjs.utc(notice.row.created_at).local().format('YYYY-MM-DD hh:mm:ss A')
+                        }}
+                    </td>
+                    <td>
+                        <q-btn
+                            @click.stop="confirmDeleteNotice(notice.row.id)"
+                            label="글 삭제"
+                            color="primary"
+                        />
                     </td>
                 </tr>
             </template>

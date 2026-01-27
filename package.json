@@ -1,31 +1,47 @@
 {
-	"name": "nuxt-app",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"build": "nuxt build",
-		"dev": "nuxt dev",
-		"generate": "nuxt generate",
-		"preview": "nuxt preview",
-		"postinstall": "nuxt prepare"
-	},
-	"dependencies": {
-		"nuxt": "^3.15.4",
-		"vue": "latest",
-		"vue-router": "latest",
-		"@supabase/supabase-js": "^2.45.6",
-        "quasar": "^2.16.0",
-        "@quasar/extras": "^1.16.12",
+    "name": "nuxt-app",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "nuxt build",
+        "dev": "nuxt dev --dotenv .env.local",
+        "generate": "nuxt generate",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "dependencies": {
+        "@quasar/extras": "^1.16.17",
+        "@supabase/supabase-js": "^2.45.6",
+        "ably": "^2.10.1",
+        "axios": "1.8.2",
         "dayjs": "^1.11.5",
-        "pinia": "^2.3.0",
+        "nuxt": "3.16.0",
+        "openai": "^5.10.2",
+        "pinia": "^3.0.3",
         "pinia-plugin-persistedstate": "^4.2.0",
-        "axios": "^1.7.8"
-	},
-	"devDependencies": {
-        "@vitejs/plugin-vue": "^5.1.4",
+        "quasar": "^2.16.0",
+        "unenv": "^1.10.0",
+        "vue": "latest",
+        "vue-router": "latest"
+    },
+    "devDependencies": {
+        "@nuxt/eslint": "^1.1.0",
+        "@nuxt/image": "^1.9.0",
+        "@nuxtjs/device": "^3.2.4",
+        "@nuxtjs/seo": "2.1.1",
+        "@nuxtjs/supabase": "^1.5.1",
+        "@pinia/nuxt": "^0.11.2",
         "@quasar/vite-plugin": "^1.7.0",
+        "@vitejs/plugin-vue": "^5.1.4",
+        "@vue/eslint-config-prettier": "^8.0.0",
+        "@vue/eslint-config-typescript": "^12.0.0",
+        "dayjs-nuxt": "^2.1.11",
+        "nuxt-quasar-ui": "2.1.12",
+        "nuxt-time": "^1.0.3",
+        "prettier": "^3.0.3",
+        "sass": "^1.62.1",
+        "sass-embedded": "^1.85.1",
         "typescript": "^5.7.3",
-        "vite": "^6.0.7",
-		"prettier": "^3.0.3"
+        "vite": "6.3.4"
     }
 }

@@ -105,7 +105,14 @@ export const ConfirmMessage = ({
     });
 };
 
-export const AlertMessage = ({ title = 'Alert', message = '', html = true, ok = 'ok', titleIcon = null, buttonColor = 'primary' }) => {
+export const AlertMessage = ({
+    title = 'Alert',
+    message = '',
+    html = true,
+    ok = 'ok',
+    titleIcon = null,
+    buttonColor = 'primary',
+}) => {
     return new Promise((resolve) => {
         const options = {
             title,

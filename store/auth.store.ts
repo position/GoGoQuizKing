@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
 import { DTO } from '@/models';
 import { ToastMessage } from '@/helper/message';
-import authService from '@/services/auth.service.ts';
-import { router } from '@/router';
+import type { LoginResponse } from '~/models/auth';
+import type { PersistenceOptions } from 'pinia-plugin-persistedstate';
 
 interface AuthStore {
     isLogin: boolean;
-    userInfo: StaffInfo;
+    userInfo: LoginResponse;
     token: string;
 }
 
@@ -23,7 +23,7 @@ const defaultUserInfo = {
     sub: null,
     user_name: null,
     provider: null,
-};
+} as LoginResponse;
 
 export const useAuthStore = defineStore('auth', {
     state: (): AuthStore => ({
@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', {
     }),
     getters: {},
     actions: {
-        registerInfo(loginResponse: DTO.Auth.LoginResponse, provider: string) {
+        registerInfo(loginResponse: DTO.Auth.LoginResponse, provider: string | undefined) {
             this.isLogin = true;
 
             this.userInfo = {
@@ -52,28 +52,33 @@ export const useAuthStore = defineStore('auth', {
             };
         },
         async signOut() {
+            const router = useRouter();
+            const supabase = useSupabaseClient();
             try {
-                await authService.signOut();
+                await supabase.auth.signOut();
             } catch (e) {
                 console.error(e);
                 ToastMessage.error('Sign Out Error');
             } finally {
-                router.push('/login');
+                await router.push('/login');
                 localStorage.removeItem('auth');
                 this.userInfo = { ...defaultUserInfo };
                 this.isLogin = false;
+                this.token = '';
             }
         },
         async checkSession() {
-            const res = await authService.checkSession();
+            const supabase = useSupabaseClient();
+            const res = await supabase.auth.getSession();
             if (!res) {
                 return null;
             }
+            this.token = res.data.session?.access_token || '';
             return res.data.session;
         },
     },
     persist: {
-        storage: localStorage,
+        storage: piniaPluginPersistedstate.localStorage(),
         paths: ['isLogin', 'userInfo'],
-    },
+    } as PersistenceOptions,
 });

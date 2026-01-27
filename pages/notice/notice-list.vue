@@ -1,12 +1,7 @@
 <template>
-    <h2 class="title">$END$</h2>
-    <div class="content"></div>
+    <NoticeList />
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
-
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

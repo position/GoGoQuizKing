@@ -1,28 +1,28 @@
+<template>
+    <q-header reveal elevated>
+        <q-toolbar>
+            <q-btn @click="onExpendedMenu" flat round dense icon="menu" class="q-mr-sm" />
+            <q-avatar @click="goMain" class="cursor-pointer">
+                <q-icon name="fas fa-crown" size="25px" />
+            </q-avatar>
+            <q-toolbar-title @click="goMain" class="cursor-pointer">GOGO! QuizKing</q-toolbar-title>
+        </q-toolbar>
+    </q-header>
+</template>
+
 <script setup lang="ts">
-import { router } from '@/router';
-import { useCommonStore } from '@/store/common.store.ts';
+import { useCommonStore } from '~/store/common.store';
 
 const commonStore = useCommonStore();
+const router = useRouter();
 
 function onExpendedMenu() {
     commonStore.isMenuCollapse = !commonStore.isMenuCollapse;
 }
 
 function goMain() {
-    router.push({ name: 'main' });
+    router.push({ path: '/' });
 }
 </script>
-
-<template>
-    <q-header reveal elevated>
-        <q-toolbar>
-            <q-btn @click="onExpendedMenu" flat round dense icon="menu" class="q-mr-sm" />
-            <q-avatar @click="goMain" class="cursor-pointer">
-                <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" alt="고고 퀴즈왕" loading="lazy" />
-            </q-avatar>
-            <q-toolbar-title @click="goMain" class="cursor-pointer">Quasar Framework</q-toolbar-title>
-        </q-toolbar>
-    </q-header>
-</template>
 
 <style scoped lang="scss"></style>
