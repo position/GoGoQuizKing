@@ -61,7 +61,10 @@ export const useAuthStore = defineStore('auth', {
                 ToastMessage.error('Sign Out Error');
             } finally {
                 await router.push('/login');
-                localStorage.removeItem('auth');
+                // localStorage는 클라이언트 사이드에서만 사용 가능
+                if (process.client) {
+                    localStorage.removeItem('auth');
+                }
                 this.userInfo = { ...defaultUserInfo };
                 this.isLogin = false;
                 this.token = '';
@@ -78,7 +81,7 @@ export const useAuthStore = defineStore('auth', {
         },
     },
     persist: {
-        storage: piniaPluginPersistedstate.localStorage(),
+        storage: process.client ? localStorage : undefined,
         paths: ['isLogin', 'userInfo'],
     } as PersistenceOptions,
 });

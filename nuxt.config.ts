@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             supabaseUrl: process.env.SUPABASE_URL,
-            supabaseKey: process.env.SUABASE_KEY,
+            supabaseKey: process.env.SUPABASE_KEY,
             apiTimeout: '',
             triviaApi: '',
             supabaseStorage: '',
