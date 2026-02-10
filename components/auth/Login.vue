@@ -30,13 +30,13 @@ async function login() {
             </div>
 
             <div class="login-actions">
-                <q-btn
-                    @click="login"
-                    class="kakao-login-btn"
-                    unelevated
-                    size="lg"
-                >
-                    <img src="https://developers.kakao.com/assets/img/about/logos/kakaologin/kr/kakao_login_medium_wide.png" alt="카카오 로그인" class="kakao-img" />
+                <q-btn @click="login" class="kakao-login-btn" unelevated size="lg">
+                    <img
+                        :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
+                        alt="카카오 로그인"
+                        class="kakao-img"
+                    />
+                    카카오 로그인
                 </q-btn>
             </div>
 
@@ -99,11 +99,14 @@ async function login() {
             background: #fee500;
             border-radius: 12px;
             overflow: hidden;
+            color: #0f0f1a;
 
             .kakao-img {
                 width: 100%;
-                max-width: 300px;
+                max-width: 30px;
                 height: auto;
+                margin-right: 12px;
+                vertical-align: middle;
             }
         }
     }

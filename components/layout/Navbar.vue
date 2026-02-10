@@ -43,28 +43,28 @@ async function logout() {
                     <q-item-section avatar>
                         <q-icon name="campaign" color="orange" />
                     </q-item-section>
-                    <q-item-section>📢 공지사항</q-item-section>
+                    <q-item-section>공지사항</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/quiz/quiz-list' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="explore" color="info" />
                     </q-item-section>
-                    <q-item-section>🧭 퀴즈 탐험</q-item-section>
+                    <q-item-section>퀴즈 탐험</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/quiz/quiz-create' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="add_circle" color="secondary" />
                     </q-item-section>
-                    <q-item-section>✨ 퀴즈 만들기</q-item-section>
+                    <q-item-section>퀴즈 만들기</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/quiz/my-quizzes' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="folder_special" color="amber" />
                     </q-item-section>
-                    <q-item-section>📁 내 퀴즈</q-item-section>
+                    <q-item-section>내 퀴즈</q-item-section>
                 </q-item>
 
                 <q-separator class="nav-separator" />
@@ -73,7 +73,7 @@ async function logout() {
                     <q-item-section avatar>
                         <q-icon name="leaderboard" color="primary" />
                     </q-item-section>
-                    <q-item-section>🏅 랭킹</q-item-section>
+                    <q-item-section>랭킹</q-item-section>
                 </q-item>
             </q-list>
         </q-scroll-area>
@@ -229,7 +229,11 @@ async function logout() {
                 position: relative;
 
                 .user-avatar {
-                    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-info) 100%);
+                    background: linear-gradient(
+                        135deg,
+                        var(--color-secondary) 0%,
+                        var(--color-info) 100%
+                    );
                     border: 2px solid var(--bg-card);
                     box-shadow: 0 2px 8px var(--shadow-color);
                 }
