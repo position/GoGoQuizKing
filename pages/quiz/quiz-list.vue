@@ -3,12 +3,12 @@
         <!-- 페이지 헤더 -->
         <div class="page-header">
             <div class="header-content">
-                <h1 class="page-title">🎯 퀴즈 탐험</h1>
-                <p class="page-subtitle">재미있는 퀴즈를 풀어보세요!</p>
+                <h1 class="page-title">🎯 신나는 퀴즈 탐험!</h1>
+                <p class="page-subtitle">재미있는 퀴즈를 풀어볼까요? 고고! 🚀</p>
             </div>
             <q-btn
                 :to="{ path: '/quiz/quiz-create' }"
-                label="퀴즈 만들기"
+                label="퀴즈 만들기 ✨"
                 icon="add"
                 color="primary"
                 unelevated
@@ -22,7 +22,7 @@
                 <!-- 검색 -->
                 <q-input
                     v-model="searchQuery"
-                    placeholder="퀴즈 검색..."
+                    placeholder="어떤 퀴즈를 찾고 있나요? 🔍"
                     outlined
                     dense
                     clearable
@@ -89,17 +89,17 @@
         <!-- 로딩 -->
         <div v-if="quizStore.isLoading" class="loading-state">
             <q-spinner-dots color="primary" size="50px" />
-            <p>퀴즈를 불러오는 중...</p>
+            <p>퀴즈를 불러오고 있어요~ 🎵</p>
         </div>
 
         <!-- 빈 상태 -->
         <div v-else-if="filteredQuizzes.length === 0" class="empty-state">
             <q-icon name="quiz" size="80px" color="grey-4" />
-            <h3>퀴즈가 없습니다</h3>
-            <p>첫 번째 퀴즈를 만들어보세요!</p>
+            <h3>아직 퀴즈가 없어요~ 🙈</h3>
+            <p>첫 번째 퀴즈를 만들어볼까요?</p>
             <q-btn
                 :to="{ path: '/quiz/quiz-create' }"
-                label="퀴즈 만들기"
+                label="퀴즈 만들기 🎨"
                 icon="add"
                 color="primary"
                 unelevated

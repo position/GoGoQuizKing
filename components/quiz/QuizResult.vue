@@ -15,17 +15,17 @@
             <div class="stat-card">
                 <div class="stat-icon">✅</div>
                 <div class="stat-value">{{ result.score }}</div>
-                <div class="stat-label">정답</div>
+                <div class="stat-label">맞았어요!</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">❌</div>
                 <div class="stat-value">{{ result.totalQuestions - result.score }}</div>
-                <div class="stat-label">오답</div>
+                <div class="stat-label">아쉬워요~</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">⏱️</div>
                 <div class="stat-value">{{ formattedTime }}</div>
-                <div class="stat-label">소요 시간</div>
+                <div class="stat-label">걸린 시간</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📊</div>
@@ -36,7 +36,7 @@
 
         <!-- 문제 리뷰 -->
         <div class="review-section">
-            <h2 class="section-title">📝 문제 리뷰</h2>
+            <h2 class="section-title">📝 어떻게 풀었나 볼까요?</h2>
 
             <div
                 v-for="(question, index) in result.questions"
@@ -47,7 +47,7 @@
                 <div class="review-header">
                     <span class="question-number">Q{{ index + 1 }}</span>
                     <span class="result-badge" :class="isCorrect(question.id) ? 'correct' : 'wrong'"
-                        >{{ isCorrect(question.id) ? '정답' : '오답' }}
+                        >{{ isCorrect(question.id) ? '정답! 🎯' : '오답 💦' }}
                     </span>
                 </div>
 
@@ -55,13 +55,13 @@
 
                 <div class="answers-compare">
                     <div class="answer-row">
-                        <span class="answer-label">내 답변:</span>
+                        <span class="answer-label">내 답:</span>
                         <span class="answer-value user-answer">{{
-                            result.answers[question.id] || '(응답 없음)'
+                            result.answers[question.id] || '(안 적었어요)'
                         }}</span>
                     </div>
                     <div v-if="!isCorrect(question.id)" class="answer-row">
-                        <span class="answer-label">정답:</span>
+                        <span class="answer-label">정답은:</span>
                         <span class="answer-value correct-answer">{{
                             question.correct_answer
                         }}</span>
@@ -74,7 +74,7 @@
         <div class="action-buttons">
             <q-btn
                 @click="$emit('retry')"
-                label="다시 풀기"
+                label="다시 풀어볼래요! 🔄"
                 icon="refresh"
                 outline
                 color="primary"
@@ -83,7 +83,7 @@
             />
             <q-btn
                 @click="$emit('home')"
-                label="홈으로"
+                label="홈으로 🏠"
                 icon="home"
                 color="primary"
                 unelevated
@@ -122,11 +122,11 @@ const formattedTime = computed(() => {
 
 const resultMessage = computed(() => {
     const rate = accuracy.value;
-    if (rate === 100) return '🎉 완벽해요!';
-    if (rate >= 80) return '👏 훌륭해요!';
-    if (rate >= 60) return '😊 잘했어요!';
-    if (rate >= 40) return '💪 힘내요!';
-    return '📚 다시 도전해요!';
+    if (rate === 100) return '🎉 완벽해요! 천재인가요?!';
+    if (rate >= 80) return '👏 와우~ 대단해요!';
+    if (rate >= 60) return '😊 잘했어요! 조금만 더!';
+    if (rate >= 40) return '💪 괜찮아요! 다시 도전!';
+    return '📚 아쉬워요~ 한번 더!';
 });
 
 const scoreClass = computed(() => {

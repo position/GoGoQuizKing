@@ -77,14 +77,14 @@
                 <div v-else-if="currentQuestion.question_type === 'short'" class="short-input">
                     <q-input
                         v-model="shortAnswer"
-                        placeholder="정답을 입력하세요"
+                        placeholder="정답을 적어주세요~ 💭"
                         outlined
                         class="answer-input"
                         @keyup.enter="submitShortAnswer"
                     />
                     <q-btn
                         @click="submitShortAnswer"
-                        label="확인"
+                        label="정답 확인! ✔️"
                         color="primary"
                         unelevated
                         class="submit-short-btn"
@@ -112,7 +112,7 @@
             <q-btn
                 v-if="currentIndex > 0"
                 @click="$emit('prev')"
-                label="이전"
+                label="⬅️ 이전"
                 icon="arrow_back"
                 flat
                 color="grey"
@@ -122,7 +122,7 @@
             <q-btn
                 v-if="!isLastQuestion"
                 @click="handleNext"
-                label="다음"
+                label="다음 ➡️"
                 icon-right="arrow_forward"
                 color="primary"
                 unelevated
@@ -132,7 +132,7 @@
             <q-btn
                 v-else
                 @click="handleComplete"
-                label="결과 보기"
+                label="결과 보러가기! 🎉"
                 icon-right="check"
                 color="positive"
                 unelevated

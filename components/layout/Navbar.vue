@@ -43,28 +43,28 @@ async function logout() {
                     <q-item-section avatar>
                         <q-icon name="campaign" color="orange" />
                     </q-item-section>
-                    <q-item-section>공지사항</q-item-section>
+                    <q-item-section>📢 공지사항</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/quiz/quiz-list' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="explore" color="info" />
                     </q-item-section>
-                    <q-item-section>퀴즈 탐험</q-item-section>
+                    <q-item-section>🧭 퀴즈 탐험</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/quiz/quiz-create' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="add_circle" color="secondary" />
                     </q-item-section>
-                    <q-item-section>퀴즈 만들기</q-item-section>
+                    <q-item-section>✨ 퀴즈 만들기</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/quiz/my-quizzes' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="folder_special" color="amber" />
                     </q-item-section>
-                    <q-item-section>내 퀴즈</q-item-section>
+                    <q-item-section>📁 내 퀴즈</q-item-section>
                 </q-item>
 
                 <q-separator class="nav-separator" />
@@ -73,7 +73,7 @@ async function logout() {
                     <q-item-section avatar>
                         <q-icon name="leaderboard" color="primary" />
                     </q-item-section>
-                    <q-item-section>랭킹</q-item-section>
+                    <q-item-section>🏅 랭킹</q-item-section>
                 </q-item>
             </q-list>
         </q-scroll-area>
@@ -82,7 +82,7 @@ async function logout() {
             <div v-if="!isLogin" class="before-login-area">
                 <div class="login-prompt">
                     <q-icon name="account_circle" size="48px" color="grey-5" />
-                    <p>로그인 해주세요!</p>
+                    <p>로그인하고 퀴즈왕이 되어봐요! 👑</p>
                 </div>
                 <q-btn
                     :to="{ path: '/login' }"

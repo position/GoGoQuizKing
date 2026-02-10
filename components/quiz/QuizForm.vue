@@ -3,21 +3,21 @@
         <!-- 기본 정보 -->
         <q-card class="form-section">
             <q-card-section>
-                <h3 class="section-title">📝 퀴즈 기본 정보</h3>
+                <h3 class="section-title">📝 퀴즈 기본 정보를 적어주세요!</h3>
 
                 <q-input
                     v-model="formData.title"
-                    label="퀴즈 제목"
+                    label="퀴즈 제목 ✨"
                     placeholder="예: 재미있는 한글 맞춤법 퀴즈"
                     outlined
-                    :rules="[(v) => !!v || '제목을 입력해주세요']"
+                    :rules="[(v) => !!v || '제목을 적어주세요~ 🙏']"
                     class="q-mb-md"
                 />
 
                 <q-input
                     v-model="formData.description"
-                    label="퀴즈 설명 (선택)"
-                    placeholder="퀴즈에 대한 간단한 설명을 적어주세요"
+                    label="퀴즈 설명 (선택사항)"
+                    placeholder="퀴즈에 대해 간단히 소개해주세요~"
                     outlined
                     type="textarea"
                     rows="2"
@@ -59,7 +59,7 @@
                         />
                     </div>
                     <div class="col-12 col-sm-6">
-                        <q-toggle v-model="formData.is_public" label="공개 퀴즈" color="primary" />
+                        <q-toggle v-model="formData.is_public" label="모두에게 공개하기 🌍" color="primary" />
                     </div>
                 </div>
             </q-card-section>
@@ -68,10 +68,10 @@
         <!-- 문제 목록 -->
         <div class="questions-section">
             <div class="section-header">
-                <h3 class="section-title">❓ 문제 목록</h3>
+                <h3 class="section-title">❓ 문제를 만들어봐요!</h3>
                 <q-btn
                     @click="addQuestion"
-                    label="문제 추가"
+                    label="문제 추가하기 ➕"
                     icon="add"
                     color="secondary"
                     unelevated
@@ -110,17 +110,17 @@
                         <q-input
                             v-model="question.question_text"
                             label="문제 내용"
-                            placeholder="문제를 입력해주세요"
+                            placeholder="문제를 적어주세요~ 🤔"
                             outlined
                             type="textarea"
                             rows="2"
-                            :rules="[(v) => !!v || '문제를 입력해주세요']"
+                            :rules="[(v) => !!v || '문제를 적어주세요~']"
                             class="q-mb-md"
                         />
 
                         <!-- 객관식 보기 -->
                         <div v-if="question.question_type === 'multiple'" class="options-section">
-                            <p class="options-label">보기 (정답 체크)</p>
+                            <p class="options-label">보기를 적고 정답을 선택해주세요! ✅</p>
                             <div
                                 v-for="(_, optIndex) in question.options"
                                 :key="optIndex"
@@ -139,14 +139,14 @@
                                     outlined
                                     dense
                                     class="option-input"
-                                    :rules="[(v) => !!v || '보기를 입력해주세요']"
+                                    :rules="[(v) => !!v || '보기를 적어주세요~']"
                                 />
                             </div>
                         </div>
 
                         <!-- OX 퀴즈 -->
                         <div v-else-if="question.question_type === 'ox'" class="ox-section">
-                            <p class="options-label">정답 선택</p>
+                            <p class="options-label">O일까요, X일까요? 🤔</p>
                             <q-btn-toggle
                                 v-model="question.correct_answer"
                                 :options="[
@@ -163,17 +163,17 @@
                         <div v-else-if="question.question_type === 'short'" class="short-section">
                             <q-input
                                 v-model="question.correct_answer"
-                                label="정답"
-                                placeholder="정답을 입력해주세요"
+                                label="정답을 적어주세요!"
+                                placeholder="정답이 뭘까요~?"
                                 outlined
-                                :rules="[(v) => !!v || '정답을 입력해주세요']"
+                                :rules="[(v) => !!v || '정답을 적어주세요~']"
                             />
                         </div>
 
                         <q-input
                             v-model="question.hint"
-                            label="힌트 (선택)"
-                            placeholder="힌트를 적어주세요"
+                            label="💡 힌트 (선택사항)"
+                            placeholder="어려우면 도움이 될 힌트를 적어주세요~"
                             outlined
                             class="q-mt-md"
                         />
@@ -194,7 +194,7 @@
             />
             <q-btn
                 @click="handleSubmit"
-                :label="isEdit ? '퀴즈 수정' : '퀴즈 생성'"
+                :label="isEdit ? '퀴즈 수정 완료! ✏️' : '퀴즈 생성 완료! 🎉'"
                 :loading="isLoading"
                 color="primary"
                 unelevated

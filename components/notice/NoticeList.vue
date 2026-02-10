@@ -33,7 +33,7 @@ async function getNoticeList() {
 }
 
 function confirmDeleteNotice(id: number) {
-    ConfirmMessage({ message: '이 글을 정말 삭제하시겠습니까?' })
+    ConfirmMessage({ message: '정말 이 글을 삭제할까요? 🥲' })
         .then(() => {
             deleteNotice(id);
         })
@@ -64,13 +64,13 @@ function goToNoticeDetail(id: number) {
 
 <template>
     <section class="page-area">
-        <q-btn to="./create-notice" label="공지사항 쓰기" color="primary" class="button-create" />
+        <q-btn to="./create-notice" label="공지사항 쓰기 ✍️" color="primary" class="button-create" />
         <q-table
             flat
             bordered
             :rows="noticeList"
             row-key="index"
-            no-data-label="No data"
+            no-data-label="아직 공지가 없어요~ 📭"
             :virtual-scroll-item-size="48"
             :virtual-scroll-slice-size="100"
             virtual-scroll
@@ -79,11 +79,11 @@ function goToNoticeDetail(id: number) {
         >
             <template v-slot:header>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Body</th>
-                    <th>Create at</th>
-                    <th>Delete</th>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>내용</th>
+                    <th>날짜</th>
+                    <th>삭제</th>
                 </tr>
             </template>
             <template v-slot:body="notice">
@@ -99,14 +99,14 @@ function goToNoticeDetail(id: number) {
                     <td>
                         <q-btn
                             @click.stop="confirmDeleteNotice(notice.row.id)"
-                            label="글 삭제"
+                            label="삭제 🗑️"
                             color="primary"
                         />
                     </td>
                 </tr>
             </template>
             <template v-slot:no-data>
-                <div class="no-data">No data</div>
+                <div class="no-data">아직 공지가 없어요~ 📭</div>
             </template>
         </q-table>
     </section>
