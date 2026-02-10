@@ -20,6 +20,11 @@ BEGIN
         RAISE EXCEPTION '시드 데이터를 생성하려면 최소 1명의 사용자가 필요합니다.';
     END IF;
 
+    -- profiles 테이블에 해당 사용자가 없으면 추가
+    INSERT INTO public.profiles (id, full_name, avatar_url)
+    VALUES (system_user_id, 'GoGoQuizKing 관리자', NULL)
+    ON CONFLICT (id) DO NOTHING;
+
     -- ============================================
     -- 1. 새싹 (seedling) - 1~2학년 수준
     -- ============================================
