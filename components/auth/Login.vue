@@ -25,7 +25,7 @@ async function login() {
             <div class="login-header">
                 <div class="mascot">👑</div>
                 <h1 class="login-title">GOGO! QuizKing</h1>
-                <p class="login-subtitle">로그인하고 퀴즈 세계를 탐험해요!</p>
+                <p class="login-subtitle">어서와요! 로그인하고 퀴즈 모험을 시작해볼까요? 🚀</p>
             </div>
 
             <div class="login-actions">
@@ -40,7 +40,7 @@ async function login() {
             </div>
 
             <div class="login-footer">
-                <p>소셜 계정으로 간편하게 로그인하세요</p>
+                <p>카카오로 3초만에 로그인! 💛</p>
             </div>
         </div>
     </div>

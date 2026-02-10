@@ -33,7 +33,7 @@ async function getNoticeList() {
 }
 
 function confirmDeleteNotice(id: number) {
-    ConfirmMessage({ message: '이 글을 정말 삭제하시겠습니까?' })
+    ConfirmMessage({ message: '정말 이 글을 삭제할까요? 🥲' })
         .then(() => {
             deleteNotice(id);
         })
@@ -70,7 +70,7 @@ function goToNoticeDetail(id: number) {
                 <q-icon name="add" left />
             </q-btn>
         </div>
-        
+
         <q-table
             flat
             bordered
@@ -221,7 +221,7 @@ function goToNoticeDetail(id: number) {
             padding: $spacing-md;
             border: none;
             color: var(--text-primary);
-            
+
             &:nth-child(1) {
                 width: 80px;
                 text-align: center;

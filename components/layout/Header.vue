@@ -20,7 +20,7 @@
                 :icon="isDarkMode ? 'light_mode' : 'dark_mode'"
                 class="theme-toggle-btn"
             >
-                <q-tooltip>{{ isDarkMode ? '라이트 모드' : '다크 모드' }}</q-tooltip>
+                <q-tooltip>{{ isDarkMode ? '☀️ 밝게!' : '🌙 어둡게!' }}</q-tooltip>
             </q-btn>
         </q-toolbar>
     </q-header>

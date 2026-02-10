@@ -5,7 +5,7 @@
             <div class="welcome-content">
                 <div class="mascot">👑</div>
                 <h1 class="welcome-title">GOGO! QuizKing</h1>
-                <p class="welcome-subtitle">재미있는 퀴즈 세계로 떠나볼까요?</p>
+                <p class="welcome-subtitle">반짝반짝 퀴즈 세상으로 함께 떠나요~ ✨</p>
             </div>
         </section>
 
@@ -14,12 +14,12 @@
             <div class="stat-card">
                 <div class="stat-icon">📊</div>
                 <div class="stat-value">{{ userStats.totalPlayed }}</div>
-                <div class="stat-label">풀은 퀴즈</div>
+                <div class="stat-label">풀었어요!</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">✏️</div>
                 <div class="stat-value">{{ userStats.totalCreated }}</div>
-                <div class="stat-label">만든 퀴즈</div>
+                <div class="stat-label">만들었어요!</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🎯</div>
@@ -38,8 +38,8 @@
             >
                 <div class="action-content">
                     <q-icon name="add_circle" size="40px" />
-                    <span class="action-title">퀴즈 만들기</span>
-                    <span class="action-desc">나만의 퀴즈를 만들어요</span>
+                    <span class="action-title">퀴즈 뚝딱! 🛠️</span>
+                    <span class="action-desc">나만의 퀴즈를 만들어볼까요?</span>
                 </div>
             </q-btn>
 
@@ -51,8 +51,8 @@
             >
                 <div class="action-content">
                     <q-icon name="play_circle" size="40px" />
-                    <span class="action-title">퀴즈 풀기</span>
-                    <span class="action-desc">다양한 퀴즈에 도전해요</span>
+                    <span class="action-title">도전! 퀴즈왕 🏆</span>
+                    <span class="action-desc">신나는 퀴즈에 도전해봐요!</span>
                 </div>
             </q-btn>
         </section>
@@ -95,7 +95,7 @@
 
             <div v-else class="empty-state">
                 <q-icon name="quiz" size="48px" class="empty-icon" />
-                <p>아직 퀴즈가 없어요. 첫 번째 퀴즈를 만들어보세요!</p>
+                <p>아직 퀴즈가 없어요~ 첫 번째 퀴즈를 만들어볼까요? 🎨</p>
             </div>
         </section>
     </div>

@@ -16,7 +16,7 @@
             <div class="meta">
                 <span class="play-count">
                     <q-icon name="play_arrow" size="16px" />
-                    {{ quiz.play_count }}회 플레이
+                    {{ quiz.play_count }}번 도전!
                 </span>
                 <span class="date">
                     <q-icon name="schedule" size="16px" />
@@ -33,7 +33,7 @@
                     size="sm"
                     color="primary"
                 >
-                    <q-tooltip>수정</q-tooltip>
+                    <q-tooltip>수정하기 ✏️</q-tooltip>
                 </q-btn>
                 <q-btn
                     @click.stop="$emit('delete', quiz.id)"
@@ -43,7 +43,7 @@
                     size="sm"
                     color="negative"
                 >
-                    <q-tooltip>삭제</q-tooltip>
+                    <q-tooltip>삭제하기 🗑️</q-tooltip>
                 </q-btn>
             </div>
         </q-card-section>
@@ -51,7 +51,7 @@
         <q-card-actions v-if="showPlayButton" class="play-actions">
             <q-btn
                 @click.stop="$emit('play', quiz.id)"
-                label="퀴즈 풀기"
+                label="퀴즈 풀기! 🎮"
                 icon="play_arrow"
                 color="primary"
                 class="full-width play-btn"
