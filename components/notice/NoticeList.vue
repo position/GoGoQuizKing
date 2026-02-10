@@ -64,34 +64,40 @@ function goToNoticeDetail(id: number) {
 
 <template>
     <section class="page-area">
-        <q-btn to="./create-notice" label="공지사항 쓰기" color="primary" class="button-create" />
+        <div class="page-header">
+            <h1 class="page-title">공지사항</h1>
+            <q-btn to="./create-notice" label="공지사항 쓰기" color="primary" class="button-create" unelevated>
+                <q-icon name="add" left />
+            </q-btn>
+        </div>
+        
         <q-table
             flat
             bordered
             :rows="noticeList"
             row-key="index"
-            no-data-label="No data"
+            no-data-label="등록된 공지사항이 없습니다"
             :virtual-scroll-item-size="48"
             :virtual-scroll-slice-size="100"
             virtual-scroll
-            :rows-per-page-options="[10]"
+            :rows-per-page-options="[10, 20, 50]"
             class="page-list-table"
         >
             <template v-slot:header>
                 <tr>
-                    <th>ID</th>
-                    <th>Title</th>
-                    <th>Body</th>
-                    <th>Create at</th>
-                    <th>Delete</th>
+                    <th class="text-center">번호</th>
+                    <th class="text-left">제목</th>
+                    <th class="text-left">내용</th>
+                    <th class="text-center">작성일</th>
+                    <th class="text-center">관리</th>
                 </tr>
             </template>
             <template v-slot:body="notice">
-                <tr @click="goToNoticeDetail(notice.row.id)" class="cursor-pointer">
+                <tr @click="goToNoticeDetail(notice.row.id)" class="cursor-pointer table-row">
                     <td>{{ notice.row.id }}</td>
-                    <td>{{ notice.row.title }}</td>
-                    <td>{{ notice.row.body }}</td>
-                    <td>
+                    <td class="notice-title">{{ notice.row.title }}</td>
+                    <td class="notice-body">{{ notice.row.body }}</td>
+                    <td class="notice-date">
                         {{
                             dayjs.utc(notice.row.created_at).local().format('YYYY-MM-DD hh:mm:ss A')
                         }}
@@ -99,14 +105,23 @@ function goToNoticeDetail(id: number) {
                     <td>
                         <q-btn
                             @click.stop="confirmDeleteNotice(notice.row.id)"
-                            label="글 삭제"
-                            color="primary"
-                        />
+                            label="삭제"
+                            size="sm"
+                            color="negative"
+                            unelevated
+                            dense
+                            rounded
+                        >
+                            <q-icon name="delete" left />
+                        </q-btn>
                     </td>
                 </tr>
             </template>
             <template v-slot:no-data>
-                <div class="no-data">No data</div>
+                <div class="no-data">
+                    <q-icon name="info" size="24px" color="grey-5" />
+                    <div>등록된 공지사항이 없습니다</div>
+                </div>
             </template>
         </q-table>
     </section>
@@ -114,37 +129,176 @@ function goToNoticeDetail(id: number) {
     <q-dialog v-model="isVisibleCreateModal" class="post-modal-area"> </q-dialog>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import '@/assets/scss/variables';
+
 .page-area {
-    > .button-create {
-        margin-bottom: 10px;
-    }
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-lg;
+        padding-bottom: $spacing-md;
+        border-bottom: 2px solid var(--color-primary);
 
-    .page-list-table {
-        td {
-            &:nth-child(1) {
-                width: 10%;
-                text-align: center;
+        .page-title {
+            font-size: $font-size-3xl;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: $spacing-sm;
+
+            &::before {
+                content: '';
+                width: 4px;
+                height: 32px;
+                background: linear-gradient(135deg, $primary 0%, $secondary 100%);
+                border-radius: $radius-sm;
             }
+        }
 
-            &:nth-child(2) {
-                width: 20%;
-            }
+        .button-create {
+            border-radius: $radius-md;
+            font-weight: 600;
+            background: linear-gradient(135deg, $primary 0%, #e55a5a 100%);
+            color: $text-white;
+            box-shadow: $shadow-md;
+            transition: all $transition-normal;
+            padding: $spacing-sm $spacing-lg;
 
-            &:nth-child(3) {
-                width: auto;
-            }
-
-            &:nth-child(4) {
-                width: 20%;
-                text-align: center;
-            }
-
-            &:nth-child(5) {
-                width: 10%;
-                text-align: center;
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: $shadow-lg;
             }
         }
     }
-}
-</style>
+
+    .page-list-table {
+        background: var(--bg-card);
+        border-radius: $radius-lg;
+        box-shadow: $shadow-md;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+
+        :deep(.q-table__top) {
+            background: linear-gradient(135deg, $bg-secondary 0%, #d4edda 100%);
+            padding: $spacing-md;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        :deep(thead tr th) {
+            background: linear-gradient(135deg, $secondary 0%, #3cb0a9 100%);
+            color: $text-white;
+            font-weight: 600;
+            font-size: $font-size-sm;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: $spacing-md;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        :deep(tbody .table-row) {
+            transition: all $transition-fast;
+            border-bottom: 1px solid var(--border-color);
+
+            &:hover {
+                background-color: var(--hover-overlay);
+                transform: translateX(2px);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+
+        :deep(tbody td) {
+            padding: $spacing-md;
+            border: none;
+            color: var(--text-primary);
+            
+            &:nth-child(1) {
+                width: 80px;
+                text-align: center;
+                font-weight: 600;
+                color: var(--color-primary);
+                font-size: $font-size-sm;
+            }
+
+            &.notice-title {
+                width: 200px;
+                font-weight: 600;
+                color: var(--text-primary);
+                cursor: pointer;
+
+                &:hover {
+                    color: var(--color-primary);
+                }
+            }
+
+            &.notice-body {
+                width: auto;
+                max-width: 300px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                color: var(--text-secondary);
+                font-size: $font-size-sm;
+            }
+
+            &.notice-date {
+                width: 160px;
+                text-align: center;
+                font-family: 'Monaco', 'Consolas', monospace;
+                font-size: $font-size-xs;
+                color: var(--text-light);
+            }
+
+            &:nth-child(5) {
+                width: 100px;
+                text-align: center;
+
+                .q-btn {
+                    background: linear-gradient(135deg, $negative 0%, #c0392b 100%);
+                    color: $text-white;
+                    border-radius: $radius-full;
+                    font-size: $font-size-xs;
+                    font-weight: 500;
+                    padding: 6px $spacing-sm;
+                    min-height: unset;
+                    box-shadow: $shadow-sm;
+                    transition: all $transition-fast;
+
+                    &:hover {
+                        transform: translateY(-1px);
+                        box-shadow: $shadow-md;
+                        background: linear-gradient(135deg, #e74c3c 0%, #a93226 100%);
+                    }
+                }
+            }
+        }
+
+        :deep(.q-table__bottom) {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: $spacing-sm $spacing-md;
+            color: var(--text-primary);
+        }
+
+        .no-data {
+            padding: $spacing-xxl;
+            text-align: center;
+            color: var(--text-light);
+            font-size: $font-size-lg;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: $spacing-sm;
+        }
+    }
+}</style>
