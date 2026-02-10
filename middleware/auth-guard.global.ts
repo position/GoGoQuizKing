@@ -1,8 +1,8 @@
 import { useAuthStore } from '~/store/auth.store';
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    // 로그인 페이지에서는 미들웨어 패스
-    if (to.path === '/login') {
+    // 로그인 페이지와 OAuth 콜백 페이지에서는 미들웨어 패스
+    if (to.path === '/login' || to.path === '/confirm') {
         return;
     }
     const authStore = useAuthStore();

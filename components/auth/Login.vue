@@ -4,14 +4,15 @@ const supabase = useSupabaseClient();
 
 async function login() {
     try {
+        // 현재 origin을 기반으로 redirectTo URL 생성
+        const redirectTo = `${window.location.origin}/confirm`;
+
         await supabase.auth.signInWithOAuth({
             provider: 'kakao',
             options: {
-                redirectTo: 'http://localhost:3000',
+                redirectTo,
             },
         });
-
-        ToastMessage.success('Success');
     } catch (e) {
         console.error(e);
         ToastMessage.error(e);

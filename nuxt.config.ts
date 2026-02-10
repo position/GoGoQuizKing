@@ -32,10 +32,13 @@ export default defineNuxtConfig({
         '@nuxtjs/supabase',
     ],
     supabase: {
-        // runtimeConfig 로 읽도록 넘겨 주면, 클라이언트/서버 양쪽에서 자동으로 주입됩니다.
+        // @nuxtjs/supabase 모듈은 기본적으로 SUPABASE_URL, SUPABASE_KEY 환경변수를 사용
+        // 또는 NUXT_PUBLIC_SUPABASE_URL, NUXT_PUBLIC_SUPABASE_KEY도 지원
         redirect: false, // OAuth 등 리다이렉트 자동 처리 끌지 여부
-        url: process.env.SUPABASE_URL!,
-        key: process.env.SUPABASE_KEY!,
+        redirectOptions: {
+            login: '/login',
+            callback: '/confirm',
+        },
     },
     quasar: {
         plugins: ['Notify', 'Dialog'],
