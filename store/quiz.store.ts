@@ -11,6 +11,7 @@ import type {
 } from '@/models/quiz';
 import { DEFAULT_QUIZ_FILTER } from '@/models/quiz';
 import { ToastMessage } from '@/helper/message';
+import type { Database } from '@/models/database.types';
 
 interface QuizStoreState {
     // 퀴즈 목록
@@ -124,7 +125,7 @@ export const useQuizStore = defineStore('quiz', {
             this.error = null;
 
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
                 const { data, error } = await supabase
                     .from('quizzes')
                     .select(
@@ -156,7 +157,7 @@ export const useQuizStore = defineStore('quiz', {
             this.error = null;
 
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
                 const {
                     data: { user },
                 } = await supabase.auth.getUser();
@@ -188,7 +189,7 @@ export const useQuizStore = defineStore('quiz', {
             this.error = null;
 
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
 
                 // 퀴즈 정보
                 const { data: quiz, error: quizError } = await supabase
@@ -225,7 +226,7 @@ export const useQuizStore = defineStore('quiz', {
             this.error = null;
 
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
                 const {
                     data: { user },
                 } = await supabase.auth.getUser();
@@ -287,7 +288,7 @@ export const useQuizStore = defineStore('quiz', {
             this.error = null;
 
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
 
                 // 퀴즈 수정
                 const { error: quizError } = await supabase
@@ -348,7 +349,7 @@ export const useQuizStore = defineStore('quiz', {
             this.error = null;
 
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
                 const { error } = await supabase.from('quizzes').delete().eq('id', quizId);
 
                 if (error) throw error;
@@ -388,7 +389,7 @@ export const useQuizStore = defineStore('quiz', {
             };
 
             // 플레이 카운트 증가
-            const supabase = useSupabaseClient();
+            const supabase = useSupabaseClient<Database>();
             await supabase.rpc('increment_quiz_play_count', { quiz_uuid: quizId });
 
             return true;
@@ -434,7 +435,7 @@ export const useQuizStore = defineStore('quiz', {
 
             // 결과 저장
             try {
-                const supabase = useSupabaseClient();
+                const supabase = useSupabaseClient<Database>();
                 const {
                     data: { user },
                 } = await supabase.auth.getUser();

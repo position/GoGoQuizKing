@@ -4,7 +4,7 @@ import { DTO } from '@/models';
 import getTriviaQuizListApi from '~/api/quiz/get-trivia-quiz-list-api';
 import { AlertMessage } from '~/helper/message';
 
-const answerList = ref<string[]>([]);
+const answerList = ref<DTO.Travia.QuestionInfo[]>([]);
 const questionList = ref<DTO.Travia.QuestionInfo[]>([]);
 const quizListFetch = useAsyncData(() => getTriviaQuizListApi({ limit: 10 }), {
     transform: (data) => {

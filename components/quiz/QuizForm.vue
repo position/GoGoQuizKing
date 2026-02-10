@@ -130,7 +130,7 @@
                                     :model-value="question.correct_answer"
                                     @update:model-value="question.correct_answer = $event"
                                     :val="question.options[optIndex]"
-                                    :label="null"
+                                    :label="undefined"
                                     color="primary"
                                 />
                                 <q-input
