@@ -8,6 +8,7 @@ const route = useRoute();
 const router = useRouter();
 const isEdit = ref(route.name === 'edit-notice');
 const supabase = useSupabaseClient();
+const user = useSupabaseUser();
 
 onMounted(async () => {
     if (isEdit.value) {
@@ -31,9 +32,8 @@ async function getNoticeDetail() {
 
 async function updateNotice() {
     try {
-        const payload = { title: noticeForm.title, body: noticeForm.body } as never;
-        console.log('supabase', supabase);
         if (isEdit.value) {
+            const payload = { title: noticeForm.title, body: noticeForm.body };
             const { data, error } = await supabase
                 .from('notice')
                 .update(payload)
@@ -43,6 +43,7 @@ async function updateNotice() {
             await router.push({ path: './notice-list' });
             return;
         }
+        const payload = { title: noticeForm.title, body: noticeForm.body, user_id: user.value?.id };
         const { data, error } = await supabase
             .from('notice')
             .insert([payload])
