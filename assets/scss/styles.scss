@@ -1,16 +1,31 @@
+@use 'sass:color';
+@import 'variables';
+
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: $font-family;
     line-height: 1.5;
     font-weight: 400;
 
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    color-scheme: light;
+    color: $text-primary;
+    background-color: $bg-primary;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    // CSS Custom Properties for dynamic theming
+    --color-primary: #{$primary};
+    --color-secondary: #{$secondary};
+    --color-accent: #{$accent};
+    --color-info: #{$info};
+    --color-success: #{$success};
+    --color-warning: #{$warning};
+    --color-negative: #{$negative};
+    --bg-primary: #{$bg-primary};
+    --bg-secondary: #{$bg-secondary};
+    --bg-card: #{$bg-card};
 }
 
 * {
@@ -63,17 +78,122 @@ button:focus-visible {
     position: fixed !important;
 }
 
-@media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
+// GoGoQuizKing 공통 유틸리티 클래스
+.quiz-card {
+    background: $bg-card;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
+    transition: transform $transition-normal, box-shadow $transition-normal;
 
-    a:hover {
-        color: #747bff;
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: $shadow-lg;
     }
+}
 
-    button {
-        background-color: #f9f9f9;
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-full;
+    font-size: $font-size-sm;
+    font-weight: 500;
+}
+
+.difficulty-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    font-weight: 600;
+}
+
+// 버튼 공통 스타일
+.btn-quiz {
+    min-height: $touch-target-min;
+    border-radius: $radius-md;
+    font-weight: 600;
+    transition: all $transition-normal;
+}
+
+.btn-primary {
+    background-color: $primary;
+    color: $text-white;
+
+    &:hover {
+        background-color: color.scale($primary, $lightness: -10%);
     }
+}
+
+.btn-secondary {
+    background-color: $secondary;
+    color: $text-white;
+
+    &:hover {
+        background-color: color.scale($secondary, $lightness: -10%);
+    }
+}
+
+// 페이지 레이아웃
+.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $spacing-md;
+}
+
+.page-title {
+    font-size: $font-size-2xl;
+    font-weight: 700;
+    color: $text-primary;
+    margin-bottom: $spacing-lg;
+}
+
+// 애니메이션
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 0.5s ease-in-out;
+}
+
+.animate-shake {
+    animation: shake 0.3s ease-in-out;
 }

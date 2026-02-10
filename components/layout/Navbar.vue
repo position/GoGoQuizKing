@@ -34,26 +34,26 @@ async function logout() {
 
                 <q-item :to="{ path: '/quiz/quiz-list' }" clickable v-ripple>
                     <q-item-section avatar>
-                        <q-icon name="star" />
+                        <q-icon name="quiz" />
                     </q-item-section>
 
-                    <q-item-section>Quiz</q-item-section>
+                    <q-item-section>퀴즈 탐험</q-item-section>
+                </q-item>
+
+                <q-item :to="{ path: '/quiz/my-quizzes' }" clickable v-ripple>
+                    <q-item-section avatar>
+                        <q-icon name="edit_note" />
+                    </q-item-section>
+
+                    <q-item-section>내 퀴즈</q-item-section>
                 </q-item>
 
                 <q-item :to="{ path: '/ranking' }" clickable v-ripple>
                     <q-item-section avatar>
-                        <q-icon name="drafts" />
+                        <q-icon name="leaderboard" />
                     </q-item-section>
 
-                    <q-item-section> Ranking </q-item-section>
-                </q-item>
-
-                <q-item clickable v-ripple>
-                    <q-item-section avatar>
-                        <q-icon name="send" />
-                    </q-item-section>
-
-                    <q-item-section> Send </q-item-section>
+                    <q-item-section>랭킹</q-item-section>
                 </q-item>
             </q-list>
         </q-scroll-area>
