@@ -1,10 +1,10 @@
 <template>
     <NuxtLayout>
-        <q-layout view="lHh lpr lFf" container class="quiz-container shadow-2">
+        <q-layout view="lHh lpr lFf" container class="quiz-container">
             <Header />
             <Navbar />
             <q-page-container>
-                <q-page class="q-pa-md">
+                <q-page class="q-pa-md main-page">
                     <NuxtPage />
                 </q-page>
             </q-page-container>
@@ -22,5 +22,12 @@ import Navbar from '@/components/layout/Navbar.vue';
 <style scoped>
 .quiz-container {
     height: 100%;
+    background-color: var(--bg-primary);
+    transition: background-color 0.3s ease;
+}
+
+.main-page {
+    background-color: var(--bg-primary);
+    transition: background-color 0.3s ease;
 }
 </style>

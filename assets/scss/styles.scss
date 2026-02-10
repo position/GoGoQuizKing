@@ -15,7 +15,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    // CSS Custom Properties for dynamic theming
+    // CSS Custom Properties for dynamic theming (Light Mode)
     --color-primary: #{$primary};
     --color-secondary: #{$secondary};
     --color-accent: #{$accent};
@@ -23,9 +23,43 @@
     --color-success: #{$success};
     --color-warning: #{$warning};
     --color-negative: #{$negative};
+
     --bg-primary: #{$bg-primary};
     --bg-secondary: #{$bg-secondary};
     --bg-card: #{$bg-card};
+    --bg-header: #{$bg-card};
+    --bg-surface: #{$bg-secondary};
+    --bg-input: #{$bg-card};
+
+    --text-primary: #{$text-primary};
+    --text-secondary: #{$text-secondary};
+    --text-light: #{$text-light};
+
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --hover-overlay: rgba(0, 0, 0, 0.04);
+}
+
+// Dark Mode Theme
+.dark-mode {
+    color-scheme: dark;
+    color: $dark-text-primary;
+    background-color: $dark-bg-primary;
+
+    --bg-primary: #{$dark-bg-primary};
+    --bg-secondary: #{$dark-bg-secondary};
+    --bg-card: #{$dark-bg-card};
+    --bg-header: #{$dark-bg-header};
+    --bg-surface: #{$dark-bg-surface};
+    --bg-input: #{$dark-bg-surface};
+
+    --text-primary: #{$dark-text-primary};
+    --text-secondary: #{$dark-text-secondary};
+    --text-light: #{$dark-text-light};
+
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --hover-overlay: rgba(255, 255, 255, 0.06);
 }
 
 * {
@@ -37,6 +71,9 @@
 html,
 body {
     height: 100%;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -80,14 +117,14 @@ button:focus-visible {
 
 // GoGoQuizKing 공통 유틸리티 클래스
 .quiz-card {
-    background: $bg-card;
+    background: var(--bg-card);
     border-radius: $radius-lg;
-    box-shadow: $shadow-md;
-    transition: transform $transition-normal, box-shadow $transition-normal;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: transform $transition-normal, box-shadow $transition-normal, background-color 0.3s ease;
 
     &:hover {
         transform: translateY(-4px);
-        box-shadow: $shadow-lg;
+        box-shadow: 0 8px 24px var(--shadow-color);
     }
 }
 
@@ -147,8 +184,48 @@ button:focus-visible {
 .page-title {
     font-size: $font-size-2xl;
     font-weight: 700;
-    color: $text-primary;
+    color: var(--text-primary);
     margin-bottom: $spacing-lg;
+}
+
+// Quasar 다크 모드 오버라이드
+.body--dark {
+    .q-layout {
+        background-color: var(--bg-primary);
+    }
+
+    .q-header,
+    .q-footer {
+        background-color: var(--bg-header) !important;
+    }
+
+    .q-drawer {
+        background-color: var(--bg-card) !important;
+        border-right: 1px solid var(--border-color);
+    }
+
+    .q-item {
+        color: var(--text-primary);
+
+        &:hover {
+            background-color: var(--hover-overlay);
+        }
+    }
+
+    .q-page {
+        background-color: var(--bg-primary);
+    }
+
+    .q-input,
+    .q-select {
+        .q-field__control {
+            background-color: var(--bg-input);
+        }
+    }
+
+    .q-btn-toggle {
+        background-color: var(--bg-surface);
+    }
 }
 
 // 애니메이션

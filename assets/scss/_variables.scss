@@ -13,12 +13,21 @@ $warning: #f7b32b; // 오렌지 (경고)
 $negative: #ff6b6b; // 레드 (오답)
 
 // ============================================
-// 배경색
+// 라이트 모드 배경색
 // ============================================
 $bg-primary: #fff9f0; // 크림 화이트
 $bg-secondary: #e8f4f8; // 연한 블루
 $bg-card: #ffffff;
 $bg-dark: #2d3436;
+
+// ============================================
+// 다크 모드 배경색
+// ============================================
+$dark-bg-primary: #1a1a2e; // 딥 네이비
+$dark-bg-secondary: #16213e; // 다크 블루
+$dark-bg-card: #252a40;
+$dark-bg-header: #0f0f1a;
+$dark-bg-surface: #2d3250;
 
 // ============================================
 // 텍스트 컬러
@@ -27,6 +36,11 @@ $text-primary: #2d3436;
 $text-secondary: #636e72;
 $text-light: #b2bec3;
 $text-white: #ffffff;
+
+// 다크 모드 텍스트
+$dark-text-primary: #f8f9fa;
+$dark-text-secondary: #adb5bd;
+$dark-text-light: #6c757d;
 
 // ============================================
 // 학년별 난이도 컬러

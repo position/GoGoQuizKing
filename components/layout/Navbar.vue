@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, onMounted } from 'vue';
 import { DTO } from '@/models';
 import { useAuthStore } from '@/store/auth.store';
 import { storeToRefs } from 'pinia';
@@ -10,7 +11,13 @@ const commonStore = useCommonStore();
 const { isLogin } = storeToRefs(authStore);
 const { userInfo } = storeToRefs(authStore);
 const { isMenuCollapse } = storeToRefs(commonStore);
-const userInfoHeight = '145px';
+const userInfoHeight = '160px';
+
+const isDarkMode = computed(() => commonStore.isDarkMode);
+
+onMounted(() => {
+    commonStore.initTheme();
+});
 
 async function logout() {
     await authStore.signOut();
@@ -19,40 +26,53 @@ async function logout() {
 </script>
 
 <template>
-    <q-drawer v-model="isMenuCollapse" show-if-above :width="200" :breakpoint="400">
+    <q-drawer
+        v-model="isMenuCollapse"
+        show-if-above
+        :width="220"
+        :breakpoint="400"
+        class="app-drawer"
+        :class="{ 'drawer-dark': isDarkMode }"
+    >
         <q-scroll-area
             :style="`height: calc(100% - ${userInfoHeight}); margin-top: ${userInfoHeight}`"
+            class="drawer-scroll"
         >
-            <q-list padding>
-                <q-item :to="{ path: '/notice/notice-list' }" clickable v-ripple>
+            <q-list padding class="nav-list">
+                <q-item :to="{ path: '/notice/notice-list' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
-                        <q-icon name="inbox" />
+                        <q-icon name="campaign" color="orange" />
                     </q-item-section>
-
                     <q-item-section>공지사항</q-item-section>
                 </q-item>
 
-                <q-item :to="{ path: '/quiz/quiz-list' }" clickable v-ripple>
+                <q-item :to="{ path: '/quiz/quiz-list' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
-                        <q-icon name="quiz" />
+                        <q-icon name="explore" color="info" />
                     </q-item-section>
-
                     <q-item-section>퀴즈 탐험</q-item-section>
                 </q-item>
 
-                <q-item :to="{ path: '/quiz/my-quizzes' }" clickable v-ripple>
+                <q-item :to="{ path: '/quiz/quiz-create' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
-                        <q-icon name="edit_note" />
+                        <q-icon name="add_circle" color="secondary" />
                     </q-item-section>
+                    <q-item-section>퀴즈 만들기</q-item-section>
+                </q-item>
 
+                <q-item :to="{ path: '/quiz/my-quizzes' }" clickable v-ripple class="nav-item">
+                    <q-item-section avatar>
+                        <q-icon name="folder_special" color="amber" />
+                    </q-item-section>
                     <q-item-section>내 퀴즈</q-item-section>
                 </q-item>
 
-                <q-item :to="{ path: '/ranking' }" clickable v-ripple>
-                    <q-item-section avatar>
-                        <q-icon name="leaderboard" />
-                    </q-item-section>
+                <q-separator class="nav-separator" />
 
+                <q-item :to="{ path: '/ranking' }" clickable v-ripple class="nav-item">
+                    <q-item-section avatar>
+                        <q-icon name="leaderboard" color="primary" />
+                    </q-item-section>
                     <q-item-section>랭킹</q-item-section>
                 </q-item>
             </q-list>
@@ -60,25 +80,31 @@ async function logout() {
 
         <section class="user-info-container absolute-top" :style="`height: ${userInfoHeight}`">
             <div v-if="!isLogin" class="before-login-area">
-                <p>로그인 해주세요!</p>
+                <div class="login-prompt">
+                    <q-icon name="account_circle" size="48px" color="grey-5" />
+                    <p>로그인 해주세요!</p>
+                </div>
                 <q-btn
                     :to="{ path: '/login' }"
-                    push
-                    outline
+                    unelevated
                     rounded
-                    label="Login"
+                    label="로그인"
+                    icon="login"
+                    color="primary"
                     class="button-login"
                 />
             </div>
-            <div v-else class="user-info-area absolute-bottom bg-transparent">
+            <div v-else class="user-info-area">
                 <dl class="user-info">
                     <dt class="profile">
-                        <q-avatar size="56px"
-                            ><img
+                        <q-avatar size="56px" class="user-avatar">
+                            <img
                                 v-if="userInfo?.avatar_url"
                                 :src="userInfo.avatar_url"
                                 :alt="userInfo.user_name"
-                        /></q-avatar>
+                            />
+                            <q-icon v-else name="person" size="32px" />
+                        </q-avatar>
                         <q-avatar
                             v-if="userInfo?.provider === DTO.Enums.AppProvider.Kakaotalk"
                             size="20px"
@@ -98,11 +124,9 @@ async function logout() {
                 <div class="user-email">{{ userInfo.email }}</div>
                 <q-btn
                     @click="logout"
-                    label="Logout"
-                    icon="fas fa-arrow-right-from-bracket"
-                    color="primary"
-                    push
-                    outline
+                    label="로그아웃"
+                    icon="logout"
+                    flat
                     rounded
                     class="button-logout"
                 />
@@ -112,14 +136,76 @@ async function logout() {
 </template>
 
 <style scoped lang="scss">
+.app-drawer {
+    background-color: var(--bg-card);
+    transition: background-color 0.3s ease;
+}
+
+.drawer-dark {
+    border-right: 1px solid var(--border-color);
+}
+
+.drawer-scroll {
+    background-color: var(--bg-card);
+}
+
+.nav-list {
+    padding: 8px;
+}
+
+.nav-item {
+    border-radius: 12px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--hover-overlay);
+    }
+
+    &.q-router-link--active,
+    &.q-item--active {
+        background: linear-gradient(135deg, var(--color-primary) 0%, #e55a5a 100%);
+        color: white;
+
+        .q-icon {
+            color: white !important;
+        }
+    }
+}
+
+.nav-separator {
+    margin: 12px 0;
+    background-color: var(--border-color);
+}
+
 .before-login-area {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 20px 16px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
+    border-bottom: 1px solid var(--border-color);
+
+    .login-prompt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+
+        p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+    }
+
     .button-login {
         width: 100%;
+        font-weight: 600;
     }
 }
 
@@ -128,41 +214,55 @@ async function logout() {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 5px;
-        border-bottom: 1px solid #666;
-        padding-bottom: 10px;
+        gap: 8px;
+        height: 100%;
+        padding: 16px;
+        background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
+        border-bottom: 1px solid var(--border-color);
+
         > .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-left: 10px;
+            gap: 12px;
+
             > .profile {
                 position: relative;
-                img {
-                    background-color: #666;
+
+                .user-avatar {
+                    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-info) 100%);
+                    border: 2px solid var(--bg-card);
+                    box-shadow: 0 2px 8px var(--shadow-color);
                 }
+
                 .sns-icon {
                     position: absolute;
                     bottom: 0;
-                    right: -10px;
+                    right: -4px;
+                    border: 2px solid var(--bg-card);
                 }
             }
+
             > .user-name {
-                padding-left: 5px;
+                font-size: 15px;
+                color: var(--text-primary);
             }
         }
+
         > .user-email {
-            padding-left: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            padding-left: 68px;
+            margin-top: -4px;
         }
+
         > .button-logout {
-            width: 90%;
-            margin: 0 auto;
+            margin-top: 8px;
+            color: var(--text-secondary);
+
+            &:hover {
+                color: var(--color-primary);
+            }
         }
     }
-}
-
-.q-item.q-router-link--active,
-.q-item--active {
-    color: var(--color-secondary);
 }
 </style>

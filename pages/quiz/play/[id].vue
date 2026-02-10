@@ -107,6 +107,7 @@ function handleHome() {
 .quiz-play-page {
     min-height: 100vh;
     margin: -16px;
+    background: var(--bg-primary);
 
     .loading-state,
     .error-state {
@@ -120,7 +121,7 @@ function handleHome() {
 
         p {
             font-size: 16px;
-            color: #636e72;
+            color: var(--text-secondary);
         }
     }
 }

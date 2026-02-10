@@ -163,21 +163,26 @@ function isCorrect(questionId: string): boolean {
             justify-content: center;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 
             &.excellent {
                 background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+                box-shadow: 0 8px 32px rgba(78, 205, 196, 0.3);
             }
 
             &.good {
                 background: linear-gradient(135deg, #45b7d1 0%, #667eea 100%);
+                box-shadow: 0 8px 32px rgba(69, 183, 209, 0.3);
             }
 
             &.average {
                 background: linear-gradient(135deg, #f7b32b 0%, #fc575e 100%);
+                box-shadow: 0 8px 32px rgba(247, 179, 43, 0.3);
             }
 
             &.needs-improvement {
                 background: linear-gradient(135deg, #ff6b6b 0%, #c44569 100%);
+                box-shadow: 0 8px 32px rgba(255, 107, 107, 0.3);
             }
 
             .score-value {
@@ -195,13 +200,13 @@ function isCorrect(questionId: string): boolean {
         .result-title {
             font-size: 28px;
             font-weight: 700;
-            color: #2d3436;
+            color: var(--text-primary);
             margin: 0 0 8px;
         }
 
         .result-subtitle {
             font-size: 16px;
-            color: #636e72;
+            color: var(--text-secondary);
             margin: 0;
         }
     }
@@ -213,11 +218,12 @@ function isCorrect(questionId: string): boolean {
         margin-bottom: 32px;
 
         .stat-card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: background-color 0.3s ease;
 
             .stat-icon {
                 font-size: 28px;
@@ -227,12 +233,12 @@ function isCorrect(questionId: string): boolean {
             .stat-value {
                 font-size: 24px;
                 font-weight: 700;
-                color: #2d3436;
+                color: var(--text-primary);
             }
 
             .stat-label {
                 font-size: 13px;
-                color: #b2bec3;
+                color: var(--text-light);
                 margin-top: 4px;
             }
         }
@@ -244,17 +250,18 @@ function isCorrect(questionId: string): boolean {
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            color: #2d3436;
+            color: var(--text-primary);
             margin: 0 0 16px;
         }
 
         .review-item {
-            background: white;
+            background: var(--bg-card);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
-            border-left: 4px solid #dfe6e9;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid var(--border-color);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: background-color 0.3s ease;
 
             &.correct {
                 border-left-color: #4ecdc4;
@@ -272,7 +279,7 @@ function isCorrect(questionId: string): boolean {
 
                 .question-number {
                     font-weight: 700;
-                    color: #636e72;
+                    color: var(--text-secondary);
                 }
 
                 .result-badge {
@@ -295,13 +302,13 @@ function isCorrect(questionId: string): boolean {
 
             .question-text {
                 font-size: 15px;
-                color: #2d3436;
+                color: var(--text-primary);
                 margin: 0 0 12px;
                 line-height: 1.5;
             }
 
             .answers-compare {
-                background: #f8f9fa;
+                background: var(--bg-surface);
                 border-radius: 10px;
                 padding: 12px;
 
@@ -316,13 +323,14 @@ function isCorrect(questionId: string): boolean {
 
                     .answer-label {
                         font-size: 13px;
-                        color: #636e72;
+                        color: var(--text-secondary);
                         min-width: 60px;
                     }
 
                     .answer-value {
                         font-size: 14px;
                         font-weight: 600;
+                        color: var(--text-primary);
 
                         &.correct-answer {
                             color: #00b894;

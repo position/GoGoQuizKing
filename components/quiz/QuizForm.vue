@@ -332,12 +332,15 @@ function handleCancel() {
     .form-section {
         border-radius: 16px;
         margin-bottom: 24px;
+        background: var(--bg-card);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        transition: background-color 0.3s ease;
     }
 
     .section-title {
         font-size: 18px;
         font-weight: 700;
-        color: #2d3436;
+        color: var(--text-primary);
         margin: 0 0 20px;
     }
 
@@ -361,7 +364,10 @@ function handleCancel() {
 
         .question-card {
             border-radius: 16px;
-            border: 2px solid #f1f3f4;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: background-color 0.3s ease;
 
             .question-header {
                 display: flex;
@@ -384,7 +390,7 @@ function handleCancel() {
                 .options-label {
                     font-size: 14px;
                     font-weight: 600;
-                    color: #636e72;
+                    color: var(--text-secondary);
                     margin-bottom: 12px;
                 }
 
@@ -404,7 +410,7 @@ function handleCancel() {
                 .options-label {
                     font-size: 14px;
                     font-weight: 600;
-                    color: #636e72;
+                    color: var(--text-secondary);
                     margin-bottom: 12px;
                 }
 

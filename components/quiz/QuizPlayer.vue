@@ -277,6 +277,7 @@ function handleComplete() {
             background: rgba(255, 255, 255, 0.2);
             padding: 8px 16px;
             border-radius: 20px;
+            backdrop-filter: blur(10px);
         }
     }
 
@@ -290,26 +291,28 @@ function handleComplete() {
         overflow-y: auto;
 
         .question-content {
-            background: white;
+            background: var(--bg-card);
             border-radius: 24px;
             padding: 24px;
             min-height: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s ease;
 
             .question-type-badge {
                 display: inline-block;
                 padding: 6px 14px;
-                background: #f8f9fa;
+                background: var(--bg-surface);
                 border-radius: 20px;
                 font-size: 14px;
                 font-weight: 600;
-                color: #636e72;
+                color: var(--text-secondary);
                 margin-bottom: 20px;
             }
 
             .question-text {
                 font-size: 20px;
                 font-weight: 700;
-                color: #2d3436;
+                color: var(--text-primary);
                 line-height: 1.5;
                 margin: 0 0 24px;
             }
@@ -322,6 +325,7 @@ function handleComplete() {
                     max-width: 100%;
                     max-height: 200px;
                     border-radius: 12px;
+                    box-shadow: 0 4px 12px var(--shadow-color);
                 }
             }
 
@@ -335,16 +339,18 @@ function handleComplete() {
                     align-items: center;
                     gap: 16px;
                     padding: 16px 20px;
-                    background: #f8f9fa;
-                    border: 2px solid transparent;
+                    background: var(--bg-surface);
+                    border: 2px solid var(--border-color);
                     border-radius: 16px;
                     cursor: pointer;
                     transition: all 0.2s ease;
                     text-align: left;
+                    color: var(--text-primary);
 
                     &:hover {
-                        background: #e8f4f8;
+                        background: var(--hover-overlay);
                         transform: translateX(4px);
+                        border-color: var(--color-secondary);
                     }
 
                     &.selected {
@@ -364,7 +370,7 @@ function handleComplete() {
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        background: #dfe6e9;
+                        background: var(--border-color);
                         border-radius: 50%;
                         font-weight: 700;
                         font-size: 16px;
@@ -391,11 +397,12 @@ function handleComplete() {
                     align-items: center;
                     justify-content: center;
                     gap: 12px;
-                    border: 3px solid #dfe6e9;
+                    border: 3px solid var(--border-color);
                     border-radius: 24px;
-                    background: white;
+                    background: var(--bg-card);
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    color: var(--text-primary);
 
                     .ox-icon {
                         font-size: 48px;
@@ -464,6 +471,7 @@ function handleComplete() {
         justify-content: space-between;
         padding: 16px;
         background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
 
         .next-btn,
         .complete-btn {

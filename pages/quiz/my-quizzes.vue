@@ -134,13 +134,13 @@ function handlePreview(quizId: string) {
             .page-title {
                 font-size: 28px;
                 font-weight: 700;
-                color: #2d3436;
+                color: var(--text-primary);
                 margin: 0 0 4px;
             }
 
             .page-subtitle {
                 font-size: 16px;
-                color: #636e72;
+                color: var(--text-secondary);
                 margin: 0;
             }
         }
@@ -161,7 +161,7 @@ function handlePreview(quizId: string) {
 
         p {
             font-size: 16px;
-            color: #636e72;
+            color: var(--text-secondary);
         }
     }
 
@@ -176,13 +176,13 @@ function handlePreview(quizId: string) {
         h3 {
             font-size: 20px;
             font-weight: 600;
-            color: #636e72;
+            color: var(--text-secondary);
             margin: 16px 0 8px;
         }
 
         p {
             font-size: 14px;
-            color: #b2bec3;
+            color: var(--text-light);
             margin: 0 0 20px;
         }
     }
@@ -196,6 +196,7 @@ function handlePreview(quizId: string) {
     .delete-dialog {
         min-width: 320px;
         border-radius: 16px;
+        background: var(--bg-card);
     }
 }
 </style>

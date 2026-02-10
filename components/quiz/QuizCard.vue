@@ -101,13 +101,15 @@ function handleClick() {
     border-radius: 16px;
     transition:
         transform 0.25s ease,
-        box-shadow 0.25s ease;
-    background: #ffffff;
+        box-shadow 0.25s ease,
+        background-color 0.3s ease;
+    background: var(--bg-card);
     overflow: hidden;
+    border: 1px solid var(--border-color);
 
     &:hover {
         transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 8px 24px var(--shadow-color);
     }
 
     .card-header {
@@ -126,7 +128,7 @@ function handleClick() {
         .title {
             font-size: 18px;
             font-weight: 700;
-            color: #2d3436;
+            color: var(--text-primary);
             margin: 0 0 8px;
             line-height: 1.4;
             display: -webkit-box;
@@ -137,7 +139,7 @@ function handleClick() {
 
         .description {
             font-size: 14px;
-            color: #636e72;
+            color: var(--text-secondary);
             margin: 0;
             line-height: 1.5;
             display: -webkit-box;
@@ -152,13 +154,13 @@ function handleClick() {
         justify-content: space-between;
         align-items: center;
         padding: 8px 16px;
-        border-top: 1px solid #f1f3f4;
+        border-top: 1px solid var(--border-color);
 
         .meta {
             display: flex;
             gap: 12px;
             font-size: 12px;
-            color: #b2bec3;
+            color: var(--text-light);
 
             span {
                 display: flex;

@@ -41,13 +41,13 @@ function handleCancel() {
         .page-title {
             font-size: 28px;
             font-weight: 700;
-            color: #2d3436;
+            color: var(--text-primary);
             margin: 0 0 8px;
         }
 
         .page-subtitle {
             font-size: 16px;
-            color: #636e72;
+            color: var(--text-secondary);
             margin: 0;
         }
     }

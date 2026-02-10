@@ -81,7 +81,7 @@
                     @click="goToQuiz(quiz.id)"
                     class="quiz-item"
                 >
-                    <span class="rank">{{ index + 1 }}</span>
+                    <span class="rank" :class="`rank-${index + 1}`">{{ index + 1 }}</span>
                     <div class="quiz-info">
                         <span class="quiz-title">{{ quiz.title }}</span>
                         <span class="quiz-meta"
@@ -89,11 +89,12 @@
                             플레이</span
                         >
                     </div>
-                    <q-icon name="chevron_right" color="grey" />
+                    <q-icon name="chevron_right" class="arrow-icon" />
                 </div>
             </div>
 
             <div v-else class="empty-state">
+                <q-icon name="quiz" size="48px" class="empty-icon" />
                 <p>아직 퀴즈가 없어요. 첫 번째 퀴즈를 만들어보세요!</p>
             </div>
         </section>
@@ -216,16 +217,19 @@ function goToQuiz(quizId: string) {
         border-radius: 24px;
         margin-bottom: 24px;
         color: white;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
 
         .mascot {
             font-size: 64px;
             margin-bottom: 16px;
+            animation: bounce 2s ease-in-out infinite;
         }
 
         .welcome-title {
             font-size: 32px;
             font-weight: 800;
             margin: 0 0 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .welcome-subtitle {
@@ -242,11 +246,17 @@ function goToQuiz(quizId: string) {
         margin-bottom: 24px;
 
         .stat-card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 16px;
             padding: 20px 16px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px var(--shadow-color);
+            }
 
             .stat-icon {
                 font-size: 28px;
@@ -256,12 +266,12 @@ function goToQuiz(quizId: string) {
             .stat-value {
                 font-size: 24px;
                 font-weight: 700;
-                color: #2d3436;
+                color: var(--text-primary);
             }
 
             .stat-label {
                 font-size: 12px;
-                color: #b2bec3;
+                color: var(--text-light);
                 margin-top: 4px;
             }
         }
@@ -278,13 +288,28 @@ function goToQuiz(quizId: string) {
             padding: 24px;
             border-radius: 20px;
             color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+            &:hover {
+                transform: translateY(-4px);
+            }
 
             &.create-btn {
                 background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+                box-shadow: 0 8px 24px rgba(78, 205, 196, 0.3);
+
+                &:hover {
+                    box-shadow: 0 12px 32px rgba(78, 205, 196, 0.4);
+                }
             }
 
             &.play-btn {
                 background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+                box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+
+                &:hover {
+                    box-shadow: 0 12px 32px rgba(255, 107, 107, 0.4);
+                }
             }
 
             .action-content {
@@ -308,10 +333,11 @@ function goToQuiz(quizId: string) {
     }
 
     .popular-section {
-        background: white;
+        background: var(--bg-card);
         border-radius: 20px;
         padding: 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        transition: background-color 0.3s ease;
 
         .section-header {
             display: flex;
@@ -322,7 +348,7 @@ function goToQuiz(quizId: string) {
             .section-title {
                 font-size: 18px;
                 font-weight: 700;
-                color: #2d3436;
+                color: var(--text-primary);
                 margin: 0;
             }
         }
@@ -339,16 +365,16 @@ function goToQuiz(quizId: string) {
                 align-items: center;
                 gap: 16px;
                 padding: 14px 0;
-                border-bottom: 1px solid #f1f3f4;
+                border-bottom: 1px solid var(--border-color);
                 cursor: pointer;
-                transition: background 0.2s;
+                transition: all 0.2s ease;
 
                 &:last-child {
                     border-bottom: none;
                 }
 
                 &:hover {
-                    background: #f8f9fa;
+                    background: var(--hover-overlay);
                     margin: 0 -16px;
                     padding-left: 16px;
                     padding-right: 16px;
@@ -366,6 +392,18 @@ function goToQuiz(quizId: string) {
                     border-radius: 50%;
                     font-size: 14px;
                     font-weight: 700;
+
+                    &.rank-1 {
+                        background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+                    }
+
+                    &.rank-2 {
+                        background: linear-gradient(135deg, #c0c0c0 0%, #a0a0a0 100%);
+                    }
+
+                    &.rank-3 {
+                        background: linear-gradient(135deg, #cd7f32 0%, #b87333 100%);
+                    }
                 }
 
                 .quiz-info {
@@ -377,13 +415,17 @@ function goToQuiz(quizId: string) {
                     .quiz-title {
                         font-size: 15px;
                         font-weight: 600;
-                        color: #2d3436;
+                        color: var(--text-primary);
                     }
 
                     .quiz-meta {
                         font-size: 12px;
-                        color: #b2bec3;
+                        color: var(--text-light);
                     }
+                }
+
+                .arrow-icon {
+                    color: var(--text-light);
                 }
             }
         }
@@ -392,12 +434,27 @@ function goToQuiz(quizId: string) {
             text-align: center;
             padding: 40px 20px;
 
+            .empty-icon {
+                color: var(--text-light);
+                margin-bottom: 12px;
+            }
+
             p {
                 font-size: 14px;
-                color: #b2bec3;
+                color: var(--text-light);
                 margin: 0;
             }
         }
+    }
+}
+
+@keyframes bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
     }
 }
 
