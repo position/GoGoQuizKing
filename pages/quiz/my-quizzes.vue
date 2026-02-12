@@ -86,6 +86,12 @@ definePageMeta({
     title: '내 퀴즈 관리',
 });
 
+// SEO 설정 - 사용자 전용 페이지는 검색 엔진에서 제외
+useSeoMeta({
+    title: '내 퀴즈 관리 - GoGoQuizKing',
+    robots: 'noindex, nofollow',
+});
+
 const router = useRouter();
 const quizStore = useQuizStore();
 

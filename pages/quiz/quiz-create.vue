@@ -14,6 +14,12 @@ import { useQuizStore } from '@/store/quiz.store';
 import type { QuizFormData } from '@/models/quiz';
 import QuizForm from '@/components/quiz/QuizForm.vue';
 
+// SEO 설정 - 퀴즈 생성 페이지는 검색 엔진에서 제외
+useSeoMeta({
+    title: '퀴즈 만들기 - GoGoQuizKing',
+    robots: 'noindex, nofollow',
+});
+
 const router = useRouter();
 const quizStore = useQuizStore();
 

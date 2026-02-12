@@ -130,6 +130,14 @@ definePageMeta({
     title: '퀴즈 목록',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '퀴즈 탐험 - GoGoQuizKing',
+    description: '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
+    ogTitle: '퀴즈 탐험 - GoGoQuizKing',
+    ogDescription: '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
+});
+
 const router = useRouter();
 const quizStore = useQuizStore();
 

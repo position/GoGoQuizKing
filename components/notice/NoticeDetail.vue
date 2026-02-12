@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { ToastMessage } from '~/helper/message';
 import dayjs from 'dayjs';
 import { useRoute } from 'vue-router';
@@ -17,6 +17,26 @@ const supabase = useSupabaseClient();
 const props = defineProps<{
     isEdit?: boolean;
 }>();
+
+// 동적 SEO - 공지사항 정보에 따라 메타 태그 설정
+const seoTitle = computed(() => {
+    if (props.isEdit) return '공지사항 수정 - GoGoQuizKing';
+    return noticeDetail.value.title ? `${noticeDetail.value.title} - GoGoQuizKing` : '공지사항 - GoGoQuizKing';
+});
+
+const seoDescription = computed(() => {
+    const body = noticeDetail.value.body || '';
+    const cleanBody = body.replace(/<[^>]*>/g, '').replace(/<br>/g, ' ').slice(0, 160);
+    return cleanBody || 'GoGoQuizKing 공지사항입니다.';
+});
+
+useSeoMeta({
+    title: seoTitle,
+    description: seoDescription,
+    ogTitle: seoTitle,
+    ogDescription: seoDescription,
+    robots: () => props.isEdit ? 'noindex, nofollow' : 'index, follow',
+});
 
 onMounted(async () => {
     await getNoticeDetail();

@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from 'vue';
 import { useQuizStore } from '@/store/quiz.store';
 import type { QuizResultData } from '@/models/quiz';
 import QuizPlayer from '@/components/quiz/QuizPlayer.vue';
@@ -47,6 +47,17 @@ const isLoading = ref(true);
 const error = ref<string | null>(null);
 const showResult = ref(false);
 const resultData = ref<QuizResultData | null>(null);
+
+// 동적 SEO - 퀴즈 정보에 따라 메타 태그 설정
+const quizTitle = computed(() => quizStore.currentQuiz?.title || '퀴즈');
+const quizDescription = computed(() => quizStore.currentQuiz?.description || '재미있는 퀴즈에 도전해보세요!');
+
+useSeoMeta({
+    title: () => `${quizTitle.value} - GoGoQuizKing`,
+    description: () => quizDescription.value,
+    ogTitle: () => `${quizTitle.value} - GoGoQuizKing`,
+    ogDescription: () => quizDescription.value,
+});
 
 onMounted(async () => {
     const quizId = route.params.id as string;

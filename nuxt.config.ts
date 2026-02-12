@@ -2,6 +2,37 @@
 import { routeRules } from './nuxt.routes';
 
 export default defineNuxtConfig({
+    // SEO 설정
+    site: {
+        url: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
+        name: 'GoGoQuizKing',
+        description: '반짝반짝 퀴즈 세상! 친구들과 함께 재미있는 퀴즈를 풀어보세요.',
+        defaultLocale: 'ko',
+    },
+
+    app: {
+        head: {
+            htmlAttrs: {
+                lang: 'ko',
+            },
+            charset: 'utf-8',
+            viewport: 'width=device-width, initial-scale=1',
+            title: 'GoGoQuizKing - 신나는 퀴즈 세상',
+            meta: [
+                { name: 'theme-color', content: '#667eea' },
+                { name: 'author', content: 'GoGoQuizKing Team' },
+                { name: 'robots', content: 'index, follow' },
+                { property: 'og:type', content: 'website' },
+                { property: 'og:locale', content: 'ko_KR' },
+                { property: 'og:site_name', content: 'GoGoQuizKing' },
+                { name: 'twitter:card', content: 'summary_large_image' },
+            ],
+            link: [
+                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+            ],
+        },
+    },
+
     runtimeConfig: {
         public: {
             supabaseUrl: process.env.SUPABASE_URL,
@@ -10,6 +41,7 @@ export default defineNuxtConfig({
             triviaApi: '',
             supabaseStorage: '',
             cdnBase: '',
+            siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
         },
     },
     components: [
