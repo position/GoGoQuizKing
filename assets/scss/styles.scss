@@ -375,11 +375,17 @@ button:focus-visible {
 
         .q-field__native,
         .q-field__prefix,
-        .q-field__suffix {
-            color: var(--text-primary);
+        .q-field__suffix,
+        .q-field__input {
+            color: var(--text-primary) !important;
         }
 
         .q-field__marginal {
+            color: var(--text-secondary);
+        }
+
+        // Select component specific
+        .q-select__dropdown-icon {
             color: var(--text-secondary);
         }
     }
@@ -395,6 +401,22 @@ button:focus-visible {
     .q-btn-toggle {
         background-color: var(--bg-surface);
         color: var(--text-primary);
+
+        .q-btn {
+            color: var(--text-primary) !important;
+
+            .q-btn__content {
+                color: var(--text-primary);
+            }
+        }
+
+        .q-btn--active {
+            color: white !important;
+
+            .q-btn__content {
+                color: white;
+            }
+        }
     }
 
     .q-table {
