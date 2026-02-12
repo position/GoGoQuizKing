@@ -214,16 +214,35 @@ button:focus-visible {
         &:hover {
             background-color: var(--hover-overlay);
         }
+
+        .q-item__label {
+            color: var(--text-primary);
+        }
     }
 
     .q-page {
         background-color: var(--bg-primary);
+        color: var(--text-primary);
     }
 
     .q-input,
     .q-select {
         .q-field__control {
             background-color: var(--bg-input);
+        }
+
+        .q-field__label {
+            color: var(--text-secondary);
+        }
+
+        .q-field__native,
+        .q-field__prefix,
+        .q-field__suffix {
+            color: var(--text-primary);
+        }
+
+        .q-field__marginal {
+            color: var(--text-secondary);
         }
     }
 
@@ -234,6 +253,79 @@ button:focus-visible {
     .q-table {
         color: var(--text-primary);
         background-color: var(--bg-card);
+
+        thead tr th {
+            color: var(--text-primary);
+        }
+
+        tbody tr td {
+            color: var(--text-primary);
+        }
+    }
+
+    .q-card {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+
+        .q-card__section {
+            color: var(--text-primary);
+        }
+    }
+
+    .q-dialog {
+        .q-card {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+    }
+
+    // Quasar text helper classes override for dark mode
+    .text-grey-6,
+    .text-grey-7 {
+        color: var(--text-secondary) !important;
+    }
+
+    .text-body2 {
+        color: var(--text-secondary);
+    }
+
+    .text-h5,
+    .text-h6 {
+        color: var(--text-primary);
+    }
+
+    .q-toggle {
+        .q-toggle__label {
+            color: var(--text-primary);
+        }
+    }
+
+    .q-checkbox {
+        .q-checkbox__label {
+            color: var(--text-primary);
+        }
+    }
+
+    .q-radio {
+        .q-radio__label {
+            color: var(--text-primary);
+        }
+    }
+
+    // Fix for icons
+    .q-icon {
+        color: var(--text-secondary);
+    }
+
+    // Fix for menu
+    .q-menu {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    // Fix for list items in menus
+    .q-list {
+        color: var(--text-primary);
     }
 }
 
@@ -259,6 +351,10 @@ button:focus-visible {
         &:hover {
             background-color: var(--hover-overlay);
         }
+
+        .q-item__label {
+            color: var(--text-primary);
+        }
     }
 
     .q-page {
@@ -277,8 +373,14 @@ button:focus-visible {
             color: var(--text-secondary);
         }
 
-        .q-field__native {
+        .q-field__native,
+        .q-field__prefix,
+        .q-field__suffix {
             color: var(--text-primary);
+        }
+
+        .q-field__marginal {
+            color: var(--text-secondary);
         }
     }
 
@@ -304,7 +406,7 @@ button:focus-visible {
         }
         
         thead tr th {
-            color: var(--text-white);
+            color: var(--text-primary);
         }
         
         tbody tr td {
@@ -319,12 +421,61 @@ button:focus-visible {
     .q-card {
         background-color: var(--bg-card);
         color: var(--text-primary);
+
+        .q-card__section {
+            color: var(--text-primary);
+        }
     }
 
     .q-dialog {
         .q-card {
             background-color: var(--bg-card);
+            color: var(--text-primary);
         }
+    }
+
+    .q-toggle {
+        .q-toggle__label {
+            color: var(--text-primary);
+        }
+    }
+
+    .q-checkbox {
+        .q-checkbox__label {
+            color: var(--text-primary);
+        }
+    }
+
+    .q-radio {
+        .q-radio__label {
+            color: var(--text-primary);
+        }
+    }
+
+    // Text helper classes for light mode
+    .text-grey-6,
+    .text-grey-7 {
+        color: var(--text-secondary) !important;
+    }
+
+    .text-body2 {
+        color: var(--text-secondary);
+    }
+
+    .text-h5,
+    .text-h6 {
+        color: var(--text-primary);
+    }
+
+    // Fix for menu
+    .q-menu {
+        background-color: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    // Fix for list items
+    .q-list {
+        color: var(--text-primary);
     }
 }
 

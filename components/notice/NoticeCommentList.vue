@@ -47,15 +47,16 @@ async function getCommentList() {
     </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .notice-comment-list {
     margin-top: 10px;
     h3 {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+        border-bottom: 1px solid var(--border-color);
         padding-bottom: 10px;
         margin-bottom: 10px;
         font-size: 1.2em;
         line-height: 100%;
+        color: var(--text-primary);
     }
     ul {
         list-style-type: none;
@@ -64,10 +65,11 @@ async function getCommentList() {
             margin-bottom: 10px;
             p {
                 margin: 0;
+                color: var(--text-primary);
             }
             span {
                 font-size: 0.8em;
-                color: #666;
+                color: var(--text-light);
             }
         }
     }
