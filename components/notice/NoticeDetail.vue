@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router';
 import { useRouter } from '#vue-router';
 import type { NoticeInfo } from '~/models/notice';
 import NoticeCommentList from '~/components/notice/NoticeCommentList.vue';
+import { useAuthStore } from '~/store/auth.store';
 
 const route = useRoute();
 const router = useRouter();
@@ -14,6 +15,7 @@ const noticeForm = reactive({ title: '', body: '' });
 const isLoadingPage = ref(false);
 const noticeDetail = ref<NoticeInfo>({} as NoticeInfo);
 const supabase = useSupabaseClient();
+const authStore = useAuthStore();
 const props = defineProps<{
     isEdit?: boolean;
 }>();
@@ -21,12 +23,17 @@ const props = defineProps<{
 // 동적 SEO - 공지사항 정보에 따라 메타 태그 설정
 const seoTitle = computed(() => {
     if (props.isEdit) return '공지사항 수정 - GoGoQuizKing';
-    return noticeDetail.value.title ? `${noticeDetail.value.title} - GoGoQuizKing` : '공지사항 - GoGoQuizKing';
+    return noticeDetail.value.title
+        ? `${noticeDetail.value.title} - GoGoQuizKing`
+        : '공지사항 - GoGoQuizKing';
 });
 
 const seoDescription = computed(() => {
     const body = noticeDetail.value.body || '';
-    const cleanBody = body.replace(/<[^>]*>/g, '').replace(/<br>/g, ' ').slice(0, 160);
+    const cleanBody = body
+        .replace(/<[^>]*>/g, '')
+        .replace(/<br>/g, ' ')
+        .slice(0, 160);
     return cleanBody || 'GoGoQuizKing 공지사항입니다.';
 });
 
@@ -35,7 +42,7 @@ useSeoMeta({
     description: seoDescription,
     ogTitle: seoTitle,
     ogDescription: seoDescription,
-    robots: () => props.isEdit ? 'noindex, nofollow' : 'index, follow',
+    robots: () => (props.isEdit ? 'noindex, nofollow' : 'index, follow'),
 });
 
 onMounted(async () => {
@@ -126,27 +133,29 @@ async function editNotice() {
             </template>
         </q-card-section>
         <q-card-actions class="q-pa-md">
-            <template v-if="props.isEdit">
-                <q-btn
-                    @click="editNotice"
-                    label="공지사항 수정"
-                    color="primary"
-                    class="button-create"
-                />
-            </template>
-            <template v-else>
-                <q-btn
-                    to="../create-notice"
-                    label="공지사항 쓰기"
-                    color="primary"
-                    class="button-create"
-                />
-                <q-btn
-                    :to="`../edit-notice/${noticeId}`"
-                    label="수정"
-                    color="secondary"
-                    class="button-create"
-                />
+            <template v-if="authStore.userInfo.role === 'admin'">
+                <template v-if="props.isEdit">
+                    <q-btn
+                        @click="editNotice"
+                        label="공지사항 수정"
+                        color="primary"
+                        class="button-create"
+                    />
+                </template>
+                <template v-else>
+                    <q-btn
+                        to="../create-notice"
+                        label="공지사항 쓰기"
+                        color="primary"
+                        class="button-create"
+                    />
+                    <q-btn
+                        :to="`../edit-notice/${noticeId}`"
+                        label="수정"
+                        color="secondary"
+                        class="button-create"
+                    />
+                </template>
             </template>
             <q-btn to="../notice-list" label="리스트" color="secondary" class="button-create" />
         </q-card-actions>

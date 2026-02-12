@@ -2,11 +2,13 @@
 import { onMounted, ref } from 'vue';
 import { ConfirmMessage, ToastMessage } from '~/helper/message';
 import dayjs from 'dayjs';
+import { useAuthStore } from '~/store/auth.store';
 
 const router = useRouter();
 const noticeList = ref([]);
 const isVisibleCreateModal = ref(false);
 const isLoadingPage = ref(false);
+const authStore = useAuthStore();
 const supabase = useSupabaseClient();
 
 onMounted(async () => {
@@ -66,7 +68,14 @@ function goToNoticeDetail(id: number) {
     <section class="page-area">
         <div class="page-header">
             <h1 class="page-title">공지사항</h1>
-            <q-btn to="./create-notice" label="공지사항 쓰기" color="primary" class="button-create" unelevated>
+            <q-btn
+                v-if="authStore.userInfo.role === 'admin'"
+                to="./create-notice"
+                label="공지사항 쓰기"
+                color="primary"
+                class="button-create"
+                unelevated
+            >
                 <q-icon name="add" left />
             </q-btn>
         </div>
@@ -104,6 +113,7 @@ function goToNoticeDetail(id: number) {
                     </td>
                     <td>
                         <q-btn
+                            v-if="authStore.userInfo.role === 'admin'"
                             @click.stop="confirmDeleteNotice(notice.row.id)"
                             label="삭제"
                             size="sm"
@@ -208,7 +218,6 @@ function goToNoticeDetail(id: number) {
 
             &:hover {
                 background-color: var(--hover-overlay);
-                transform: translateX(2px);
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             }
 
@@ -301,4 +310,5 @@ function goToNoticeDetail(id: number) {
             gap: $spacing-sm;
         }
     }
-}</style>
+}
+</style>
