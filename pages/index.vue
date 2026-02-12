@@ -119,13 +119,16 @@ import { CATEGORIES, type QuizCategory } from '@/models/quiz';
 // SEO 설정
 useSeoMeta({
     title: 'GoGoQuizKing - 신나는 퀴즈 세상',
-    description: '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요. 다양한 카테고리의 퀴즈가 준비되어 있습니다.',
+    description:
+        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요. 다양한 카테고리의 퀴즈가 준비되어 있습니다.',
     ogTitle: 'GoGoQuizKing - 신나는 퀴즈 세상',
-    ogDescription: '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
+    ogDescription:
+        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: 'GoGoQuizKing - 신나는 퀴즈 세상',
-    twitterDescription: '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
+    twitterDescription:
+        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
 });
 
 const router = useRouter();
@@ -171,7 +174,7 @@ async function getUserInfo() {
 
     const userInfo = { ...user.user_metadata } as DTO.Auth.LoginResponse;
     authStore.registerInfo(userInfo, user?.app_metadata.provider);
-    
+
     // role 정보 가져오기
     await authStore.fetchUserRole(user.id);
 }
@@ -276,7 +279,10 @@ function goToQuiz(quizId: string) {
             padding: 20px 16px;
             text-align: center;
             box-shadow: 0 4px 12px var(--shadow-color);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background-color 0.3s ease;
 
             &:hover {
                 transform: translateY(-2px);
@@ -340,7 +346,9 @@ function goToQuiz(quizId: string) {
             padding: 24px;
             border-radius: 20px;
             color: white;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
 
             &:hover {
                 transform: translateY(-4px);
