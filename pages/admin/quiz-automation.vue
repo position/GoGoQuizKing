@@ -106,10 +106,6 @@
 import { ref, onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 
-definePageMeta({
-    middleware: ['admin-guard'],
-});
-
 // SEO 설정 - 관리자 전용 페이지는 검색 엔진에서 제외
 useSeoMeta({
     title: '퀴즈 자동 생성 관리 - GoGoQuizKing',
