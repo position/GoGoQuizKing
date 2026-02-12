@@ -6,7 +6,6 @@ import { useAuthStore } from '~/store/auth.store';
 
 const router = useRouter();
 const noticeList = ref([]);
-const isVisibleCreateModal = ref(false);
 const isLoadingPage = ref(false);
 const authStore = useAuthStore();
 const supabase = useSupabaseClient();
@@ -55,10 +54,6 @@ async function deleteNotice(id: number) {
     }
 }
 
-function visibleCrateModal() {
-    isVisibleCreateModal.value = true;
-}
-
 function goToNoticeDetail(id: number) {
     router.push({ path: `./notice-detail/${id}` });
 }
@@ -69,7 +64,7 @@ function goToNoticeDetail(id: number) {
         <div class="page-header">
             <h1 class="page-title">공지사항</h1>
             <q-btn
-                v-if="authStore.userInfo.role === 'admin'"
+                v-if="authStore.isAdmin"
                 to="./create-notice"
                 label="공지사항 쓰기"
                 color="primary"
@@ -113,7 +108,7 @@ function goToNoticeDetail(id: number) {
                     </td>
                     <td>
                         <q-btn
-                            v-if="authStore.userInfo.role === 'admin'"
+                            v-if="authStore.isAdmin"
                             @click.stop="confirmDeleteNotice(notice.row.id)"
                             label="삭제"
                             size="sm"
@@ -135,8 +130,6 @@ function goToNoticeDetail(id: number) {
             </template>
         </q-table>
     </section>
-
-    <q-dialog v-model="isVisibleCreateModal" class="post-modal-area"> </q-dialog>
 </template>
 
 <style scoped lang="scss">

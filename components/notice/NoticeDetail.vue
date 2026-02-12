@@ -133,7 +133,7 @@ async function editNotice() {
             </template>
         </q-card-section>
         <q-card-actions class="q-pa-md">
-            <template v-if="authStore.userInfo.role === 'admin'">
+            <template v-if="authStore.isAdmin">
                 <template v-if="props.isEdit">
                     <q-btn
                         @click="editNotice"
