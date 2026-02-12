@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { DTO } from '@/models';
 import { ToastMessage } from '@/helper/message';
-import type { LoginResponse } from '~/models/auth';
+import type { LoginResponse, UserRole } from '~/models/auth';
 import type { PersistenceOptions } from 'pinia-plugin-persistedstate';
 
 interface AuthStore {
@@ -23,6 +23,7 @@ const defaultUserInfo = {
     sub: null,
     user_name: null,
     provider: null,
+    role: 'user' as UserRole,
 } as LoginResponse;
 
 export const useAuthStore = defineStore('auth', {
@@ -31,9 +32,13 @@ export const useAuthStore = defineStore('auth', {
         userInfo: { ...defaultUserInfo },
         token: '',
     }),
-    getters: {},
+    getters: {
+        isAdmin: (state) => state.userInfo.role === 'admin',
+        isModerator: (state) => state.userInfo.role === 'moderator',
+        hasAdminAccess: (state) => state.userInfo.role === 'admin' || state.userInfo.role === 'moderator',
+    },
     actions: {
-        registerInfo(loginResponse: DTO.Auth.LoginResponse, provider: string | undefined) {
+        registerInfo(loginResponse: DTO.Auth.LoginResponse, provider: string | undefined, role?: UserRole) {
             this.isLogin = true;
 
             this.userInfo = {
@@ -49,7 +54,26 @@ export const useAuthStore = defineStore('auth', {
                 sub: loginResponse.sub,
                 user_name: loginResponse.user_name,
                 provider,
+                role: role || 'user',
             };
+        },
+        async fetchUserRole(userId: string) {
+            const supabase = useSupabaseClient();
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', userId)
+                    .single();
+
+                if (error) throw error;
+                
+                if (data && data.role) {
+                    this.userInfo.role = data.role as UserRole;
+                }
+            } catch (e) {
+                console.error('Failed to fetch user role:', e);
+            }
         },
         async signOut() {
             const router = useRouter();

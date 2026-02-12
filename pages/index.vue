@@ -28,6 +28,14 @@
             </div>
         </section>
 
+        <!-- 어드민 배지 -->
+        <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
+            <div class="admin-badge" :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }">
+                <q-icon :name="isAdmin ? 'admin_panel_settings' : 'verified_user'" size="20px" />
+                <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
+            </div>
+        </section>
+
         <!-- 퀵 액션 -->
         <section class="quick-actions">
             <q-btn
@@ -127,6 +135,8 @@ const supabase = useSupabaseClient();
 
 const isLoading = ref(true);
 const isLogin = computed(() => authStore.isLogin);
+const isAdmin = computed(() => authStore.isAdmin);
+const hasAdminAccess = computed(() => authStore.hasAdminAccess);
 
 // 사용자 통계 (Phase 2에서 실제 데이터 연동)
 const userStats = ref({
@@ -161,6 +171,9 @@ async function getUserInfo() {
 
     const userInfo = { ...user.user_metadata } as DTO.Auth.LoginResponse;
     authStore.registerInfo(userInfo, user?.app_metadata.provider);
+    
+    // role 정보 가져오기
+    await authStore.fetchUserRole(user.id);
 }
 
 async function fetchUserStats() {
@@ -285,6 +298,33 @@ function goToQuiz(quizId: string) {
                 font-size: 12px;
                 color: var(--text-light);
                 margin-top: 4px;
+            }
+        }
+    }
+
+    .admin-badge-section {
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: center;
+
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+            &.is-admin {
+                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+                color: white;
+            }
+
+            &.is-moderator {
+                background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+                color: white;
             }
         }
     }
