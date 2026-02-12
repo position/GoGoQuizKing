@@ -1,3 +1,5 @@
+export type UserRole = 'user' | 'admin' | 'moderator';
+
 export interface LoginResponse {
     avatar_url: string | null;
     email: string | null;
@@ -11,4 +13,5 @@ export interface LoginResponse {
     sub: string | null;
     user_name: string | null;
     provider: string | null;
+    role?: UserRole;
 }
