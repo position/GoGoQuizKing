@@ -119,9 +119,10 @@ async function logout() {
                     </dt>
                     <dd class="user-name">
                         <span class="text-weight-bold">{{ userInfo.user_name }}</span>
+                        <span class="user-email">{{ userInfo.email }}</span>
                     </dd>
                 </dl>
-                <div class="user-email">{{ userInfo.email }}</div>
+
                 <q-btn
                     @click="logout"
                     label="로그아웃"
@@ -249,14 +250,16 @@ async function logout() {
             > .user-name {
                 font-size: 15px;
                 color: var(--text-primary);
+                > .user-email {
+                    display: block;
+                    width: 130px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    font-size: 12px;
+                    color: var(--text-secondary);
+                }
             }
-        }
-
-        > .user-email {
-            font-size: 12px;
-            color: var(--text-secondary);
-            padding-left: 68px;
-            margin-top: -4px;
         }
 
         > .button-logout {

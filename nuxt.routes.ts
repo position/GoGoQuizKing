@@ -6,7 +6,7 @@ export const routeRules: NitroConfig['routeRules'] = {
      */
 
     '/': {
-        ssr: false,
+        ssr: true,
         prerender: false,
     },
     '/login': {
@@ -14,11 +14,11 @@ export const routeRules: NitroConfig['routeRules'] = {
         prerender: false,
     },
     '/notice/**': {
-        ssr: false,
+        ssr: true,
         prerender: false,
     },
     '/quiz/**': {
-        ssr: false,
+        ssr: true,
         prerender: false,
     },
 };

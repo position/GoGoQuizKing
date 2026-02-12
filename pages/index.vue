@@ -116,21 +116,6 @@ import { useQuizStore } from '~/store/quiz.store';
 import { DTO } from '@/models';
 import { CATEGORIES, type QuizCategory } from '@/models/quiz';
 
-// SEO 설정
-useSeoMeta({
-    title: 'GoGoQuizKing - 신나는 퀴즈 세상',
-    description:
-        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요. 다양한 카테고리의 퀴즈가 준비되어 있습니다.',
-    ogTitle: 'GoGoQuizKing - 신나는 퀴즈 세상',
-    ogDescription:
-        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
-    ogType: 'website',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'GoGoQuizKing - 신나는 퀴즈 세상',
-    twitterDescription:
-        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
-});
-
 const router = useRouter();
 const authStore = useAuthStore();
 const quizStore = useQuizStore();
