@@ -10,7 +10,7 @@ const isDarkMode = computed(() => commonStore.isDarkMode);
     <q-footer class="app-footer" :class="{ 'footer-dark': isDarkMode }" reveal elevated>
         <q-toolbar class="footer-toolbar">
             <q-toolbar-title class="footer-text">
-                <span class="copyright">© 2025 GoGoQuizKing</span>
+                <span class="copyright">© {{ new Date().getFullYear() }} GoGoQuizKing</span>
                 <span class="divider">|</span>
                 <span class="rights">All rights reserved.</span>
             </q-toolbar-title>

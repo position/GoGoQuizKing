@@ -5,32 +5,67 @@ import dayjs from 'dayjs';
 import { useAuthStore } from '~/store/auth.store';
 
 const router = useRouter();
-const noticeList = ref([]);
+const noticeList = ref<any[]>([]);
 const isLoadingPage = ref(false);
 const authStore = useAuthStore();
 const supabase = useSupabaseClient();
 
-onMounted(async () => {
-    await getNoticeList();
+// Pagination 설정
+const pagination = ref({
+    page: 1,
+    rowsPerPage: 10,
+    rowsNumber: 0,
+    sortBy: 'created_at',
+    descending: true,
 });
 
-async function getNoticeList() {
-    try {
-        isLoadingPage.value = true;
+onMounted(async () => {
+    await onRequest({ pagination: pagination.value });
+});
 
-        const { data: record, error } = await supabase
+// QTable 서버 사이드 페이지네이션 핸들러
+async function onRequest(props: {
+    pagination: {
+        page: number;
+        rowsPerPage: number;
+        rowsNumber?: number;
+        sortBy?: string;
+        descending?: boolean;
+    };
+}) {
+    const { page, rowsPerPage } = props.pagination;
+
+    isLoadingPage.value = true;
+    try {
+        const offset = (page - 1) * rowsPerPage;
+
+        // 총 개수 조회
+        const { count } = await supabase.from('notice').select('*', { count: 'exact', head: true });
+
+        // 데이터 조회
+        const { data: record } = await supabase
             .from('notice')
             .select('*')
             .order('created_at', { ascending: false })
-            // .range((pages - 1) * pageSize, pages * pageSize - 1)
+            .range(offset, offset + rowsPerPage - 1)
             .throwOnError();
-        noticeList.value = record;
+
+        noticeList.value = record || [];
+
+        // 페이지네이션 상태 업데이트
+        pagination.value.page = page;
+        pagination.value.rowsPerPage = rowsPerPage;
+        pagination.value.rowsNumber = count || 0;
     } catch (e) {
         console.error(e);
-        ToastMessage.error(e);
+        ToastMessage.error(e as string);
     } finally {
         isLoadingPage.value = false;
     }
+}
+
+async function getNoticeList() {
+    await onRequest({ pagination: pagination.value });
 }
 
 function confirmDeleteNotice(id: number) {
@@ -45,12 +80,12 @@ function confirmDeleteNotice(id: number) {
 
 async function deleteNotice(id: number) {
     try {
-        const { error } = await supabase.from('notice').delete().eq('id', id).throwOnError();
+        await supabase.from('notice').delete().eq('id', id).throwOnError();
         ToastMessage.success('Success');
         await getNoticeList();
     } catch (e) {
         console.error(e);
-        ToastMessage.error(e);
+        ToastMessage.error(e as string);
     }
 }
 
@@ -79,13 +114,12 @@ function goToNoticeDetail(id: number) {
             flat
             bordered
             :rows="noticeList"
-            row-key="index"
+            row-key="id"
+            :loading="isLoadingPage"
+            v-model:pagination="pagination"
             no-data-label="등록된 공지사항이 없습니다"
-            :virtual-scroll-item-size="48"
-            :virtual-scroll-slice-size="100"
-            virtual-scroll
-            :rows-per-page-options="[10, 20, 50]"
             class="page-list-table"
+            @request="onRequest"
         >
             <template v-slot:header>
                 <tr>
@@ -126,6 +160,57 @@ function goToNoticeDetail(id: number) {
                 <div class="no-data">
                     <q-icon name="info" size="24px" color="grey-5" />
                     <div>등록된 공지사항이 없습니다</div>
+                </div>
+            </template>
+
+            <!-- Pagination Slot -->
+            <template #pagination="scope">
+                <div class="row items-center justify-center q-gutter-sm">
+                    <span class="text-caption text-grey-7 q-mr-md">
+                        총 {{ scope.pagination.rowsNumber }}개
+                    </span>
+
+                    <q-btn
+                        icon="first_page"
+                        color="grey-8"
+                        round
+                        dense
+                        flat
+                        :disable="scope.isFirstPage"
+                        @click="scope.firstPage"
+                    />
+                    <q-btn
+                        icon="chevron_left"
+                        color="grey-8"
+                        round
+                        dense
+                        flat
+                        :disable="scope.isFirstPage"
+                        @click="scope.prevPage"
+                    />
+
+                    <span class="text-body1">
+                        {{ scope.pagination.page }} / {{ scope.pagesNumber || 1 }}
+                    </span>
+
+                    <q-btn
+                        icon="chevron_right"
+                        color="grey-8"
+                        round
+                        dense
+                        flat
+                        :disable="scope.isLastPage"
+                        @click="scope.nextPage"
+                    />
+                    <q-btn
+                        icon="last_page"
+                        color="grey-8"
+                        round
+                        dense
+                        flat
+                        :disable="scope.isLastPage"
+                        @click="scope.lastPage"
+                    />
                 </div>
             </template>
         </q-table>
