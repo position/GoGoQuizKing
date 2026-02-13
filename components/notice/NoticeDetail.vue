@@ -173,6 +173,7 @@ async function editNotice() {
         align-items: flex-end;
         .text-h6 {
             flex: 5 0;
+            font-weight: 900 !important;
         }
         .text-caption {
             flex: 1 0;
@@ -181,6 +182,7 @@ async function editNotice() {
     }
     .description-area {
         min-height: 250px;
+        font-size: 14px;
     }
 }
 </style>

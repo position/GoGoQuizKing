@@ -4,10 +4,66 @@
 // Import Google Fonts - Fredoka (headings) & Nunito (body)
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
 
-:root {
-    font-family: 'Nunito', sans-serif;
-    line-height: 1.5;
+// 나눔스퀘어 폰트는 nuxt.config.ts에서 link로 로드됨
+// 나눔스퀘어 font-weight 매핑
+// 300 (Light): NanumSquareLight, NanumSquareAcl
+// 400 (Regular): NanumSquare, NanumSquareAcr
+// 700 (Bold): NanumSquareBold, NanumSquareAcb
+// 800 (ExtraBold): NanumSquareExtraBold, NanumSquareAceb
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquareLight'), local('NanumSquareAcl');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquare'), local('NanumSquareAcr');
     font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquare'), local('NanumSquareAcr');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquareBold'), local('NanumSquareAcb');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquareBold'), local('NanumSquareAcb');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquareExtraBold'), local('NanumSquareAceb');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NanumSquareCustom';
+    src: local('NanumSquareExtraBold'), local('NanumSquareAceb');
+    font-weight: 900;
+    font-style: normal;
+}
+
+:root {
+    font-family: 'NanumSquareCustom', 'NanumSquare', 'Nunito', sans-serif;
+    line-height: 1.5;
+    font-weight: 500;
 
     color-scheme: light;
     color: $text-primary;
@@ -77,6 +133,7 @@ body {
     height: 100%;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    font-family: 'NanumSquareCustom', 'Nunito', sans-serif;
     transition:
         background-color 0.3s ease,
         color 0.3s ease;
@@ -210,14 +267,6 @@ h5,
 h6 {
     font-family: 'Fredoka', sans-serif;
     font-weight: 700;
-}
-
-// Body text uses Nunito
-body,
-p,
-span,
-div {
-    font-family: 'Nunito', sans-serif;
 }
 
 .q-textarea {

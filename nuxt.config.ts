@@ -27,7 +27,13 @@ export default defineNuxtConfig({
                 { property: 'og:site_name', content: 'GoGoQuizKing' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],
-            link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+            link: [
+                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+                {
+                    rel: 'stylesheet',
+                    href: 'https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css',
+                },
+            ],
         },
     },
 

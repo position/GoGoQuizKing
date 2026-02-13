@@ -32,6 +32,7 @@
                         :loading="loading"
                         flat
                         bordered
+                        hide-bottom
                     >
                         <template #body-cell-quiz_title="props">
                             <q-td :props="props">
