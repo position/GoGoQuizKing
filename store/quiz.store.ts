@@ -20,6 +20,13 @@ interface QuizStoreState {
     isLoading: boolean;
     error: string | null;
 
+    // 페이지네이션
+    pagination: {
+        page: number;
+        pageSize: number;
+        hasMore: boolean;
+    };
+
     // 필터
     filter: QuizListFilter;
 
@@ -46,6 +53,11 @@ export const useQuizStore = defineStore('quiz', {
         myQuizzes: [],
         isLoading: false,
         error: null,
+        pagination: {
+            page: 0,
+            pageSize: 12,
+            hasMore: true,
+        },
         filter: { ...DEFAULT_QUIZ_FILTER },
         currentQuiz: null,
         currentQuestions: [],
@@ -119,6 +131,55 @@ export const useQuizStore = defineStore('quiz', {
     },
 
     actions: {
+        // 퀴즈 목록 불러오기 (페이지네이션)
+        async fetchQuizzesPaginated() {
+            if (this.isLoading || !this.pagination.hasMore) return;
+
+            this.isLoading = true;
+            this.error = null;
+
+            try {
+                const supabase = useSupabaseClient<Database>();
+                const from = this.pagination.page * this.pagination.pageSize;
+                const to = from + this.pagination.pageSize - 1;
+
+                const { data, error } = await supabase
+                    .from('quizzes')
+                    .select(
+                        `
+                        *,
+                        profiles:created_by (
+                            full_name,
+                            avatar_url
+                        )
+                    `
+                    )
+                    .eq('is_public', true)
+                    .order('created_at', { ascending: false })
+                    .range(from, to);
+
+                if (error) throw error;
+
+                const newQuizzes = (data as QuizWithAuthor[]) || [];
+                this.quizzes = [...this.quizzes, ...newQuizzes];
+                this.pagination.page++;
+                this.pagination.hasMore = newQuizzes.length === this.pagination.pageSize;
+            } catch (e) {
+                console.error('Failed to fetch quizzes:', e);
+                this.error = '퀴즈 목록을 불러오는데 실패했습니다.';
+                ToastMessage.error(this.error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        // 퀴즈 목록 리셋 (필터 변경 시 호출)
+        resetQuizzes() {
+            this.quizzes = [];
+            this.pagination.page = 0;
+            this.pagination.hasMore = true;
+        },
+
         // 퀴즈 목록 불러오기
         async fetchQuizzes() {
             this.isLoading = true;

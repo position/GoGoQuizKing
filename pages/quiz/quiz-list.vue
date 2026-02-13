@@ -27,6 +27,7 @@
                     dense
                     clearable
                     class="search-input"
+                    @update:model-value="handleFilterChange"
                 >
                     <template #prepend>
                         <q-icon name="search" />
@@ -44,6 +45,7 @@
                     map-options
                     clearable
                     class="filter-select"
+                    @update:model-value="handleFilterChange"
                 />
 
                 <!-- 난이도 필터 -->
@@ -57,6 +59,7 @@
                     map-options
                     clearable
                     class="filter-select"
+                    @update:model-value="handleFilterChange"
                 />
 
                 <!-- 학년 필터 -->
@@ -70,6 +73,7 @@
                     map-options
                     clearable
                     class="filter-select"
+                    @update:model-value="handleFilterChange"
                 />
             </div>
 
@@ -82,18 +86,19 @@
                     unelevated
                     toggle-color="primary"
                     class="sort-toggle"
+                    @update:model-value="handleFilterChange"
                 />
             </div>
         </div>
 
-        <!-- 로딩 -->
-        <div v-if="quizStore.isLoading" class="loading-state">
+        <!-- 초기 로딩 -->
+        <div v-if="quizStore.isLoading && filteredQuizzes.length === 0" class="loading-state">
             <q-spinner-dots color="primary" size="50px" />
             <p>퀴즈를 불러오고 있어요~ 🎵</p>
         </div>
 
         <!-- 빈 상태 -->
-        <div v-else-if="filteredQuizzes.length === 0" class="empty-state">
+        <div v-else-if="!quizStore.isLoading && filteredQuizzes.length === 0" class="empty-state">
             <q-icon name="quiz" size="80px" color="grey-4" />
             <h3>아직 퀴즈가 없어요~ 🙈</h3>
             <p>첫 번째 퀴즈를 만들어볼까요?</p>
@@ -106,21 +111,40 @@
             />
         </div>
 
-        <!-- 퀴즈 그리드 -->
-        <div v-else class="quiz-grid">
-            <QuizCard
-                v-for="quiz in filteredQuizzes"
-                :key="quiz.id"
-                :quiz="quiz"
-                @play="handlePlay"
-                @click="handlePlay"
-            />
+        <!-- 퀴즈 그리드 (무한 스크롤) -->
+        <q-infinite-scroll
+            v-else
+            ref="infiniteScrollRef"
+            :offset="300"
+            @load="onLoadMore"
+        >
+            <div class="quiz-grid">
+                <QuizCard
+                    v-for="quiz in filteredQuizzes"
+                    :key="quiz.id"
+                    :quiz="quiz"
+                    @play="handlePlay"
+                    @click="handlePlay"
+                />
+            </div>
+
+            <template #loading>
+                <div class="row justify-center q-my-md">
+                    <q-spinner-dots color="primary" size="40px" />
+                </div>
+            </template>
+        </q-infinite-scroll>
+
+        <!-- 더 이상 데이터 없음 표시 -->
+        <div v-if="!quizStore.pagination.hasMore && filteredQuizzes.length > 0" class="no-more-data">
+            <p>🎉 모든 퀴즈를 불러왔어요!</p>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import type { QInfiniteScroll } from 'quasar';
 import { useQuizStore } from '@/store/quiz.store';
 import { CATEGORIES, DIFFICULTIES } from '@/models/quiz';
 import type { QuizCategory, DifficultyLevel } from '@/models/quiz';
@@ -140,6 +164,9 @@ useSeoMeta({
 
 const router = useRouter();
 const quizStore = useQuizStore();
+
+// Infinite Scroll ref
+const infiniteScrollRef = ref<QInfiniteScroll | null>(null);
 
 // 필터 상태
 const searchQuery = ref('');
@@ -193,7 +220,7 @@ const sortOptions = [
     { label: '인기순', value: 'play_count' },
 ];
 
-// 필터링된 퀴즈
+// 필터링된 퀴즈 (클라이언트 사이드 필터링)
 const filteredQuizzes = computed(() => {
     let result = [...quizStore.quizzes];
 
@@ -233,21 +260,39 @@ const filteredQuizzes = computed(() => {
     return result;
 });
 
-// 데이터 로드
-onMounted(() => {
-    quizStore.fetchQuizzes();
-});
+// 무한 스크롤 로드 핸들러
+async function onLoadMore(index: number, done: (stop?: boolean) => void) {
+    await quizStore.fetchQuizzesPaginated();
+    done(!quizStore.pagination.hasMore);
+}
 
-// 필터 변경 시 스토어 업데이트
-watch([selectedCategory, selectedDifficulty, selectedGrade, searchQuery, sortBy], () => {
-    quizStore.setFilter({
-        category: selectedCategory.value,
-        difficulty: selectedDifficulty.value,
-        gradeLevel: selectedGrade.value,
-        searchQuery: searchQuery.value,
-        sortBy: sortBy.value,
-        sortOrder: 'desc',
-    });
+// 필터 변경 핸들러 (debounce 적용)
+let filterTimeout: ReturnType<typeof setTimeout> | null = null;
+function handleFilterChange() {
+    if (filterTimeout) {
+        clearTimeout(filterTimeout);
+    }
+    filterTimeout = setTimeout(() => {
+        quizStore.setFilter({
+            category: selectedCategory.value,
+            difficulty: selectedDifficulty.value,
+            gradeLevel: selectedGrade.value,
+            searchQuery: searchQuery.value,
+            sortBy: sortBy.value,
+            sortOrder: 'desc',
+        });
+        // 필터 변경 시 리스트 리셋 후 다시 로드
+        quizStore.resetQuizzes();
+        infiniteScrollRef.value?.reset();
+        infiniteScrollRef.value?.resume();
+        quizStore.fetchQuizzesPaginated();
+    }, 300);
+}
+
+// 초기 데이터 로드
+onMounted(() => {
+    quizStore.resetQuizzes();
+    quizStore.fetchQuizzesPaginated();
 });
 
 function handlePlay(quizId: string) {
@@ -363,6 +408,17 @@ function handlePlay(quizId: string) {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 20px;
+    }
+
+    .no-more-data {
+        text-align: center;
+        padding: 24px;
+        color: var(--text-secondary);
+
+        p {
+            margin: 0;
+            font-size: 14px;
+        }
     }
 }
 
