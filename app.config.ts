@@ -1,9 +1,9 @@
 export default defineAppConfig({
     nuxtQuasar: {
-        dark: true,
+        dark: false,
         brand: {
-            primary: '#222222',
-            secondary: 'red',
+            primary: '#FF8200',
+            secondary: '#9ACD32',
         },
     },
 });

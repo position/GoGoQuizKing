@@ -10,7 +10,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     // 세션 체크 및 role 가져오기
     const session = await authStore.checkSession();
-    if (session && !authStore.userInfo.role) {
+
+    if (session) {
+        // role이 기본값 'user'이거나 아직 DB에서 가져오지 않은 경우 fetch
         await authStore.fetchUserRole(session.user.id);
     }
 

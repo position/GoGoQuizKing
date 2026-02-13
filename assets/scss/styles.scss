@@ -296,6 +296,9 @@ div {
 
         tbody tr td {
             color: var(--text-primary);
+            a {
+                color: var(--text-primary) !important;
+            }
         }
     }
 
@@ -350,7 +353,7 @@ div {
 
     // Fix for icons
     .q-icon {
-        color: var(--text-secondary);
+        color: #fff;
     }
 
     // Fix for menu

@@ -37,7 +37,7 @@
                             <q-td :props="props">
                                 <router-link
                                     v-if="props.row.quizzes"
-                                    :to="`/quiz/${props.row.quizzes.id}`"
+                                    :to="`../quiz/play/${props.row.quizzes.id}`"
                                     class="text-primary"
                                 >
                                     {{ props.row.quizzes.title }}
@@ -94,6 +94,7 @@
                             :max-pages="7"
                             direction-links
                             @update:model-value="loadHistory"
+                            size="large"
                         />
                     </div>
                 </q-card-section>

@@ -75,6 +75,7 @@ function toggleTheme() {
         .brand-title {
             font-size: 18px;
             font-weight: 700;
+            font-family: 'Fredoka', sans-serif;
             color: white;
             letter-spacing: -0.5px;
 

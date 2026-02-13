@@ -27,9 +27,7 @@ export default defineNuxtConfig({
                 { property: 'og:site_name', content: 'GoGoQuizKing' },
                 { name: 'twitter:card', content: 'summary_large_image' },
             ],
-            link: [
-                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-            ],
+            link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
         },
     },
 
@@ -56,6 +54,7 @@ export default defineNuxtConfig({
     modules: [
         '@nuxt/eslint',
         'nuxt-time',
+        'nuxt-vitalizer',
         '@nuxt/image',
         'dayjs-nuxt',
         '@pinia/nuxt',
@@ -94,6 +93,10 @@ export default defineNuxtConfig({
                 target: 'esnext',
             },
         },
+    },
+
+    vitalizer: {
+        disableStylesheets: 'entry',
     },
 
     build: {
