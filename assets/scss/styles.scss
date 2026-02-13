@@ -1,8 +1,11 @@
 @use 'sass:color';
 @import 'variables';
 
+// Import Google Fonts - Fredoka (headings) & Nunito (body)
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
+
 :root {
-    font-family: $font-family;
+    font-family: 'Nunito', sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
@@ -74,7 +77,9 @@ body {
     height: 100%;
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
 }
 
 a {
@@ -124,7 +129,10 @@ button:focus-visible {
     background: var(--bg-card);
     border-radius: $radius-lg;
     box-shadow: 0 4px 12px var(--shadow-color);
-    transition: transform $transition-normal, box-shadow $transition-normal, background-color 0.3s ease;
+    transition:
+        transform $transition-normal,
+        box-shadow $transition-normal,
+        background-color 0.3s ease;
 
     &:hover {
         transform: translateY(-4px);
@@ -186,10 +194,38 @@ button:focus-visible {
 }
 
 .page-title {
+    font-family: 'Fredoka', sans-serif;
     font-size: $font-size-2xl;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: $spacing-lg;
+}
+
+// Headings use Fredoka
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+}
+
+// Body text uses Nunito
+body,
+p,
+span,
+div {
+    font-family: 'Nunito', sans-serif;
+}
+
+.q-textarea {
+    &.q-field--labeled {
+        .q-field__native {
+            color: var(--text-primary);
+        }
+    }
 }
 
 // Quasar 다크 모드 오버라이드
@@ -345,6 +381,14 @@ button:focus-visible {
         border-right: 1px solid var(--border-color);
     }
 
+    .q-field--outlined {
+        .q-field__control {
+            &:before {
+                border-color: var(--border-color);
+            }
+        }
+    }
+
     .q-item {
         color: var(--text-primary);
 
@@ -365,12 +409,12 @@ button:focus-visible {
     .q-input,
     .q-select {
         .q-field__control {
-            background-color: var(--bg-input);
-            color: var(--text-primary);
+            background-color: var(--bg-input) !important;
+            color: var(--text-primary) !important;
         }
 
         .q-field__label {
-            color: var(--text-secondary);
+            color: var(--text-secondary) !important;
         }
 
         .q-field__native,
@@ -388,6 +432,9 @@ button:focus-visible {
         .q-select__dropdown-icon {
             color: var(--text-secondary);
         }
+    }
+    .q-field__label {
+        color: var(--text-secondary) !important;
     }
 
     .q-btn {
@@ -410,11 +457,10 @@ button:focus-visible {
             }
         }
 
-        .q-btn--active {
+        .bg-primary {
             color: white !important;
-
             .q-btn__content {
-                color: white;
+                color: white !important;
             }
         }
     }
@@ -422,15 +468,15 @@ button:focus-visible {
     .q-table {
         color: var(--text-primary);
         background-color: var(--bg-card);
-        
+
         .q-table__top {
             color: var(--text-primary);
         }
-        
+
         thead tr th {
             color: var(--text-primary);
         }
-        
+
         tbody tr td {
             color: var(--text-primary);
         }

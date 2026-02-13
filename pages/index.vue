@@ -226,11 +226,11 @@ function goToQuiz(quizId: string) {
     .welcome-section {
         text-align: center;
         padding: 40px 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #FF8200 0%, #f7b32b 100%);
         border-radius: 24px;
         margin-bottom: 24px;
         color: white;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        box-shadow: 0 8px 32px rgba(255, 130, 0, 0.3);
 
         .mascot {
             font-size: 64px;
@@ -239,6 +239,7 @@ function goToQuiz(quizId: string) {
         }
 
         .welcome-title {
+            font-family: 'Fredoka', sans-serif;
             font-size: 32px;
             font-weight: 800;
             margin: 0 0 8px;
@@ -340,20 +341,20 @@ function goToQuiz(quizId: string) {
             }
 
             &.create-btn {
-                background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-                box-shadow: 0 8px 24px rgba(78, 205, 196, 0.3);
+                background: linear-gradient(135deg, #9ACD32 0%, #8BB82A 100%);
+                box-shadow: 0 8px 24px rgba(154, 205, 50, 0.3);
 
                 &:hover {
-                    box-shadow: 0 12px 32px rgba(78, 205, 196, 0.4);
+                    box-shadow: 0 12px 32px rgba(154, 205, 50, 0.4);
                 }
             }
 
             &.play-btn {
-                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-                box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+                background: linear-gradient(135deg, #FF8200 0%, #f7b32b 100%);
+                box-shadow: 0 8px 24px rgba(255, 130, 0, 0.3);
 
                 &:hover {
-                    box-shadow: 0 12px 32px rgba(255, 107, 107, 0.4);
+                    box-shadow: 0 12px 32px rgba(255, 130, 0, 0.4);
                 }
             }
 
@@ -432,14 +433,15 @@ function goToQuiz(quizId: string) {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: #667eea;
+                    background: #FF8200;
                     color: white;
                     border-radius: 50%;
                     font-size: 14px;
                     font-weight: 700;
 
                     &.rank-1 {
-                        background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+                        background: linear-gradient(135deg, #FDEE00 0%, #f7b32b 100%);
+                        color: #333;
                     }
 
                     &.rank-2 {
@@ -447,7 +449,7 @@ function goToQuiz(quizId: string) {
                     }
 
                     &.rank-3 {
-                        background: linear-gradient(135deg, #cd7f32 0%, #b87333 100%);
+                        background: linear-gradient(135deg, #FF8200 0%, #f7b32b 100%);
                     }
                 }
 

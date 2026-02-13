@@ -59,7 +59,11 @@
                         />
                     </div>
                     <div class="col-12 col-sm-6">
-                        <q-toggle v-model="formData.is_public" label="모두에게 공개하기 🌍" color="primary" />
+                        <q-toggle
+                            v-model="formData.is_public"
+                            label="모두에게 공개하기 🌍"
+                            color="primary"
+                        />
                     </div>
                 </div>
             </q-card-section>
@@ -68,22 +72,19 @@
         <!-- 문제 목록 -->
         <div class="questions-section">
             <div class="section-header">
-                <h3 class="section-title">❓ 문제를 만들어봐요!</h3>
+                <h3 class="section-title">퀴즈를 만들어봐요!</h3>
                 <q-btn
                     @click="addQuestion"
-                    label="문제 추가하기 ➕"
+                    label="문제 추가하기"
                     icon="add"
                     color="secondary"
                     unelevated
                     class="add-btn"
+                    size="large"
                 />
             </div>
 
-            <div
-                v-for="(question, index) in formData.questions"
-                :key="index"
-                class="question-item"
-            >
+            <div v-for="(question, index) in formData.questions" :key="index" class="question-item">
                 <q-card class="question-card">
                     <q-card-section>
                         <div class="question-header">
@@ -219,7 +220,7 @@ const props = withDefaults(
     {
         isEdit: false,
         isLoading: false,
-    }
+    },
 );
 
 const emit = defineEmits<{
@@ -228,7 +229,7 @@ const emit = defineEmits<{
 }>();
 
 const formData = ref<QuizFormData>(
-    props.initialData ? { ...props.initialData } : { ...DEFAULT_QUIZ_FORM }
+    props.initialData ? { ...props.initialData } : { ...DEFAULT_QUIZ_FORM },
 );
 
 // 초기 데이터 변경 감지
@@ -239,7 +240,7 @@ watch(
             formData.value = { ...newData };
         }
     },
-    { deep: true }
+    { deep: true },
 );
 
 // 카테고리 옵션
