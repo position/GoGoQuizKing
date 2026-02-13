@@ -78,17 +78,20 @@ async function updateNotice() {
                     />
                 </dd>
             </dl>
-            <dl class="input-area">
+            <dl class="input-area editor-area">
                 <dt class="label">내용</dt>
                 <dd class="value">
-                    <q-input
+                    <q-editor
                         v-model="noticeForm.body"
-                        type="textarea"
-                        label="내용을 작성하세요!"
-                        input-style="height: 150px; resize: none"
-                        outlined
-                        dense
-                        hide-bottom-space
+                        placeholder="내용을 작성하세요!"
+                        min-height="5rem"
+                        :toolbar="[
+                            ['bold', 'italic', 'underline', 'strike'],
+                            ['quote', 'unordered', 'ordered'],
+                            ['link'],
+                            ['undo', 'redo'],
+                            ['viewsource']
+                        ]"
                     />
                 </dd>
             </dl>
@@ -119,6 +122,14 @@ async function updateNotice() {
 
         > .value {
             flex: 1 0;
+        }
+
+        &.editor-area {
+            align-items: flex-start;
+
+            > .label {
+                margin-top: 8px;
+            }
         }
     }
 }
