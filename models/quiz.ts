@@ -24,7 +24,7 @@ export const CATEGORIES: Record<QuizCategory, { label: string; icon: string; col
     social: { label: '사회', icon: '🌍', color: '#4ecdc4' },
     science: { label: '과학', icon: '🔬', color: '#95e77e' },
     english: { label: '영어', icon: '🔤', color: '#ffe66d' },
-    general: { label: '상식', icon: '💡', color: '#dfe6e9' },
+    general: { label: '상식', icon: '💡', color: '#878d8f' },
     art: { label: '예체능', icon: '🎨', color: '#fd79a8' },
     fun: { label: '재미', icon: '🎮', color: '#a29bfe' },
 };
