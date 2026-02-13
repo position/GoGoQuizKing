@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 퀴즈 자동화 - GoGoQuizKing Wireframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #000;
+        }
+        
+        .admin-card {
+            border: 3px solid #666;
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .card-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .generate-btn {
+            padding: 14px 28px;
+            border: 2px solid #333;
+            background: linear-gradient(to bottom, #4ecdc4, #44a08d);
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .history-section {
+            border: 3px solid #666;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: linear-gradient(to bottom, #999, #777);
+            color: #fff;
+            padding: 20px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 3px solid #333;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .history-table thead {
+            background: #f9f9f9;
+            border-bottom: 2px solid #ccc;
+        }
+        
+        .history-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            border-bottom: 2px solid #ccc;
+        }
+        
+        .history-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        
+        .history-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .quiz-link {
+            color: #1976d2;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border: 2px solid #333;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .badge.math {
+            background: #e3f2fd;
+            border-color: #1976d2;
+            color: #1976d2;
+        }
+        
+        .badge.science {
+            background: #e8f5e9;
+            border-color: #388e3c;
+            color: #388e3c;
+        }
+        
+        .badge.korean {
+            background: #f3e5f5;
+            border-color: #7b1fa2;
+            color: #7b1fa2;
+        }
+        
+        .badge.seedling {
+            background: #f1f8e9;
+            border-color: #689f38;
+            color: #689f38;
+        }
+        
+        .badge.leaf {
+            background: #e0f2f1;
+            border-color: #00897b;
+            color: #00897b;
+        }
+        
+        .badge.success {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+        
+        .badge.error {
+            background: #ffebee;
+            border-color: #f44336;
+            color: #f44336;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+        }
+        
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .page-btn.active {
+            background: #333;
+            color: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .history-table {
+                font-size: 12px;
+            }
+            
+            .history-table th,
+            .history-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>관리자 퀴즈 자동화 - GOGO! QuizKing 재구성안</h1>
+    
+    <!-- 자동 생성 제어 -->
+    <div class="admin-card">
+        <div class="card-title">🤖 퀴즈 자동 생성 관리</div>
+        <div class="card-desc">
+            매일 자정에 자동으로 새로운 퀴즈가 생성됩니다.<br>
+            수동으로 생성할 수도 있습니다.
+        </div>
+        <button class="generate-btn">
+            <span>➕</span>
+            지금 퀴즈 생성하기
+        </button>
+    </div>
+    
+    <!-- 생성 이력 -->
+    <div class="history-section">
+        <div class="section-header">
+            📊 생성 이력
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>퀴즈 제목</th>
+                        <th>카테고리</th>
+                        <th>난이도</th>
+                        <th>상태</th>
+                        <th>생성 일시</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="quiz-link">재미있는 한글 맞춤법 퀴즈</span></td>
+                        <td><span class="badge korean">📖 국어</span></td>
+                        <td><span class="badge seedling">🌱 새싹</span></td>
+                        <td><span class="badge success">성공</span></td>
+                        <td>2024-01-15 00:00:05</td>
+                    </tr>
+                    <tr>
+                        <td><span class="quiz-link">구구단 완전정복!</span></td>
+                        <td><span class="badge math">🔢 수학</span></td>
+                        <td><span class="badge leaf">🌿 풀잎</span></td>
+                        <td><span class="badge success">성공</span></td>
+                        <td>2024-01-14 00:00:03</td>
+                    </tr>
+                    <tr>
+                        <td><span class="quiz-link">동물 친구들 알아보기</span></td>
+                        <td><span class="badge science">🧪 과학</span></td>
+                        <td><span class="badge seedling">🌱 새싹</span></td>
+                        <td><span class="badge success">성공</span></td>
+                        <td>2024-01-13 00:00:07</td>
+                    </tr>
+                    <tr>
+                        <td><span style="color: #999;">(생성 실패)</span></td>
+                        <td><span class="badge math">🔢 수학</span></td>
+                        <td><span class="badge leaf">🌿 풀잎</span></td>
+                        <td><span class="badge error">실패</span></td>
+                        <td>2024-01-12 00:00:02</td>
+                    </tr>
+                    <tr>
+                        <td><span class="quiz-link">세계 수도 알아맞히기</span></td>
+                        <td><span class="badge korean">🌍 사회</span></td>
+                        <td><span class="badge leaf">🌿 풀잎</span></td>
+                        <td><span class="badge success">성공</span></td>
+                        <td>2024-01-11 00:00:04</td>
+                    </tr>
+                    <tr>
+                        <td><span class="quiz-link">영어 단어 퀴즈 Level 1</span></td>
+                        <td><span class="badge korean">🔤 영어</span></td>
+                        <td><span class="badge seedling">🌱 새싹</span></td>
+                        <td><span class="badge success">성공</span></td>
+                        <td>2024-01-10 00:00:06</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <div class="page-btn">‹</div>
+            <div class="page-btn active">1</div>
+            <div class="page-btn">2</div>
+            <div class="page-btn">3</div>
+            <div class="page-btn">4</div>
+            <div class="page-btn">5</div>
+            <div class="page-btn">6</div>
+            <div class="page-btn">7</div>
+            <div class="page-btn">›</div>
+        </div>
+    </div>
+    
+    <!-- 디자인 노트 -->
+    <div style="margin-top: 40px; padding: 20px; background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 8px;">
+        <h3 style="margin-bottom: 10px;">🎨 디자인 개선사항:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>관리자 대시보드:</strong> 깔끔한 카드 기반 레이아웃</li>
+            <li><strong>색상 코딩:</strong> 카테고리와 난이도별로 다른 색상 배지</li>
+            <li><strong>상태 표시:</strong> 성공/실패를 한눈에 구분 가능</li>
+            <li><strong>테이블 디자인:</strong> 호버 효과로 행 강조, 명확한 구분선</li>
+            <li><strong>퀴즈 링크:</strong> 생성된 퀴즈로 바로 이동 가능한 링크</li>
+        </ul>
+    </div>
+</body>
+</html>

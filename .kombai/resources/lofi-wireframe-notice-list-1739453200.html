@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항 목록 - GoGoQuizKing Wireframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #000;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+        }
+        
+        .badge-reuse {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #666;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .page-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #666, #999);
+        }
+        
+        .write-btn {
+            padding: 12px 24px;
+            border: 2px solid #333;
+            background: linear-gradient(to bottom, #ddd, #ccc);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .notice-table {
+            border: 3px solid #666;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .table-header {
+            background: linear-gradient(to bottom, #999, #777);
+            color: #fff;
+            display: grid;
+            grid-template-columns: 80px 200px 1fr 160px 100px;
+            padding: 15px 20px;
+            font-weight: bold;
+            border-bottom: 3px solid #333;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 80px 200px 1fr 160px 100px;
+            padding: 15px 20px;
+            border-bottom: 2px solid #ccc;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .table-row:hover {
+            background: #f5f5f5;
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .col-number {
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .col-title {
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .col-content {
+            color: #666;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .col-date {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .col-action {
+            text-align: center;
+        }
+        
+        .delete-btn {
+            padding: 6px 12px;
+            border: 2px solid #d32f2f;
+            background: linear-gradient(to bottom, #ff6b6b, #ee5a5a);
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .page-btn.active {
+            background: #333;
+            color: #fff;
+        }
+        
+        @media (max-width: 768px) {
+            .table-header,
+            .table-row {
+                grid-template-columns: 60px 1fr 120px;
+            }
+            
+            .col-content,
+            .col-action {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>공지사항 목록 - GOGO! QuizKing 재구성안</h1>
+    
+    <div class="page-header">
+        <div class="page-title">📢 공지사항</div>
+        <div class="write-btn">
+            <span>➕</span>
+            공지사항 쓰기
+        </div>
+    </div>
+    
+    <!-- REUSABLE: NoticeList component -->
+    <div class="notice-table">
+        <span class="badge badge-reuse" title="기존 컴포넌트 재사용: components/notice/NoticeList.vue">[REUSE] NoticeList</span>
+        
+        <div class="table-header">
+            <div>번호</div>
+            <div>제목</div>
+            <div>내용</div>
+            <div>작성일</div>
+            <div>관리</div>
+        </div>
+        
+        <div class="table-row">
+            <div class="col-number">5</div>
+            <div class="col-title">새로운 기능이 추가되었어요! 🎉</div>
+            <div class="col-content">이번 업데이트에서는 퀴즈 통계 기능이 추가되었습니다...</div>
+            <div class="col-date">2024-01-15<br>10:30 AM</div>
+            <div class="col-action">
+                <span class="delete-btn">삭제</span>
+            </div>
+        </div>
+        
+        <div class="table-row">
+            <div class="col-number">4</div>
+            <div class="col-title">겨울방학 이벤트 안내</div>
+            <div class="col-content">겨울방학을 맞아 특별 퀴즈 이벤트를 진행합니다...</div>
+            <div class="col-date">2024-01-10<br>02:15 PM</div>
+            <div class="col-action">
+                <span class="delete-btn">삭제</span>
+            </div>
+        </div>
+        
+        <div class="table-row">
+            <div class="col-number">3</div>
+            <div class="col-title">퀴즈 카테고리 추가 안내</div>
+            <div class="col-content">새로운 카테고리가 추가되었습니다. 영어, 미술, 음악...</div>
+            <div class="col-date">2024-01-05<br>09:00 AM</div>
+            <div class="col-action">
+                <span class="delete-btn">삭제</span>
+            </div>
+        </div>
+        
+        <div class="table-row">
+            <div class="col-number">2</div>
+            <div class="col-title">서비스 정기 점검 안내</div>
+            <div class="col-content">1월 20일 새벽 2시부터 4시까지 서비스 점검이 예정되어...</div>
+            <div class="col-date">2024-01-03<br>05:45 PM</div>
+            <div class="col-action">
+                <span class="delete-btn">삭제</span>
+            </div>
+        </div>
+        
+        <div class="table-row">
+            <div class="col-number">1</div>
+            <div class="col-title">GoGoQuizKing 서비스 오픈!</div>
+            <div class="col-content">안녕하세요! GoGoQuizKing 서비스가 정식으로 오픈했습니다...</div>
+            <div class="col-date">2024-01-01<br>12:00 PM</div>
+            <div class="col-action">
+                <span class="delete-btn">삭제</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 페이지네이션 -->
+    <div class="pagination">
+        <div class="page-btn">‹</div>
+        <div class="page-btn active">1</div>
+        <div class="page-btn">2</div>
+        <div class="page-btn">3</div>
+        <div class="page-btn">›</div>
+    </div>
+    
+    <!-- 디자인 노트 -->
+    <div style="margin-top: 40px; padding: 20px; background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 8px;">
+        <h3 style="margin-bottom: 10px;">🎨 디자인 개선사항:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>그라데이션 헤더:</strong> 테이블 헤더에 그라데이션 적용으로 고급스러움</li>
+            <li><strong>명확한 구분:</strong> 각 행을 hover 효과로 구분, 클릭 가능함 표시</li>
+            <li><strong>반응형 테이블:</strong> 모바일에서는 중요 정보만 표시</li>
+            <li><strong>시각적 계층:</strong> 번호(왼쪽 바) → 제목 → 내용 순서</li>
+            <li><strong>페이지네이션:</strong> 하단에 깔끔한 페이지 네비게이션</li>
+        </ul>
+    </div>
+</body>
+</html>

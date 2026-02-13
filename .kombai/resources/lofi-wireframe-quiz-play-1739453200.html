@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 플레이 - GoGoQuizKing Wireframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fff;
+            color: #000;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+        }
+        
+        .badge-reuse {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .player-header {
+            background: linear-gradient(to bottom, #999, #777);
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #333;
+        }
+        
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        
+        .progress-info {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .timer {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #fff;
+            font-weight: bold;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #ddd;
+            position: relative;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #666;
+            width: 40%;
+        }
+        
+        .question-container {
+            flex: 1;
+            padding: 30px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+        }
+        
+        .question-card {
+            background: #f5f5f5;
+            border: 3px solid #666;
+            border-radius: 16px;
+            padding: 30px;
+            min-height: 400px;
+        }
+        
+        .question-type {
+            display: inline-block;
+            padding: 6px 14px;
+            background: #ddd;
+            border: 2px solid #666;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .question-text {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border: 3px solid #666;
+            background: #fff;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        
+        .option-btn:hover {
+            background: #e9e9e9;
+            transform: translateX(4px);
+        }
+        
+        .option-number {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .option-text {
+            flex: 1;
+            font-size: 16px;
+        }
+        
+        .player-footer {
+            background: #f9f9f9;
+            border-top: 3px solid #ccc;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            padding: 12px 24px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary {
+            background: #333;
+            color: #fff;
+        }
+        
+        .hint-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fffbeb;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- REUSABLE: QuizPlayer component -->
+    <div style="position: relative; flex: 1; display: flex; flex-direction: column;">
+        <span class="badge badge-reuse" title="기존 컴포넌트 재사용: components/quiz/QuizPlayer.vue">[REUSE] QuizPlayer</span>
+        
+        <!-- 헤더 -->
+        <div class="player-header">
+            <div class="back-btn">←</div>
+            <div class="progress-info">Q.2/10</div>
+            <div class="timer">⏱ 02:15</div>
+        </div>
+        
+        <!-- 진행 바 -->
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <!-- 문제 영역 -->
+        <div class="question-container">
+            <div class="question-card">
+                <div class="question-type">📝 객관식</div>
+                
+                <div class="question-text">
+                    다음 중 바른 맞춤법은 무엇일까요?
+                </div>
+                
+                <div class="options-list">
+                    <div class="option-btn">
+                        <div class="option-number">1</div>
+                        <div class="option-text">어떻해</div>
+                    </div>
+                    <div class="option-btn">
+                        <div class="option-number">2</div>
+                        <div class="option-text">어떡해</div>
+                    </div>
+                    <div class="option-btn">
+                        <div class="option-number">3</div>
+                        <div class="option-text">어떻게</div>
+                    </div>
+                    <div class="option-btn">
+                        <div class="option-number">4</div>
+                        <div class="option-text">어떠해</div>
+                    </div>
+                </div>
+                
+                <div class="hint-box">
+                    <span style="font-size: 24px;">💡</span>
+                    <div>
+                        <strong>힌트:</strong> "어떻게 하지?"를 줄여서 쓴 말이에요!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 하단 네비게이션 -->
+        <div class="player-footer">
+            <div class="nav-btn">⬅️ 이전</div>
+            <div class="nav-btn primary">다음 ➡️</div>
+        </div>
+    </div>
+    
+    <!-- 디자인 노트 -->
+    <div style="padding: 20px; background: #fffbeb; border-top: 2px dashed #f59e0b;">
+        <h3 style="margin-bottom: 10px;">🎨 디자인 개선사항:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>전체 화면:</strong> 몰입감 있는 전체화면 퀴즈 경험</li>
+            <li><strong>진행 표시:</strong> 상단에 문제 번호와 타이머, 진행 바</li>
+            <li><strong>큰 선택지:</strong> 터치하기 쉬운 넓은 옵션 버튼</li>
+            <li><strong>힌트 박스:</strong> 필요시 도움을 줄 수 있는 힌트 영역</li>
+            <li><strong>명확한 네비게이션:</strong> 이전/다음 버튼으로 쉬운 이동</li>
+        </ul>
+    </div>
+</body>
+</html>

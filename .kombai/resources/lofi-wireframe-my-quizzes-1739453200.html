@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 퀴즈 관리 - GoGoQuizKing Wireframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #000;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+        }
+        
+        .badge-reuse {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .header-content h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .create-btn {
+            padding: 12px 24px;
+            border: 2px solid #333;
+            background: #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .quiz-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .quiz-card {
+            border: 3px solid #666;
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .card-info {
+            flex: 1;
+        }
+        
+        .card-badges {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .chip {
+            padding: 4px 12px;
+            border: 2px solid #333;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #fff;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .card-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+        
+        .card-meta {
+            font-size: 12px;
+            color: #999;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        .action-btn.edit {
+            border-color: #1976d2;
+            color: #1976d2;
+        }
+        
+        .action-btn.delete {
+            border-color: #d32f2f;
+            color: #d32f2f;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            border: 2px dashed #ccc;
+            border-radius: 12px;
+            background: #f9f9f9;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        
+        .empty-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .empty-desc {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 20px;
+        }
+        
+        .empty-btn {
+            padding: 12px 24px;
+            border: 2px solid #333;
+            background: #333;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>내 퀴즈 관리 - GOGO! QuizKing 재구성안</h1>
+    
+    <div class="page-header">
+        <div class="header-content">
+            <h2>📝 내 퀴즈 관리</h2>
+            <div class="header-subtitle">내가 만든 퀴즈를 관리하세요</div>
+        </div>
+        <div class="create-btn">새 퀴즈 만들기</div>
+    </div>
+    
+    <!-- REUSABLE: QuizCard components with actions -->
+    <div class="quiz-list" style="position: relative;">
+        <span class="badge badge-reuse" title="기존 컴포넌트 재사용: components/quiz/QuizCard.vue">[REUSE] QuizCard</span>
+        
+        <!-- 퀴즈 카드 1 -->
+        <div class="quiz-card">
+            <div class="card-top">
+                <div class="card-info">
+                    <div class="card-badges">
+                        <span class="chip">📖 국어</span>
+                        <span class="chip">🌱 새싹</span>
+                    </div>
+                    <div class="card-title">재미있는 한글 맞춤법 퀴즈</div>
+                    <div class="card-desc">맞춤법을 정확하게 배워봐요! 헷갈리는 맞춤법들을 재미있게 학습할 수 있어요.</div>
+                    <div class="card-meta">
+                        <span>▶ 156회 플레이</span>
+                        <span>📅 2024.01.15</span>
+                        <span>❓ 10개 문제</span>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <div class="action-btn edit" title="수정">✏️</div>
+                    <div class="action-btn delete" title="삭제">🗑️</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 퀴즈 카드 2 -->
+        <div class="quiz-card">
+            <div class="card-top">
+                <div class="card-info">
+                    <div class="card-badges">
+                        <span class="chip">🔢 수학</span>
+                        <span class="chip">🌿 풀잎</span>
+                    </div>
+                    <div class="card-title">곱셈 연습하기</div>
+                    <div class="card-desc">2단부터 5단까지 곱셈을 연습해봐요!</div>
+                    <div class="card-meta">
+                        <span>▶ 42회 플레이</span>
+                        <span>📅 2024.01.10</span>
+                        <span>❓ 15개 문제</span>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <div class="action-btn edit" title="수정">✏️</div>
+                    <div class="action-btn delete" title="삭제">🗑️</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 퀴즈 카드 3 -->
+        <div class="quiz-card">
+            <div class="card-top">
+                <div class="card-info">
+                    <div class="card-badges">
+                        <span class="chip">🧪 과학</span>
+                        <span class="chip">🌱 새싹</span>
+                    </div>
+                    <div class="card-title">동물 친구들 알아보기</div>
+                    <div class="card-desc">여러 가지 동물의 특징을 배워봐요~</div>
+                    <div class="card-meta">
+                        <span>▶ 28회 플레이</span>
+                        <span>📅 2024.01.08</span>
+                        <span>❓ 8개 문제</span>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <div class="action-btn edit" title="수정">✏️</div>
+                    <div class="action-btn delete" title="삭제">🗑️</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 빈 상태 (만든 퀴즈가 없을 때) -->
+    <div class="empty-state" style="display: none;">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">아직 만든 퀴즈가 없어요</div>
+        <div class="empty-desc">첫 번째 퀴즈를 만들어보세요!</div>
+        <button class="empty-btn">퀴즈 만들기</button>
+    </div>
+    
+    <!-- 디자인 노트 -->
+    <div style="margin-top: 40px; padding: 20px; background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 8px;">
+        <h3 style="margin-bottom: 10px;">🎨 디자인 개선사항:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>리스트 레이아웃:</strong> 세로 목록으로 더 많은 정보 표시</li>
+            <li><strong>관리 액션:</strong> 각 카드에 수정/삭제 버튼 배치</li>
+            <li><strong>상세 통계:</strong> 플레이 횟수, 작성일, 문제 수 표시</li>
+            <li><strong>빈 상태:</strong> 퀴즈가 없을 때 격려 메시지와 생성 버튼</li>
+            <li><strong>명확한 구분:</strong> 각 퀴즈를 카드로 감싸 시각적으로 구분</li>
+        </ul>
+    </div>
+</body>
+</html>

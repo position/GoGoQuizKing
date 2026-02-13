@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>공지사항 상세 - GoGoQuizKing Wireframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #000;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+        }
+        
+        .badge-reuse {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .notice-card {
+            border: 3px solid #666;
+            background: #f5f5f5;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .notice-header {
+            padding: 25px;
+            border-bottom: 2px solid #ccc;
+            background: linear-gradient(to bottom, #f9f9f9, #f0f0f0);
+        }
+        
+        .notice-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .notice-meta {
+            font-size: 13px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notice-body {
+            padding: 30px;
+            background: #fff;
+            min-height: 300px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .notice-actions {
+            padding: 20px 25px;
+            border-top: 2px solid #ccc;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 10px 20px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .action-btn.primary {
+            background: linear-gradient(to bottom, #ddd, #ccc);
+        }
+        
+        .action-btn.secondary {
+            background: linear-gradient(to bottom, #4ecdc4, #44a08d);
+            color: #fff;
+            border-color: #44a08d;
+        }
+        
+        .comment-section {
+            border: 3px solid #666;
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ccc;
+        }
+        
+        .comment-input-area {
+            margin-bottom: 20px;
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 8px;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        
+        .comment-submit {
+            padding: 10px 20px;
+            border: 2px solid #333;
+            background: #333;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .comment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .comment-item {
+            padding: 15px;
+            border: 2px solid #ccc;
+            background: #fff;
+            border-radius: 8px;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .comment-author {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .comment-date {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>공지사항 상세 - GOGO! QuizKing 재구성안</h1>
+    
+    <!-- REUSABLE: NoticeDetail component -->
+    <div class="notice-card">
+        <span class="badge badge-reuse" title="기존 컴포넌트 재사용: components/notice/NoticeDetail.vue">[REUSE] NoticeDetail</span>
+        
+        <div class="notice-header">
+            <div class="notice-title">새로운 기능이 추가되었어요! 🎉</div>
+            <div class="notice-meta">2024-01-15 10:30 AM</div>
+        </div>
+        
+        <div class="notice-body">
+            <p>안녕하세요, GoGoQuizKing 여러분!</p>
+            <br>
+            <p>이번 업데이트에서는 여러분이 기다리던 새로운 기능들이 추가되었습니다.</p>
+            <br>
+            <p><strong>📊 새로운 기능:</strong></p>
+            <ul style="margin-left: 20px; margin-top: 10px; line-height: 2;">
+                <li>퀴즈 통계 기능 - 내가 푼 퀴즈의 정답률을 한눈에!</li>
+                <li>친구와 함께 풀기 - 친구를 초대해서 같이 도전!</li>
+                <li>배지 시스템 - 퀴즈를 풀면서 뱃지를 모아보세요!</li>
+            </ul>
+            <br>
+            <p>앞으로도 더 재미있고 유익한 기능들로 찾아뵙겠습니다!</p>
+            <br>
+            <p>감사합니다. 😊</p>
+        </div>
+        
+        <div class="notice-actions">
+            <div>
+                <button class="action-btn primary">공지사항 쓰기</button>
+                <button class="action-btn secondary">수정</button>
+            </div>
+            <button class="action-btn">리스트</button>
+        </div>
+    </div>
+    
+    <!-- REUSABLE: NoticeCommentList component -->
+    <div class="comment-section">
+        <span class="badge badge-reuse" title="기존 컴포넌트 재사용: components/notice/NoticeCommentList.vue">[REUSE] NoticeCommentList</span>
+        
+        <div class="section-title">💬 댓글 (3)</div>
+        
+        <div class="comment-input-area">
+            <textarea class="comment-input" placeholder="댓글을 남겨주세요~"></textarea>
+            <button class="comment-submit">댓글 작성</button>
+        </div>
+        
+        <div class="comment-list">
+            <div class="comment-item">
+                <div class="comment-header">
+                    <div class="comment-author">👤 퀴즈왕123</div>
+                    <div class="comment-date">2024-01-15 11:20</div>
+                </div>
+                <div class="comment-text">
+                    와~ 새로운 기능 너무 기대돼요! 친구랑 같이 풀 수 있다니 좋아요! 🎉
+                </div>
+            </div>
+            
+            <div class="comment-item">
+                <div class="comment-header">
+                    <div class="comment-author">👤 공부좋아</div>
+                    <div class="comment-date">2024-01-15 12:05</div>
+                </div>
+                <div class="comment-text">
+                    통계 기능 정말 유용할 것 같아요. 제 실력이 얼마나 늘었는지 확인할 수 있겠네요!
+                </div>
+            </div>
+            
+            <div class="comment-item">
+                <div class="comment-header">
+                    <div class="comment-author">👤 호기심대장</div>
+                    <div class="comment-date">2024-01-15 14:30</div>
+                </div>
+                <div class="comment-text">
+                    배지 시스템도 재미있을 것 같아요! 빨리 써보고 싶어요~ 😊
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 디자인 노트 -->
+    <div style="margin-top: 40px; padding: 20px; background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 8px;">
+        <h3 style="margin-bottom: 10px;">🎨 디자인 개선사항:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>카드 레이아웃:</strong> 공지사항을 카드로 감싸 집중도 향상</li>
+            <li><strong>명확한 구조:</strong> 헤더 → 본문 → 액션 버튼 순서</li>
+            <li><strong>댓글 섹션:</strong> 댓글 입력 및 목록을 별도 카드로 분리</li>
+            <li><strong>그라데이션:</strong> 헤더와 푸터에 은은한 그라데이션 적용</li>
+            <li><strong>가독성:</strong> 넉넉한 여백과 큰 폰트로 읽기 편한 본문</li>
+        </ul>
+    </div>
+</body>
+</html>

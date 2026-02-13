@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀴즈 만들기 - GoGoQuizKing Wireframe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #000;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+            font-family: Arial, sans-serif;
+        }
+        
+        .badge-reuse {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .form-section {
+            border: 3px solid #666;
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .form-field {
+            margin-bottom: 20px;
+        }
+        
+        .field-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .field-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+        
+        .field-input.textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .question-card {
+            border: 3px solid #666;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .remove-btn {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #d32f2f;
+            background: #fff;
+            color: #d32f2f;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+        
+        .type-toggle {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #666;
+            background: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .type-btn.active {
+            background: #333;
+            color: #fff;
+        }
+        
+        .options-list {
+            margin-top: 15px;
+        }
+        
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .radio-btn {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #666;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .submit-section {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: 2px solid #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .btn-outline {
+            background: #fff;
+        }
+        
+        .btn-primary {
+            background: #333;
+            color: #fff;
+        }
+        
+        .add-question-btn {
+            width: 100%;
+            padding: 16px;
+            border: 2px dashed #666;
+            background: #f9f9f9;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>퀴즈 만들기 - GOGO! QuizKing 재구성안</h1>
+    
+    <div class="page-header">
+        <div class="page-title">✏️ 새 퀴즈 만들기</div>
+        <div class="page-subtitle">친구들과 함께 풀 재미있는 퀴즈를 만들어보세요!</div>
+    </div>
+    
+    <!-- REUSABLE: QuizForm component -->
+    <div style="position: relative;">
+        <span class="badge badge-reuse" title="기존 컴포넌트 재사용: components/quiz/QuizForm.vue">[REUSE] QuizForm</span>
+        
+        <!-- 기본 정보 -->
+        <div class="form-section">
+            <div class="section-title">📝 퀴즈 기본 정보를 적어주세요!</div>
+            
+            <div class="form-field">
+                <label class="field-label">퀴즈 제목 ✨</label>
+                <input type="text" class="field-input" placeholder="예: 재미있는 한글 맞춤법 퀴즈">
+            </div>
+            
+            <div class="form-field">
+                <label class="field-label">퀴즈 설명 (선택사항)</label>
+                <textarea class="field-input textarea" placeholder="퀴즈에 대해 간단히 소개해주세요~"></textarea>
+            </div>
+            
+            <div class="row">
+                <div class="form-field">
+                    <label class="field-label">카테고리</label>
+                    <select class="field-input">
+                        <option>📖 국어</option>
+                        <option>🔢 수학</option>
+                        <option>🧪 과학</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">난이도</label>
+                    <select class="field-input">
+                        <option>🌱 새싹 (1~2학년)</option>
+                        <option>🌿 풀잎 (3~4학년)</option>
+                        <option>🌳 나무 (5~6학년)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="form-field">
+                    <label class="field-label">추천 학년</label>
+                    <select class="field-input">
+                        <option>1학년</option>
+                        <option>2학년</option>
+                        <option>3학년</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="field-label">공개 설정</label>
+                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px;">
+                        <input type="checkbox">
+                        모두에게 공개하기 🌍
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 문제 섹션 -->
+        <div class="section-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <span>❓ 문제를 만들어봐요!</span>
+        </div>
+        
+        <!-- 문제 1 -->
+        <div class="question-card">
+            <div class="question-header">
+                <span class="question-number">문제 1</span>
+                <button class="remove-btn">×</button>
+            </div>
+            
+            <div class="type-toggle">
+                <div class="type-btn active">📝 객관식</div>
+                <div class="type-btn">⭕ OX</div>
+                <div class="type-btn">✏️ 단답형</div>
+            </div>
+            
+            <div class="form-field">
+                <label class="field-label">문제 내용</label>
+                <textarea class="field-input textarea" style="min-height: 60px;" placeholder="문제를 적어주세요~ 🤔"></textarea>
+            </div>
+            
+            <div class="options-list">
+                <p style="font-weight: bold; margin-bottom: 10px; font-size: 14px;">보기를 적고 정답을 선택해주세요! ✅</p>
+                <div class="option-row">
+                    <div class="radio-btn"></div>
+                    <input type="text" class="field-input" placeholder="보기 1">
+                </div>
+                <div class="option-row">
+                    <div class="radio-btn"></div>
+                    <input type="text" class="field-input" placeholder="보기 2">
+                </div>
+                <div class="option-row">
+                    <div class="radio-btn"></div>
+                    <input type="text" class="field-input" placeholder="보기 3">
+                </div>
+                <div class="option-row">
+                    <div class="radio-btn"></div>
+                    <input type="text" class="field-input" placeholder="보기 4">
+                </div>
+            </div>
+            
+            <div class="form-field" style="margin-top: 15px;">
+                <label class="field-label">💡 힌트 (선택사항)</label>
+                <input type="text" class="field-input" placeholder="어려우면 도움이 될 힌트를 적어주세요~">
+            </div>
+        </div>
+        
+        <!-- 문제 추가 버튼 -->
+        <button class="add-question-btn">문제 추가하기 ➕</button>
+        
+        <!-- 제출 버튼 -->
+        <div class="submit-section">
+            <button class="btn btn-outline">취소</button>
+            <button class="btn btn-primary">퀴즈 생성 완료! 🎉</button>
+        </div>
+    </div>
+    
+    <!-- 디자인 노트 -->
+    <div style="margin-top: 40px; padding: 20px; background: #fffbeb; border: 2px dashed #f59e0b; border-radius: 8px;">
+        <h3 style="margin-bottom: 10px;">🎨 디자인 개선사항:</h3>
+        <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>단계별 섹션:</strong> 기본 정보 → 문제 생성으로 명확한 단계</li>
+            <li><strong>시각적 구분:</strong> 각 문제를 카드로 감싸 명확하게 구분</li>
+            <li><strong>문제 유형 토글:</strong> 객관식/OX/단답형을 쉽게 전환</li>
+            <li><strong>인라인 검증:</strong> 필수 필드 표시와 즉시 피드백</li>
+            <li><strong>직관적 레이아웃:</strong> 2열 그리드로 효율적인 공간 활용</li>
+        </ul>
+    </div>
+</body>
+</html>
