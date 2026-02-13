@@ -18,19 +18,34 @@ import Header from '@/components/layout/Header.vue';
 import Footer from '@/components/layout/Footer.vue';
 import Navbar from '@/components/layout/Navbar.vue';
 
+const route = useRoute();
+const runtimeConfig = useRuntimeConfig();
+const siteUrl = runtimeConfig.public.siteUrl || 'https://gogoquizking.com';
+
+// Canonical URL 설정
+useHead({
+    link: [
+        {
+            rel: 'canonical',
+            href: computed(() => `${siteUrl}${route.path}`),
+        },
+    ],
+});
+
 // SEO 설정
 useSeoMeta({
-    title: 'GoGoQuizKing - 신나는 퀴즈 세상',
+    title: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
     description:
-        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요. 다양한 카테고리의 퀴즈가 준비되어 있습니다.',
-    ogTitle: 'GoGoQuizKing - 신나는 퀴즈 세상',
+        '고고퀴즈킹에서 친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈, 넌센스 퀴즈 등 다양한 퀴즈를 무료로 즐기세요. 퀴즈 만들기, 퀴즈 풀기, 퀴즈 게임 모두 가능!',
+    ogTitle: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
     ogDescription:
-        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
+        '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
+    ogUrl: computed(() => `${siteUrl}${route.path}`),
     ogType: 'website',
     twitterCard: 'summary_large_image',
-    twitterTitle: 'GoGoQuizKing - 신나는 퀴즈 세상',
+    twitterTitle: '고고퀴즈킹 | 실시간 퀴즈 게임',
     twitterDescription:
-        '반짝반짝 퀴즈 세상으로 함께 떠나요! 친구들과 함께 재미있는 퀴즈를 만들고 풀어보세요.',
+        '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
 });
 </script>
 
