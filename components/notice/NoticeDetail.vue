@@ -118,14 +118,17 @@ async function editNotice() {
         <q-separator inset />
         <q-card-section>
             <template v-if="props.isEdit">
-                <q-input
+                <q-editor
                     v-model="noticeForm.body"
-                    type="textarea"
-                    label="내용을 작성하세요!"
-                    input-style="height: 150px; resize: none"
-                    outlined
-                    dense
-                    hide-bottom-space
+                    placeholder="내용을 작성하세요!"
+                    min-height="10rem"
+                    :toolbar="[
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['quote', 'unordered', 'ordered'],
+                        ['link'],
+                        ['undo', 'redo'],
+                        ['viewsource'],
+                    ]"
                 />
             </template>
             <template v-else>
@@ -140,6 +143,7 @@ async function editNotice() {
                         label="공지사항 수정"
                         color="primary"
                         class="button-create"
+                        size="lg"
                     />
                 </template>
                 <template v-else>
@@ -148,16 +152,26 @@ async function editNotice() {
                         label="공지사항 쓰기"
                         color="primary"
                         class="button-create"
+                        size="lg"
                     />
                     <q-btn
                         :to="`../edit-notice/${noticeId}`"
                         label="수정"
                         color="secondary"
                         class="button-create"
+                        size="lg"
+                        style="min-width: 100px"
                     />
                 </template>
             </template>
-            <q-btn to="../notice-list" label="리스트" color="secondary" class="button-create" />
+            <q-btn
+                to="../notice-list"
+                label="리스트"
+                color="secondary"
+                class="button-create"
+                size="lg"
+                style="min-width: 100px"
+            />
         </q-card-actions>
     </q-card>
     <q-card flat bordered class="q-pa-md q-mt-md">

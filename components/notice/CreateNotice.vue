@@ -84,13 +84,13 @@ async function updateNotice() {
                     <q-editor
                         v-model="noticeForm.body"
                         placeholder="내용을 작성하세요!"
-                        min-height="5rem"
+                        min-height="10rem"
                         :toolbar="[
                             ['bold', 'italic', 'underline', 'strike'],
                             ['quote', 'unordered', 'ordered'],
                             ['link'],
                             ['undo', 'redo'],
-                            ['viewsource']
+                            ['viewsource'],
                         ]"
                     />
                 </dd>
@@ -98,12 +98,19 @@ async function updateNotice() {
         </q-card-section>
 
         <q-card-actions align="right" class="q-pa-md">
-            <q-btn to="./notice-list" label="취소" color="gray" size="lg" />
+            <q-btn
+                to="./notice-list"
+                label="취소"
+                color="grey"
+                size="lg"
+                style="min-width: 150px"
+            />
             <q-btn
                 @click="updateNotice"
                 :label="isEdit ? '수정완료' : '작성완료'"
                 color="primary"
                 size="lg"
+                style="min-width: 150px"
             />
         </q-card-actions>
     </q-card>

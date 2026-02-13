@@ -111,14 +111,14 @@ function goToNoticeDetail(id: number) {
                             v-if="authStore.isAdmin"
                             @click.stop="confirmDeleteNotice(notice.row.id)"
                             label="삭제"
-                            size="sm"
+                            size="md"
                             color="negative"
                             unelevated
                             dense
                             rounded
-                        >
-                            <q-icon name="delete" left />
-                        </q-btn>
+                            icon="delete"
+                            style="width: 80px"
+                        />
                     </td>
                 </tr>
             </template>
