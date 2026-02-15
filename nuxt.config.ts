@@ -63,6 +63,12 @@ export default defineNuxtConfig({
                 {
                     rel: 'stylesheet',
                     href: 'https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css',
+                    media: 'print',
+                    onload: "this.media='all'",
+                },
+                {
+                    rel: 'preconnect',
+                    href: 'https://hangeul.pstatic.net',
                 },
             ],
         },
@@ -125,19 +131,48 @@ export default defineNuxtConfig({
     sourcemap: false,
     nitro: {
         minify: true,
+        compressPublicAssets: true,
         esbuild: {
             options: {
                 target: 'esnext',
             },
         },
+        prerender: {
+            crawlLinks: true,
+        },
+    },
+
+    vite: {
+        build: {
+            cssCodeSplit: true,
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        'quasar': ['quasar'],
+                        'supabase': ['@supabase/supabase-js'],
+                        'pinia': ['pinia'],
+                    },
+                },
+            },
+        },
+        css: {
+            devSourcemap: false,
+        },
     },
 
     vitalizer: {
         disableStylesheets: 'entry',
+        disablePrefetchLinks: true,
+    },
+
+    experimental: {
+        payloadExtraction: true,
+        renderJsonPayloads: true,
+        componentIslands: true,
     },
 
     build: {
-        analyze: true,
+        analyze: false,
     },
 
     compatibilityDate: '2024-11-01',

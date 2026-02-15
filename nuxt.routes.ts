@@ -21,4 +21,27 @@ export const routeRules: NitroConfig['routeRules'] = {
         ssr: true,
         prerender: false,
     },
+
+    /*
+        API Cache Rules
+     */
+    '/api/quiz/questions': {
+        cache: {
+            maxAge: 60, // 1분 캐시
+        },
+    },
+
+    /*
+        Static Assets Cache
+     */
+    '/_nuxt/**': {
+        headers: {
+            'cache-control': 'public, max-age=31536000, immutable',
+        },
+    },
+    '/favicon.ico': {
+        headers: {
+            'cache-control': 'public, max-age=86400',
+        },
+    },
 };

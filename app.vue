@@ -14,9 +14,10 @@
 </template>
 
 <script setup lang="ts">
-import Header from '@/components/layout/Header.vue';
-import Footer from '@/components/layout/Footer.vue';
-import Navbar from '@/components/layout/Navbar.vue';
+// Lazy load 레이아웃 컴포넌트들
+const Header = defineAsyncComponent(() => import('@/components/layout/Header.vue'));
+const Footer = defineAsyncComponent(() => import('@/components/layout/Footer.vue'));
+const Navbar = defineAsyncComponent(() => import('@/components/layout/Navbar.vue'));
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();

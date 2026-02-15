@@ -180,8 +180,13 @@ export const useQuizStore = defineStore('quiz', {
             this.pagination.hasMore = true;
         },
 
-        // 퀴즈 목록 불러오기
-        async fetchQuizzes() {
+        // 퀴즈 목록 불러오기 (캐시 활용)
+        async fetchQuizzes(forceRefresh = false) {
+            // 이미 데이터가 있고 강제 새로고침이 아니면 스킵
+            if (!forceRefresh && this.quizzes.length > 0) {
+                return;
+            }
+
             this.isLoading = true;
             this.error = null;
 
@@ -191,7 +196,13 @@ export const useQuizStore = defineStore('quiz', {
                     .from('quizzes')
                     .select(
                         `
-                        *,
+                        id,
+                        title,
+                        description,
+                        category,
+                        difficulty,
+                        play_count,
+                        created_at,
                         profiles:created_by (
                             full_name,
                             avatar_url
@@ -199,7 +210,8 @@ export const useQuizStore = defineStore('quiz', {
                     `
                     )
                     .eq('is_public', true)
-                    .order('created_at', { ascending: false });
+                    .order('created_at', { ascending: false })
+                    .limit(50); // 초기 로드 제한
 
                 if (error) throw error;
                 this.quizzes = (data as QuizWithAuthor[]) || [];

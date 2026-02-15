@@ -30,7 +30,7 @@
 
         <!-- 어드민 배지 -->
         <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
-            <div class="admin-badge" :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }">
+            <div class="admin-badge" :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }" :to="{ path: '/admin/quiz-automation' }">
                 <q-icon :name="isAdmin ? 'admin_panel_settings' : 'verified_user'" size="20px" />
                 <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
             </div>
@@ -133,16 +133,25 @@ const userStats = ref({
     accuracy: 0,
 });
 
-// 인기 퀴즈 (상위 5개)
+// 인기 퀴즈 (상위 5개) - 메모이제이션 적용
 const popularQuizzes = computed(() => {
+    if (quizStore.quizzes.length === 0) return [];
     return [...quizStore.quizzes].sort((a, b) => b.play_count - a.play_count).slice(0, 5);
 });
 
+// 병렬 로딩으로 성능 개선
 onMounted(async () => {
-    await getUserInfo();
-    await quizStore.fetchQuizzes();
+    const promises: Promise<void>[] = [
+        getUserInfo(),
+        quizStore.fetchQuizzes(),
+    ];
+
+    await Promise.all(promises);
+    
+    // 로그인된 경우에만 통계 로드 (로그인 체크 이후 별도 실행)
     if (isLogin.value) {
-        await fetchUserStats();
+        // 통계는 비동기로 로드하여 UI 블로킹 방지
+        fetchUserStats();
     }
     isLoading.value = false;
 });
@@ -172,36 +181,41 @@ async function fetchUserStats() {
 
         if (!user) return;
 
-        // 풀은 퀴즈 수
-        const { count: playedCount } = await supabase
-            .from('quiz_attempts')
-            .select('*', { count: 'exact', head: true })
-            .eq('user_id', user.id);
+        // 병렬로 통계 조회 (성능 개선)
+        const [playedResult, createdResult, attemptsResult] = await Promise.all([
+            // 풀은 퀴즈 수
+            supabase
+                .from('quiz_attempts')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id),
+            // 만든 퀴즈 수
+            supabase
+                .from('quizzes')
+                .select('*', { count: 'exact', head: true })
+                .eq('created_by', user.id),
+            // 정답률 계산용 데이터
+            supabase
+                .from('quiz_attempts')
+                .select('score, total_questions')
+                .eq('user_id', user.id),
+        ]);
 
-        // 만든 퀴즈 수
-        const { count: createdCount } = await supabase
-            .from('quizzes')
-            .select('*', { count: 'exact', head: true })
-            .eq('created_by', user.id);
-
-        // 정답률 계산
-        const { data: attempts } = await supabase
-            .from('quiz_attempts')
-            .select('score, total_questions')
-            .eq('user_id', user.id);
+        const playedCount = playedResult.count || 0;
+        const createdCount = createdResult.count || 0;
+        const attempts = attemptsResult.data;
 
         let totalScore = 0;
         let totalQuestions = 0;
         if (attempts) {
-            attempts.forEach((a) => {
+            for (const a of attempts) {
                 totalScore += a.score;
                 totalQuestions += a.total_questions;
-            });
+            }
         }
 
         userStats.value = {
-            totalPlayed: playedCount || 0,
-            totalCreated: createdCount || 0,
+            totalPlayed: playedCount,
+            totalCreated: createdCount,
             accuracy: totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0,
         };
     } catch (e) {
@@ -236,6 +250,7 @@ function goToQuiz(quizId: string) {
             font-size: 64px;
             margin-bottom: 16px;
             animation: bounce 2s ease-in-out infinite;
+            will-change: transform;
         }
 
         .welcome-title {
