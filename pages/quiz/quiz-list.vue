@@ -109,6 +109,7 @@
                 icon="add"
                 color="primary"
                 unelevated
+                size="large"
             />
         </div>
 

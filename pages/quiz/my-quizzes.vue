@@ -13,6 +13,7 @@
                 color="primary"
                 unelevated
                 class="create-btn"
+                size="large"
             />
         </div>
 
