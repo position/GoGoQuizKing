@@ -10,9 +10,10 @@
                 :to="{ path: '/quiz/quiz-create' }"
                 label="퀴즈 만들기 ✨"
                 icon="add"
-                color="primary"
+                color="secondary"
                 unelevated
                 class="create-btn"
+                size="large"
             />
         </div>
 
@@ -112,12 +113,7 @@
         </div>
 
         <!-- 퀴즈 그리드 (무한 스크롤) -->
-        <q-infinite-scroll
-            v-else
-            ref="infiniteScrollRef"
-            :offset="300"
-            @load="onLoadMore"
-        >
+        <q-infinite-scroll v-else ref="infiniteScrollRef" :offset="300" @load="onLoadMore">
             <div class="quiz-grid">
                 <QuizCard
                     v-for="quiz in filteredQuizzes"
@@ -136,7 +132,10 @@
         </q-infinite-scroll>
 
         <!-- 더 이상 데이터 없음 표시 -->
-        <div v-if="!quizStore.pagination.hasMore && filteredQuizzes.length > 0" class="no-more-data">
+        <div
+            v-if="!quizStore.pagination.hasMore && filteredQuizzes.length > 0"
+            class="no-more-data"
+        >
             <p>🎉 모든 퀴즈를 불러왔어요!</p>
         </div>
     </div>
@@ -157,9 +156,11 @@ definePageMeta({
 // SEO 설정
 useSeoMeta({
     title: '퀴즈 탐험 - GoGoQuizKing',
-    description: '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
+    description:
+        '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
     ogTitle: '퀴즈 탐험 - GoGoQuizKing',
-    ogDescription: '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
+    ogDescription:
+        '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
 });
 
 const router = useRouter();
@@ -245,7 +246,7 @@ const filteredQuizzes = computed(() => {
         result = result.filter(
             (q) =>
                 q.title.toLowerCase().includes(query) ||
-                q.description?.toLowerCase().includes(query)
+                q.description?.toLowerCase().includes(query),
         );
     }
 

@@ -283,6 +283,15 @@ h6 {
         background-color: var(--bg-primary);
     }
 
+    .q-textarea {
+        .q-field__control {
+            background-color: var(--bg-input);
+        }
+        .q-field__label {
+            color: var(--text-secondary) !important;
+        }
+    }
+
     .q-header,
     .q-footer {
         background-color: var(--bg-header) !important;
