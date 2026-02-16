@@ -147,7 +147,7 @@ onMounted(async () => {
     ];
 
     await Promise.all(promises);
-    
+
     // 로그인된 경우에만 통계 로드 (로그인 체크 이후 별도 실행)
     if (isLogin.value) {
         // 통계는 비동기로 로드하여 UI 블로킹 방지
@@ -240,7 +240,7 @@ function goToQuiz(quizId: string) {
     .welcome-section {
         text-align: center;
         padding: 40px 20px;
-        background: linear-gradient(135deg, #FF8200 0%, #f7b32b 100%);
+        background: linear-gradient(135deg, #ff8200 0%, #f7b32b 100%);
         border-radius: 24px;
         margin-bottom: 24px;
         color: white;
@@ -255,14 +255,15 @@ function goToQuiz(quizId: string) {
 
         .welcome-title {
             font-family: 'Fredoka', sans-serif;
-            font-size: 32px;
+            font-size: 42px;
             font-weight: 800;
             margin: 0 0 8px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .welcome-subtitle {
-            font-size: 16px;
+            font-size: 18px;
+            font-weight: 800;
             opacity: 0.9;
             margin: 0;
         }
@@ -356,7 +357,7 @@ function goToQuiz(quizId: string) {
             }
 
             &.create-btn {
-                background: linear-gradient(135deg, #9ACD32 0%, #8BB82A 100%);
+                background: linear-gradient(135deg, #9acd32 0%, #8bb82a 100%);
                 box-shadow: 0 8px 24px rgba(154, 205, 50, 0.3);
 
                 &:hover {
@@ -365,7 +366,7 @@ function goToQuiz(quizId: string) {
             }
 
             &.play-btn {
-                background: linear-gradient(135deg, #FF8200 0%, #f7b32b 100%);
+                background: linear-gradient(135deg, #ff8200 0%, #f7b32b 100%);
                 box-shadow: 0 8px 24px rgba(255, 130, 0, 0.3);
 
                 &:hover {
@@ -448,14 +449,14 @@ function goToQuiz(quizId: string) {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background: #FF8200;
+                    background: #ff8200;
                     color: white;
                     border-radius: 50%;
                     font-size: 14px;
                     font-weight: 700;
 
                     &.rank-1 {
-                        background: linear-gradient(135deg, #FDEE00 0%, #f7b32b 100%);
+                        background: linear-gradient(135deg, #fdee00 0%, #f7b32b 100%);
                         color: #333;
                     }
 
@@ -464,7 +465,7 @@ function goToQuiz(quizId: string) {
                     }
 
                     &.rank-3 {
-                        background: linear-gradient(135deg, #FF8200 0%, #f7b32b 100%);
+                        background: linear-gradient(135deg, #ff8200 0%, #f7b32b 100%);
                     }
                 }
 

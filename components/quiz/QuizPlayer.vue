@@ -4,9 +4,7 @@
         <div class="player-header">
             <q-btn @click="$emit('exit')" icon="arrow_back" flat round color="white" />
             <div class="progress-info">
-                <span class="question-count"
-                    >Q.{{ currentIndex + 1 }}/{{ questions.length }}</span
-                >
+                <span class="question-count">Q.{{ currentIndex + 1 }}/{{ questions.length }}</span>
             </div>
             <div class="timer">
                 <q-icon name="schedule" size="20px" />
@@ -116,6 +114,7 @@
                 icon="arrow_back"
                 flat
                 color="grey"
+                size="large"
             />
             <div v-else></div>
 
@@ -128,6 +127,7 @@
                 unelevated
                 :disable="!selectedAnswer && !shortAnswer"
                 class="next-btn"
+                size="large"
             />
             <q-btn
                 v-else
@@ -138,6 +138,7 @@
                 unelevated
                 :disable="!selectedAnswer && !shortAnswer"
                 class="complete-btn"
+                size="large"
             />
         </div>
     </div>
@@ -216,7 +217,7 @@ watch(
         }
         showHint.value = false;
     },
-    { immediate: true }
+    { immediate: true },
 );
 
 function selectAnswer(answer: string) {
@@ -249,7 +250,7 @@ function handleComplete() {
 
 <style scoped lang="scss">
 .quiz-player {
-    min-height: 100vh;
+    min-height: calc(100vh - 100px);
     display: flex;
     flex-direction: column;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -475,9 +476,9 @@ function handleComplete() {
 
         .next-btn,
         .complete-btn {
-            min-width: 140px;
+            min-width: 200px;
             border-radius: 12px;
-            font-weight: 600;
+            font-weight: 900;
         }
     }
 }

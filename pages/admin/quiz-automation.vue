@@ -449,7 +449,7 @@ const getCategoryLabel = (category: string) => {
 const getDifficultyColor = (difficulty: string) => {
     const colors: Record<string, string> = {
         seedling: 'light-green',
-        sprout: 'green',
+        leaf: 'green',
         tree: 'orange',
         king: 'red',
     };
@@ -459,7 +459,7 @@ const getDifficultyColor = (difficulty: string) => {
 const getDifficultyLabel = (difficulty: string) => {
     const labels: Record<string, string> = {
         seedling: '🌱 새싹',
-        sprout: '🌿 새순',
+        leaf: '🌿 풀잎',
         tree: '🌳 나무',
         king: '👑 킹왕짱',
     };

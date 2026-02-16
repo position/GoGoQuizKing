@@ -112,7 +112,7 @@ const quizTemplates: QuizTemplate[] = [
         description: '올바른 맞춤법을 배워요!',
         category: 'korean',
         grade_level: 3,
-        difficulty: 'sprout',
+        difficulty: 'leaf',
         questions: [
             {
                 question_type: 'multiple',
@@ -156,7 +156,7 @@ const quizTemplates: QuizTemplate[] = [
         description: '세계 여러 나라에 대해 알아봐요!',
         category: 'social',
         grade_level: 3,
-        difficulty: 'sprout',
+        difficulty: 'leaf',
         questions: [
             {
                 question_type: 'multiple',
@@ -200,7 +200,7 @@ const quizTemplates: QuizTemplate[] = [
         description: '기초 영어 단어를 배워요!',
         category: 'english',
         grade_level: 4,
-        difficulty: 'sprout',
+        difficulty: 'leaf',
         questions: [
             {
                 question_type: 'multiple',
