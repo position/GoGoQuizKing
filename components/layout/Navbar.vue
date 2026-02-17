@@ -67,14 +67,14 @@ async function logout() {
                     <q-item-section>내 퀴즈</q-item-section>
                 </q-item>
 
-                <q-separator class="nav-separator" />
+                <!--                <q-separator class="nav-separator" />-->
 
-                <q-item :to="{ path: '/ranking' }" clickable v-ripple class="nav-item">
-                    <q-item-section avatar>
-                        <q-icon name="leaderboard" color="primary" />
-                    </q-item-section>
-                    <q-item-section>랭킹</q-item-section>
-                </q-item>
+                <!--                <q-item :to="{ path: '/ranking' }" clickable v-ripple class="nav-item">-->
+                <!--                    <q-item-section avatar>-->
+                <!--                        <q-icon name="leaderboard" color="primary" />-->
+                <!--                    </q-item-section>-->
+                <!--                    <q-item-section>랭킹</q-item-section>-->
+                <!--                </q-item>-->
             </q-list>
         </q-scroll-area>
 

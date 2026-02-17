@@ -228,8 +228,19 @@ const emit = defineEmits<{
     (e: 'cancel'): void;
 }>();
 
+// 깊은 복사 헬퍼 함수
+function deepCloneQuizForm(data: QuizFormData): QuizFormData {
+    return {
+        ...data,
+        questions: data.questions.map((q) => ({
+            ...q,
+            options: [...q.options],
+        })),
+    };
+}
+
 const formData = ref<QuizFormData>(
-    props.initialData ? { ...props.initialData } : { ...DEFAULT_QUIZ_FORM },
+    props.initialData ? deepCloneQuizForm(props.initialData) : deepCloneQuizForm(DEFAULT_QUIZ_FORM),
 );
 
 // 초기 데이터 변경 감지
@@ -237,7 +248,7 @@ watch(
     () => props.initialData,
     (newData) => {
         if (newData) {
-            formData.value = { ...newData };
+            formData.value = deepCloneQuizForm(newData);
         }
     },
     { deep: true },
@@ -286,6 +297,7 @@ const questionTypeOptions = [
 function addQuestion() {
     formData.value.questions.push({
         ...DEFAULT_QUESTION_FORM,
+        options: [...DEFAULT_QUESTION_FORM.options], // 배열 깊은 복사
         order_index: formData.value.questions.length,
     });
 }

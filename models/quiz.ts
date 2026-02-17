@@ -170,5 +170,7 @@ export const DEFAULT_QUIZ_FORM: QuizFormData = {
     grade_level: 3,
     difficulty: 'leaf',
     is_public: true,
-    questions: [{ ...DEFAULT_QUESTION_FORM, order_index: 0 }],
+    questions: [
+        { ...DEFAULT_QUESTION_FORM, options: [...DEFAULT_QUESTION_FORM.options], order_index: 0 },
+    ],
 };
