@@ -258,6 +258,10 @@ button:focus-visible {
     margin-bottom: $spacing-lg;
 }
 
+.text-no-wrap {
+    white-space: nowrap;
+}
+
 // Headings use Fredoka
 h1,
 h2,

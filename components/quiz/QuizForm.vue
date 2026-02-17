@@ -409,7 +409,7 @@ function handleCancel() {
 
                 .option-row {
                     display: flex;
-                    align-items: center;
+                    align-items: flex-start;
                     gap: 8px;
                     margin-bottom: 8px;
 
