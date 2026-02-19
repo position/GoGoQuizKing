@@ -270,18 +270,12 @@ button:focus-visible {
     white-space: nowrap;
 }
 
-// q-drawer__backdrop 스타일 (drawer가 열렸을 때만 표시)
-.Q-layout {
+.q-layout {
     &.q-layout--containerized {
         .q-drawer__backdrop {
             pointer-events: auto !important;
             opacity: 1 !important;
-            z-index: 999 !important;
         }
-    }
-    .q-drawer__backdrop {
-        pointer-events: none !important;
-        opacity: 0 !important;
     }
 }
 
