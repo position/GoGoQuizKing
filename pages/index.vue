@@ -3,7 +3,9 @@
         <!-- 환영 섹션 -->
         <section class="welcome-section">
             <div class="welcome-content">
-                <div class="mascot">👑</div>
+                <div class="mascot">
+                    <img :src="`${$imgHost}/img/quizking-character.png`" loading="lazy" />
+                </div>
                 <h1 class="welcome-title">GOGO! QuizKing</h1>
                 <p class="welcome-subtitle">반짝반짝 퀴즈 세상으로 함께 떠나요~ ✨</p>
             </div>
@@ -30,7 +32,11 @@
 
         <!-- 어드민 배지 -->
         <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
-            <div class="admin-badge" :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }" :to="{ path: '/admin/quiz-automation' }">
+            <div
+                class="admin-badge"
+                :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }"
+                :to="{ path: '/admin/quiz-automation' }"
+            >
                 <q-icon :name="isAdmin ? 'admin_panel_settings' : 'verified_user'" size="20px" />
                 <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
             </div>
@@ -141,10 +147,7 @@ const popularQuizzes = computed(() => {
 
 // 병렬 로딩으로 성능 개선
 onMounted(async () => {
-    const promises: Promise<void>[] = [
-        getUserInfo(),
-        quizStore.fetchQuizzes(),
-    ];
+    const promises: Promise<void>[] = [getUserInfo(), quizStore.fetchQuizzes()];
 
     await Promise.all(promises);
 
@@ -194,10 +197,7 @@ async function fetchUserStats() {
                 .select('*', { count: 'exact', head: true })
                 .eq('created_by', user.id),
             // 정답률 계산용 데이터
-            supabase
-                .from('quiz_attempts')
-                .select('score, total_questions')
-                .eq('user_id', user.id),
+            supabase.from('quiz_attempts').select('score, total_questions').eq('user_id', user.id),
         ]);
 
         const playedCount = playedResult.count || 0;
@@ -247,16 +247,20 @@ function goToQuiz(quizId: string) {
         box-shadow: 0 8px 32px rgba(255, 130, 0, 0.3);
 
         .mascot {
-            font-size: 64px;
-            margin-bottom: 16px;
+            line-height: 0;
             animation: bounce 2s ease-in-out infinite;
             will-change: transform;
+            img {
+                max-width: 320px;
+                height: auto;
+            }
         }
 
         .welcome-title {
             font-family: 'Fredoka', sans-serif;
             font-size: 42px;
             font-weight: 800;
+            line-height: 100%;
             margin: 0 0 8px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }

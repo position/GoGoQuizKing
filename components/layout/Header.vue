@@ -77,7 +77,7 @@ function toggleTheme() {
         }
 
         .brand-title {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 700;
             font-family: 'Fredoka', sans-serif;
             color: white;

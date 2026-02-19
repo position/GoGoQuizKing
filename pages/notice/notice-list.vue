@@ -8,9 +8,11 @@
 // SEO 설정
 useSeoMeta({
     title: '공지사항 - GoGoQuizKing',
-    description: 'GoGoQuizKing의 공지사항을 확인하세요. 새로운 기능, 이벤트, 업데이트 소식을 알려드립니다.',
+    description:
+        'GoGoQuizKing의 공지사항을 확인하세요. 새로운 기능, 이벤트, 업데이트 소식을 알려드립니다.',
     ogTitle: '공지사항 - GoGoQuizKing',
-    ogDescription: 'GoGoQuizKing의 공지사항을 확인하세요. 새로운 기능, 이벤트, 업데이트 소식을 알려드립니다.',
+    ogDescription:
+        'GoGoQuizKing의 공지사항을 확인하세요. 새로운 기능, 이벤트, 업데이트 소식을 알려드립니다.',
 });
 </script>
 
@@ -27,7 +29,7 @@ useSeoMeta({
 
 @media (max-width: 768px) {
     .notice-list-page {
-        padding: $spacing-md;
+        padding: 0;
     }
 }
 </style>

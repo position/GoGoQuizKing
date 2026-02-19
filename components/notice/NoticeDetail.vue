@@ -185,8 +185,8 @@ async function editNotice() {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
+        flex-wrap: wrap;
         .text-h6 {
-            flex: 5 0;
             font-weight: 900 !important;
         }
         .text-caption {
