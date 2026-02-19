@@ -17,6 +17,7 @@ const isDarkMode = computed(() => commonStore.isDarkMode);
 
 onMounted(() => {
     commonStore.initTheme();
+    commonStore.initMenuState();
 });
 
 async function logout() {

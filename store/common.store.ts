@@ -1,3 +1,5 @@
+import { Platform } from 'quasar';
+
 type ThemeMode = 'light' | 'dark' | 'system';
 
 interface CommonStore {
@@ -10,7 +12,7 @@ interface CommonStore {
 export const useCommonStore = defineStore('common', {
     state: (): CommonStore => ({
         tempTitle: '',
-        isMenuCollapse: true,
+        isMenuCollapse: false, // 기본값을 false로 변경 (닫힌 상태)
         serverTime: '',
         themeMode: 'light',
     }),
@@ -26,6 +28,11 @@ export const useCommonStore = defineStore('common', {
         },
     },
     actions: {
+        // Quasar Platform을 이용한 메뉴 상태 초기화
+        initMenuState() {
+            // 모바일/태블릿에서는 닫힌 상태, 데스크톱에서는 열린 상태
+            this.isMenuCollapse = Platform.is.desktop;
+        },
         setTheme(mode: ThemeMode) {
             this.themeMode = mode;
             this.applyTheme();
@@ -53,6 +60,6 @@ export const useCommonStore = defineStore('common', {
     },
     persist: {
         storage: piniaPluginPersistedstate.localStorage(),
-        paths: ['tempTitle', 'isMenuCollapse', 'themeMode'],
+        pick: ['tempTitle', 'themeMode'], // isMenuCollapse 제거 - 화면 크기에 따라 동적으로 설정
     },
 });
