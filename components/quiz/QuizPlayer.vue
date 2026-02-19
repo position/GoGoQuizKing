@@ -33,7 +33,13 @@
 
                 <!-- 문제 이미지 -->
                 <div v-if="currentQuestion.question_image_url" class="question-image">
-                    <img :src="currentQuestion.question_image_url" alt="문제 이미지" />
+                    <NuxtImg
+                        :src="currentQuestion.question_image_url"
+                        alt="문제 이미지"
+                        loading="lazy"
+                        format="webp"
+                        quality="85"
+                    />
                 </div>
 
                 <!-- 보기 (객관식) -->

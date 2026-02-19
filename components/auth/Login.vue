@@ -24,17 +24,29 @@ async function login() {
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <div class="mascot">👑</div>
+                <div class="mascot">
+                    <NuxtImg
+                        :src="`${$imgHost}/img/quizking-character.png`"
+                        alt="GoGo! Quiz King"
+                        loading="lazy"
+                        width="200"
+                        height="200"
+                        format="webp"
+                        quality="80"
+                    />
+                </div>
                 <h1 class="login-title">GOGO! QuizKing</h1>
                 <p class="login-subtitle">어서와요! 로그인하고 퀴즈 모험을 시작해볼까요? 🚀</p>
             </div>
 
             <div class="login-actions">
                 <q-btn @click="login" class="kakao-login-btn" unelevated size="lg">
-                    <img
+                    <NuxtImg
                         :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
                         alt="카카오 로그인"
                         class="kakao-img"
+                        width="24"
+                        height="24"
                     />
                     카카오 로그인
                 </q-btn>
@@ -53,7 +65,7 @@ async function login() {
     justify-content: center;
     align-items: center;
     min-height: 60vh;
-    padding: 24px;
+    padding: 10px;
 }
 
 .login-card {
@@ -61,7 +73,7 @@ async function login() {
     width: 100%;
     background: var(--bg-card);
     border-radius: 24px;
-    padding: 40px 32px;
+    padding: 25px;
     box-shadow: 0 8px 32px var(--shadow-color);
     text-align: center;
     transition: background-color 0.3s ease;
@@ -71,15 +83,15 @@ async function login() {
 
         .mascot {
             font-size: 56px;
-            margin-bottom: 16px;
             animation: bounce 2s ease-in-out infinite;
         }
 
         .login-title {
+            padding-bottom: 15px;
             font-size: 28px;
             font-weight: 800;
             color: var(--text-primary);
-            margin: 0 0 8px;
+            line-height: 100%;
         }
 
         .login-subtitle {

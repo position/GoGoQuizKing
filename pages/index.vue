@@ -4,7 +4,15 @@
         <section class="welcome-section">
             <div class="welcome-content">
                 <div class="mascot">
-                    <img :src="`${$imgHost}/img/quizking-character.png`" loading="lazy" />
+                    <NuxtImg
+                        :src="`${$imgHost}/img/quizking-character.png`"
+                        alt="GoGo! Quiz King"
+                        loading="lazy"
+                        width="320"
+                        height="320"
+                        format="webp"
+                        quality="80"
+                    />
                 </div>
                 <h1 class="welcome-title">GOGO! QuizKing</h1>
                 <p class="welcome-subtitle">반짝반짝 퀴즈 세상으로 함께 떠나요~ ✨</p>

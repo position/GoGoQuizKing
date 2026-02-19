@@ -92,7 +92,6 @@ async function logout() {
                         rounded
                         label="로그인"
                         icon="login"
-                        color="primary"
                         class="button-login"
                     />
                 </div>
@@ -100,10 +99,12 @@ async function logout() {
                     <dl class="user-info">
                         <dt class="profile">
                             <q-avatar size="56px" class="user-avatar">
-                                <img
+                                <NuxtImg
                                     v-if="userInfo?.avatar_url"
                                     :src="userInfo.avatar_url"
                                     :alt="userInfo.user_name"
+                                    width="56"
+                                    height="56"
                                 />
                                 <q-icon v-else name="person" size="32px" />
                             </q-avatar>
@@ -112,10 +113,12 @@ async function logout() {
                                 size="20px"
                                 class="sns-icon"
                             >
-                                <img
+                                <NuxtImg
                                     :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
                                     :alt="userInfo?.user_name"
                                     loading="lazy"
+                                    width="20"
+                                    height="20"
                                 />
                             </q-avatar>
                         </dt>
@@ -209,6 +212,7 @@ async function logout() {
 
     .button-login {
         width: 100%;
+        background-color: #fee500;
         font-weight: 600;
     }
 }

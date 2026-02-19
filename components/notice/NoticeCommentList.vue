@@ -39,17 +39,17 @@ async function getCommentList() {
             .select('*')
             .eq('post_id', props.postId)
             .order('created_at', { ascending: true });
-        
+
         if (commentsError) throw commentsError;
-        
+
         if (!comments || comments.length === 0) {
             commentList.value = [];
             return;
         }
 
         // 유저 ID 목록 추출
-        const userIds = [...new Set(comments.map(c => c.user_id))];
-        
+        const userIds = [...new Set(comments.map((c) => c.user_id))];
+
         // 프로필 정보 별도 조회
         const { data: profiles, error: profilesError } = await supabase
             .from('profiles')
@@ -61,14 +61,12 @@ async function getCommentList() {
         }
 
         // 프로필 정보 매핑
-        const profileMap = new Map(
-            (profiles || []).map(p => [p.id, p])
-        );
+        const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
         // 댓글에 프로필 정보 병합
-        commentList.value = comments.map(comment => ({
+        commentList.value = comments.map((comment) => ({
             ...comment,
-            profiles: profileMap.get(comment.user_id) || null
+            profiles: profileMap.get(comment.user_id) || null,
         }));
     } catch (e) {
         console.error(e);
@@ -91,16 +89,16 @@ async function submitComment() {
 
     isSubmitting.value = true;
     try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
         if (!user) throw new Error('로그인이 필요합니다.');
 
-        const { error } = await supabase
-            .from('comments')
-            .insert({
-                post_id: props.postId,
-                user_id: user.id,
-                content: newComment.value.trim(),
-            });
+        const { error } = await supabase.from('comments').insert({
+            post_id: props.postId,
+            user_id: user.id,
+            content: newComment.value.trim(),
+        });
 
         if (error) throw error;
 
@@ -135,9 +133,9 @@ async function saveEdit(commentId: string) {
     try {
         const { error } = await supabase
             .from('comments')
-            .update({ 
+            .update({
                 content: editingContent.value.trim(),
-                updated_at: new Date().toISOString()
+                updated_at: new Date().toISOString(),
             })
             .eq('id', commentId);
 
@@ -159,10 +157,7 @@ async function deleteComment(commentId: string) {
 
     isSubmitting.value = true;
     try {
-        const { error } = await supabase
-            .from('comments')
-            .delete()
-            .eq('id', commentId);
+        const { error } = await supabase.from('comments').delete().eq('id', commentId);
 
         if (error) throw error;
 
@@ -225,7 +220,7 @@ function getAuthorAvatar(comment: any): string {
                     <template #avatar>
                         <q-icon name="info" color="primary" />
                     </template>
-                    댓글을 작성하려면 
+                    댓글을 작성하려면
                     <router-link to="/login" class="text-primary">로그인</router-link>
                     이 필요합니다.
                 </q-banner>
@@ -246,7 +241,12 @@ function getAuthorAvatar(comment: any): string {
             <li v-for="comment in commentList" :key="comment.id" class="comment-item">
                 <div class="comment-avatar">
                     <q-avatar size="36px" color="primary" text-color="white">
-                        <img v-if="getAuthorAvatar(comment)" :src="getAuthorAvatar(comment)" />
+                        <NuxtImg
+                            v-if="getAuthorAvatar(comment)"
+                            :src="getAuthorAvatar(comment)"
+                            width="36"
+                            height="36"
+                        />
                         <span v-else>{{ getAuthorName(comment).charAt(0) }}</span>
                     </q-avatar>
                 </div>
@@ -272,20 +272,14 @@ function getAuthorAvatar(comment: any): string {
                             class="edit-input"
                         />
                         <div class="edit-actions">
-                            <q-btn 
-                                @click="saveEdit(comment.id)" 
-                                label="저장" 
-                                color="primary" 
+                            <q-btn
+                                @click="saveEdit(comment.id)"
+                                label="저장"
+                                color="primary"
                                 size="sm"
                                 :loading="isSubmitting"
                             />
-                            <q-btn 
-                                @click="cancelEdit" 
-                                label="취소" 
-                                color="grey" 
-                                flat 
-                                size="sm"
-                            />
+                            <q-btn @click="cancelEdit" label="취소" color="grey" flat size="sm" />
                         </div>
                     </template>
 
@@ -293,21 +287,21 @@ function getAuthorAvatar(comment: any): string {
                     <template v-else>
                         <p class="comment-text">{{ comment.content }}</p>
                         <div v-if="isOwner(comment)" class="comment-actions">
-                            <q-btn 
-                                @click="startEdit(comment)" 
-                                icon="edit" 
-                                size="xs" 
-                                flat 
+                            <q-btn
+                                @click="startEdit(comment)"
+                                icon="edit"
+                                size="xs"
+                                flat
                                 round
                                 color="grey"
                             >
                                 <q-tooltip>수정</q-tooltip>
                             </q-btn>
-                            <q-btn 
-                                @click="deleteComment(comment.id)" 
-                                icon="delete" 
-                                size="xs" 
-                                flat 
+                            <q-btn
+                                @click="deleteComment(comment.id)"
+                                icon="delete"
+                                size="xs"
+                                flat
                                 round
                                 color="negative"
                             >
