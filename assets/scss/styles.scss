@@ -137,11 +137,6 @@ body {
     transition:
         background-color 0.3s ease,
         color 0.3s ease;
-    // 모바일 터치 스크롤 지원
-    -webkit-overflow-scrolling: touch;
-    touch-action: manipulation;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 a {
@@ -273,6 +268,21 @@ button:focus-visible {
 
 .text-no-wrap {
     white-space: nowrap;
+}
+
+// q-drawer__backdrop 스타일 (drawer가 열렸을 때만 표시)
+.Q-layout {
+    &.q-layout--containerized {
+        .q-drawer__backdrop {
+            pointer-events: auto !important;
+            opacity: 1 !important;
+            z-index: 999 !important;
+        }
+    }
+    .q-drawer__backdrop {
+        pointer-events: none !important;
+        opacity: 0 !important;
+    }
 }
 
 // Headings use Fredoka

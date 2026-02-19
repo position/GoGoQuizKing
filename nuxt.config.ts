@@ -92,7 +92,7 @@ export default defineNuxtConfig({
             pathPrefix: false,
         },
     ],
-    css: ['~/assets/scss/styles.scss', 'quasar/src/css/index.sass'],
+    css: ['~/assets/scss/styles.scss'],
     routeRules,
     modules: [
         '@nuxt/eslint',
@@ -148,9 +148,9 @@ export default defineNuxtConfig({
             rollupOptions: {
                 output: {
                     manualChunks: {
-                        'quasar': ['quasar'],
-                        'supabase': ['@supabase/supabase-js'],
-                        'pinia': ['pinia'],
+                        quasar: ['quasar'],
+                        supabase: ['@supabase/supabase-js'],
+                        pinia: ['pinia'],
                     },
                 },
             },

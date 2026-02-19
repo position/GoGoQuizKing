@@ -1,6 +1,6 @@
 <template>
     <NuxtLayout>
-        <q-layout view="lHh lpr lFf" class="quiz-container">
+        <q-layout view="lHh lpr lFf" container class="quiz-container">
             <Header />
             <Navbar />
             <q-page-container>

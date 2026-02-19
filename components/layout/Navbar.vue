@@ -79,59 +79,61 @@ async function logout() {
         </q-scroll-area>
 
         <section class="user-info-container absolute-top" :style="`height: ${userInfoHeight}`">
-            <div v-if="!isLogin" class="before-login-area">
-                <div class="login-prompt">
-                    <q-icon name="account_circle" size="48px" color="grey-5" />
-                    <p>로그인하고 퀴즈왕이 되어봐요! 👑</p>
+            <client-only>
+                <div v-if="!isLogin" class="before-login-area">
+                    <div class="login-prompt">
+                        <q-icon name="account_circle" size="48px" color="grey-5" />
+                        <p>로그인하고 퀴즈왕이 되어봐요! 👑</p>
+                    </div>
+                    <q-btn
+                        :to="{ path: '/login' }"
+                        unelevated
+                        rounded
+                        label="로그인"
+                        icon="login"
+                        color="primary"
+                        class="button-login"
+                    />
                 </div>
-                <q-btn
-                    :to="{ path: '/login' }"
-                    unelevated
-                    rounded
-                    label="로그인"
-                    icon="login"
-                    color="primary"
-                    class="button-login"
-                />
-            </div>
-            <div v-else class="user-info-area">
-                <dl class="user-info">
-                    <dt class="profile">
-                        <q-avatar size="56px" class="user-avatar">
-                            <img
-                                v-if="userInfo?.avatar_url"
-                                :src="userInfo.avatar_url"
-                                :alt="userInfo.user_name"
-                            />
-                            <q-icon v-else name="person" size="32px" />
-                        </q-avatar>
-                        <q-avatar
-                            v-if="userInfo?.provider === DTO.Enums.AppProvider.Kakaotalk"
-                            size="20px"
-                            class="sns-icon"
-                        >
-                            <img
-                                :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
-                                :alt="userInfo?.user_name"
-                                loading="lazy"
-                            />
-                        </q-avatar>
-                    </dt>
-                    <dd class="user-name">
-                        <span class="text-weight-bold">{{ userInfo.user_name }}</span>
-                        <span class="user-email">{{ userInfo.email }}</span>
-                    </dd>
-                </dl>
+                <div v-else class="user-info-area">
+                    <dl class="user-info">
+                        <dt class="profile">
+                            <q-avatar size="56px" class="user-avatar">
+                                <img
+                                    v-if="userInfo?.avatar_url"
+                                    :src="userInfo.avatar_url"
+                                    :alt="userInfo.user_name"
+                                />
+                                <q-icon v-else name="person" size="32px" />
+                            </q-avatar>
+                            <q-avatar
+                                v-if="userInfo?.provider === DTO.Enums.AppProvider.Kakaotalk"
+                                size="20px"
+                                class="sns-icon"
+                            >
+                                <img
+                                    :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
+                                    :alt="userInfo?.user_name"
+                                    loading="lazy"
+                                />
+                            </q-avatar>
+                        </dt>
+                        <dd class="user-name">
+                            <span class="text-weight-bold">{{ userInfo.user_name }}</span>
+                            <span class="user-email">{{ userInfo.email }}</span>
+                        </dd>
+                    </dl>
 
-                <q-btn
-                    @click="logout"
-                    label="로그아웃"
-                    icon="logout"
-                    flat
-                    rounded
-                    class="button-logout"
-                />
-            </div>
+                    <q-btn
+                        @click="logout"
+                        label="로그아웃"
+                        icon="logout"
+                        flat
+                        rounded
+                        class="button-logout"
+                    />
+                </div>
+            </client-only>
         </section>
     </q-drawer>
 </template>
