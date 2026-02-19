@@ -11,22 +11,31 @@ export interface Database {
             profiles: {
                 Row: {
                     id: string;
+                    email: string | null;
                     full_name: string | null;
                     avatar_url: string | null;
+                    preferred_username: string | null;
+                    provider: string | null;
                     created_at: string;
                     updated_at: string;
                 };
                 Insert: {
                     id: string;
+                    email?: string | null;
                     full_name?: string | null;
                     avatar_url?: string | null;
+                    preferred_username?: string | null;
+                    provider?: string | null;
                     created_at?: string;
                     updated_at?: string;
                 };
                 Update: {
                     id?: string;
+                    email?: string | null;
                     full_name?: string | null;
                     avatar_url?: string | null;
+                    preferred_username?: string | null;
+                    provider?: string | null;
                     created_at?: string;
                     updated_at?: string;
                 };

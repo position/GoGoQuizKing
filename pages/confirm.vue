@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/store/auth.store';
 import { ToastMessage } from '@/helper/message';
+import type { Database } from '@/models/database.types';
+import type { LoginResponse } from '@/models/auth';
 
 definePageMeta({
     name: 'Confirm',
@@ -13,10 +15,34 @@ useSeoMeta({
     robots: 'noindex, nofollow',
 });
 
-const supabase = useSupabaseClient();
+const supabase = useSupabaseClient<Database>();
 const router = useRouter();
 const route = useRoute();
 const authStore = useAuthStore();
+
+// 프로필 테이블에 사용자 정보 저장/업데이트
+async function upsertProfile(userId: string, userMeta: Record<string, unknown>, provider?: string) {
+    try {
+        const { error } = await supabase.from('profiles').upsert(
+            {
+                id: userId,
+                email: (userMeta.email as string) || null,
+                full_name: ((userMeta.full_name || userMeta.name) as string) || null,
+                avatar_url: (userMeta.avatar_url as string) || null,
+                preferred_username: (userMeta.preferred_username as string) || null,
+                provider: provider || null,
+                updated_at: new Date().toISOString(),
+            },
+            { onConflict: 'id' },
+        );
+
+        if (error) {
+            console.error('Profile upsert error:', error);
+        }
+    } catch (e) {
+        console.error('Failed to upsert profile:', e);
+    }
+}
 
 onMounted(async () => {
     try {
@@ -32,8 +58,12 @@ onMounted(async () => {
 
         if (data.session) {
             // 세션이 있으면 사용자 정보 등록
-            const userMeta = data.session.user.user_metadata;
-            const provider = data.session.user.app_metadata?.provider;
+            const user = data.session.user;
+            const userMeta = user.user_metadata as LoginResponse;
+            const provider = user.app_metadata?.provider;
+
+            // 프로필 테이블에 사용자 정보 저장/업데이트
+            await upsertProfile(user.id, user.user_metadata as Record<string, unknown>, provider);
 
             authStore.registerInfo(userMeta, provider);
             authStore.token = data.session.access_token;
