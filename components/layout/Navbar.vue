@@ -213,7 +213,11 @@ async function logout() {
     .button-login {
         width: 100%;
         background-color: #fee500;
+        color: #000;
         font-weight: 600;
+        :deep(.q-icon) {
+            color: #000;
+        }
     }
 }
 
