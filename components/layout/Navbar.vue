@@ -30,7 +30,7 @@ async function logout() {
         v-model="isMenuCollapse"
         show-if-above
         :width="220"
-        :breakpoint="400"
+        :breakpoint="768"
         class="app-drawer"
         :class="{ 'drawer-dark': isDarkMode }"
     >
