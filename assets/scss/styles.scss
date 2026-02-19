@@ -137,6 +137,11 @@ body {
     transition:
         background-color 0.3s ease,
         color 0.3s ease;
+    // 모바일 터치 스크롤 지원
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 a {
@@ -175,10 +180,18 @@ button:focus-visible {
 
 #__nuxt {
     height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .q-drawer {
     position: fixed !important;
+}
+
+// q-page-container 모바일 스크롤 지원
+.q-page-container {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 // GoGoQuizKing 공통 유틸리티 클래스
