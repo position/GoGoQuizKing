@@ -17,7 +17,8 @@ export default defineNuxtConfig({
                 lang: 'ko',
             },
             charset: 'utf-8',
-            viewport: 'width=device-width, initial-scale=1',
+            viewport:
+                'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no',
             title: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
             meta: [
                 {
