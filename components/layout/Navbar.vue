@@ -99,12 +99,15 @@ async function logout() {
                     <dl class="user-info">
                         <dt class="profile">
                             <q-avatar size="56px" class="user-avatar">
-                                <NuxtImg
+                                <!-- 외부 CDN(카카오 등) 이미지는 CORS 문제로 img 태그 사용 -->
+                                <img
                                     v-if="userInfo?.avatar_url"
                                     :src="userInfo.avatar_url"
                                     :alt="userInfo.user_name"
                                     width="56"
                                     height="56"
+                                    referrerpolicy="no-referrer"
+                                    crossorigin="anonymous"
                                 />
                                 <q-icon v-else name="person" size="32px" />
                             </q-avatar>

@@ -241,11 +241,14 @@ function getAuthorAvatar(comment: any): string {
             <li v-for="comment in commentList" :key="comment.id" class="comment-item">
                 <div class="comment-avatar">
                     <q-avatar size="36px" color="primary" text-color="white">
-                        <NuxtImg
+                        <img
                             v-if="getAuthorAvatar(comment)"
                             :src="getAuthorAvatar(comment)"
                             width="36"
                             height="36"
+                            referrerpolicy="no-referrer"
+                            crossorigin="anonymous"
+                            :alt="getAuthorName(comment)"
                         />
                         <span v-else>{{ getAuthorName(comment).charAt(0) }}</span>
                     </q-avatar>

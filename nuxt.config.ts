@@ -128,6 +128,19 @@ export default defineNuxtConfig({
             animations: [],
         },
     },
+    image: {
+        // 외부 이미지 도메인 허용
+        domains: ['k.kakaocdn.net', 't1.kakaocdn.net', 'img1.kakaocdn.net'],
+        // 외부 이미지는 최적화 없이 그대로 사용
+        provider: 'ipx',
+        ipx: {
+            // 외부 이미지에 대한 최적화 비활성화 (CORS 문제 방지)
+            modifiers: {
+                format: 'webp',
+                quality: 80,
+            },
+        },
+    },
     sourcemap: false,
     nitro: {
         minify: true,
