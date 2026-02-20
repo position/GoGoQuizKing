@@ -46,6 +46,19 @@ export default defineNuxtConfig({
                     content:
                         '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
                 },
+                {
+                    property: 'og:image',
+                    content:
+                        'https://xyjjnbpgkzjjghqgsmgs.supabase.co/storage/v1/object/public/gogoquizking/img/quizking-character.png',
+                },
+                {
+                    property: 'og:image:width',
+                    content: '1200',
+                },
+                {
+                    property: 'og:image:height',
+                    content: '630',
+                },
                 { name: 'twitter:card', content: 'summary_large_image' },
                 {
                     name: 'twitter:title',
@@ -56,11 +69,18 @@ export default defineNuxtConfig({
                     content:
                         '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
                 },
+                {
+                    name: 'twitter:image',
+                    content:
+                        'https://xyjjnbpgkzjjghqgsmgs.supabase.co/storage/v1/object/public/gogoquizking/img/quizking-character.png',
+                },
                 { name: 'naver-site-verification', content: '' },
                 { name: 'google-site-verification', content: '' },
             ],
             link: [
                 { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+                { rel: 'apple-touch-icon', sizes: '180x180', href: '/icons/apple-touch-icon.png' },
+                { rel: 'mask-icon', href: '/icons/safari-pinned-tab.svg', color: '#667eea' },
                 {
                     rel: 'stylesheet',
                     href: 'https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css',
@@ -106,6 +126,7 @@ export default defineNuxtConfig({
         '@nuxtjs/seo',
         'nuxt-quasar-ui',
         '@nuxtjs/supabase',
+        '@vite-pwa/nuxt',
     ],
     supabase: {
         // @nuxtjs/supabase 모듈은 기본적으로 SUPABASE_URL, SUPABASE_KEY 환경변수를 사용
@@ -140,6 +161,120 @@ export default defineNuxtConfig({
                 format: 'webp',
                 quality: 80,
             },
+        },
+    },
+    pwa: {
+        registerType: 'autoUpdate',
+        manifest: {
+            name: '고고퀴즈킹 - GoGoQuizKing',
+            short_name: '고고퀴즈킹',
+            description: '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈를 즐겨보세요.',
+            theme_color: '#667eea',
+            background_color: '#ffffff',
+            display: 'standalone',
+            orientation: 'portrait',
+            scope: '/',
+            start_url: '/',
+            lang: 'ko',
+            icons: [
+                {
+                    src: '/icons/icon-72x72.png',
+                    sizes: '72x72',
+                    type: 'image/png',
+                },
+                {
+                    src: '/icons/icon-96x96.png',
+                    sizes: '96x96',
+                    type: 'image/png',
+                },
+                {
+                    src: '/icons/icon-128x128.png',
+                    sizes: '128x128',
+                    type: 'image/png',
+                },
+                {
+                    src: '/icons/icon-144x144.png',
+                    sizes: '144x144',
+                    type: 'image/png',
+                },
+                {
+                    src: '/icons/icon-152x152.png',
+                    sizes: '152x152',
+                    type: 'image/png',
+                },
+                {
+                    src: '/icons/icon-192x192.png',
+                    sizes: '192x192',
+                    type: 'image/png',
+                    purpose: 'any maskable',
+                },
+                {
+                    src: '/icons/icon-384x384.png',
+                    sizes: '384x384',
+                    type: 'image/png',
+                },
+                {
+                    src: '/icons/icon-512x512.png',
+                    sizes: '512x512',
+                    type: 'image/png',
+                    purpose: 'any maskable',
+                },
+            ],
+        },
+        workbox: {
+            navigateFallback: '/',
+            globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+            runtimeCaching: [
+                {
+                    urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+                    handler: 'NetworkFirst',
+                    options: {
+                        cacheName: 'supabase-cache',
+                        expiration: {
+                            maxEntries: 100,
+                            maxAgeSeconds: 60 * 60 * 24, // 1 day
+                        },
+                        cacheableResponse: {
+                            statuses: [0, 200],
+                        },
+                    },
+                },
+                {
+                    urlPattern: /^https:\/\/.*kakaocdn\.net\/.*/i,
+                    handler: 'CacheFirst',
+                    options: {
+                        cacheName: 'kakao-image-cache',
+                        expiration: {
+                            maxEntries: 50,
+                            maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+                        },
+                        cacheableResponse: {
+                            statuses: [0, 200],
+                        },
+                    },
+                },
+                {
+                    urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/i,
+                    handler: 'CacheFirst',
+                    options: {
+                        cacheName: 'google-fonts-cache',
+                        expiration: {
+                            maxEntries: 30,
+                            maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+                        },
+                        cacheableResponse: {
+                            statuses: [0, 200],
+                        },
+                    },
+                },
+            ],
+        },
+        client: {
+            installPrompt: true,
+        },
+        devOptions: {
+            enabled: true,
+            type: 'module',
         },
     },
     sourcemap: false,

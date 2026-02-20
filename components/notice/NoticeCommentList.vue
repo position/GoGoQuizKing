@@ -246,8 +246,6 @@ function getAuthorAvatar(comment: any): string {
                             :src="getAuthorAvatar(comment)"
                             width="36"
                             height="36"
-                            referrerpolicy="no-referrer"
-                            crossorigin="anonymous"
                             :alt="getAuthorName(comment)"
                         />
                         <span v-else>{{ getAuthorName(comment).charAt(0) }}</span>
