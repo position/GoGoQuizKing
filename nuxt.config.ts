@@ -78,9 +78,9 @@ export default defineNuxtConfig({
                 { name: 'google-site-verification', content: '' },
             ],
             link: [
-                { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+                { rel: 'icon', type: 'image/x-icon', href: '/icons/apple-touch-icon.png' },
                 { rel: 'apple-touch-icon', sizes: '180x180', href: '/icons/apple-touch-icon.png' },
-                { rel: 'mask-icon', href: '/icons/safari-pinned-tab.svg', color: '#667eea' },
+                { rel: 'mask-icon', href: '/icons/apple-touch-icon.png', color: '#667eea' },
                 {
                     rel: 'stylesheet',
                     href: 'https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css',

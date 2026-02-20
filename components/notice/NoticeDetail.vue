@@ -160,7 +160,7 @@ async function editNotice() {
                         color="secondary"
                         class="button-create"
                         size="lg"
-                        style="min-width: 100px"
+                        style="min-width: 80px"
                     />
                 </template>
             </template>
@@ -170,7 +170,7 @@ async function editNotice() {
                 color="secondary"
                 class="button-create"
                 size="lg"
-                style="min-width: 100px"
+                style="min-width: 80px"
             />
         </q-card-actions>
     </q-card>
