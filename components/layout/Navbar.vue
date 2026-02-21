@@ -278,7 +278,7 @@ async function logout() {
             color: var(--text-secondary);
 
             &:hover {
-                color: var(--color-primary);
+                color: #fff;
             }
         }
     }

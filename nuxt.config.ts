@@ -93,6 +93,32 @@ export default defineNuxtConfig({
                     href: 'https://hangeul.pstatic.net',
                 },
             ],
+            script: [
+                {
+                    type: 'application/ld+json',
+                    innerHTML: JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'WebApplication',
+                        name: '고고퀴즈킹',
+                        alternateName: 'GoGoQuizKing',
+                        url: 'https://gogoquizking.com',
+                        description:
+                            '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
+                        applicationCategory: 'GameApplication',
+                        operatingSystem: 'Web',
+                        offers: {
+                            '@type': 'Offer',
+                            price: '0',
+                            priceCurrency: 'KRW',
+                        },
+                        author: {
+                            '@type': 'Organization',
+                            name: 'GoGoQuizKing Team',
+                        },
+                        inLanguage: 'ko',
+                    }),
+                },
+            ],
         },
     },
 
