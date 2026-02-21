@@ -166,80 +166,16 @@ export default defineNuxtConfig({
     },
     pwa: {
         registerType: 'autoUpdate',
-        manifest: {
-            name: '고고퀴즈킹 - GoGoQuizKing',
-            short_name: '고고퀴즈킹',
-            description: '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈를 즐겨보세요.',
-            theme_color: '#667eea',
-            background_color: '#ffffff',
-            display: 'standalone',
-            orientation: 'portrait',
-            scope: '/',
-            start_url: '/',
-            lang: 'ko',
-            icons: [
-                {
-                    src: '/icons/icon-72x72.png',
-                    sizes: '72x72',
-                    type: 'image/png',
-                },
-                {
-                    src: '/icons/icon-96x96.png',
-                    sizes: '96x96',
-                    type: 'image/png',
-                },
-                {
-                    src: '/icons/icon-144x144.png',
-                    sizes: '144x144',
-                    type: 'image/png',
-                },
-                {
-                    src: '/icons/icon-152x152.png',
-                    sizes: '152x152',
-                    type: 'image/png',
-                },
-                {
-                    src: '/icons/icon-192x192.png',
-                    sizes: '192x192',
-                    type: 'image/png',
-                    purpose: 'any',
-                },
-                {
-                    src: '/icons/icon-384x384.png',
-                    sizes: '384x384',
-                    type: 'image/png',
-                },
-                {
-                    src: '/icons/icon-512x512.png',
-                    sizes: '512x512',
-                    type: 'image/png',
-                    purpose: 'any',
-                },
-            ],
-        },
+        manifest: false, // 수동으로 생성한 manifest.webmanifest 사용
+        strategies: 'generateSW',
+        injectRegister: 'auto',
         workbox: {
-            // Nuxt SSR 앱에서는 navigateFallback을 사용하지 않음
-            // navigateFallback: '/', // 제거
-            globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
-            // 네비게이션 요청은 네트워크 우선으로 처리
-            navigateFallbackDenylist: [/^\/api\//],
+            globPatterns: ['**/*.{js,css,png,svg,ico,woff2}'],
+            // navigateFallback 완전 비활성화
+            navigateFallback: null,
+            // HTML 파일은 precache하지 않음 (SSR 앱이므로)
+            globIgnores: ['**/*.html'],
             runtimeCaching: [
-                {
-                    // HTML 페이지는 네트워크 우선
-                    urlPattern: /^https:\/\/.*\/.*/i,
-                    handler: 'NetworkFirst',
-                    options: {
-                        cacheName: 'pages-cache',
-                        expiration: {
-                            maxEntries: 50,
-                            maxAgeSeconds: 60 * 60 * 24, // 1 day
-                        },
-                        cacheableResponse: {
-                            statuses: [0, 200],
-                        },
-                        networkTimeoutSeconds: 3,
-                    },
-                },
                 {
                     urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
                     handler: 'NetworkFirst',
@@ -247,7 +183,7 @@ export default defineNuxtConfig({
                         cacheName: 'supabase-cache',
                         expiration: {
                             maxEntries: 100,
-                            maxAgeSeconds: 60 * 60 * 24, // 1 day
+                            maxAgeSeconds: 60 * 60 * 24,
                         },
                         cacheableResponse: {
                             statuses: [0, 200],
@@ -261,7 +197,7 @@ export default defineNuxtConfig({
                         cacheName: 'kakao-image-cache',
                         expiration: {
                             maxEntries: 50,
-                            maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+                            maxAgeSeconds: 60 * 60 * 24 * 7,
                         },
                         cacheableResponse: {
                             statuses: [0, 200],
@@ -275,7 +211,7 @@ export default defineNuxtConfig({
                         cacheName: 'google-fonts-cache',
                         expiration: {
                             maxEntries: 30,
-                            maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+                            maxAgeSeconds: 60 * 60 * 24 * 365,
                         },
                         cacheableResponse: {
                             statuses: [0, 200],
