@@ -81,6 +81,7 @@ export default defineNuxtConfig({
                 { rel: 'icon', type: 'image/x-icon', href: '/icons/apple-touch-icon.png' },
                 { rel: 'apple-touch-icon', sizes: '180x180', href: '/icons/apple-touch-icon.png' },
                 { rel: 'mask-icon', href: '/icons/apple-touch-icon.png', color: '#667eea' },
+                { rel: 'manifest', href: '/manifest.webmanifest' },
                 {
                     rel: 'stylesheet',
                     href: 'https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css',
@@ -188,11 +189,6 @@ export default defineNuxtConfig({
                     type: 'image/png',
                 },
                 {
-                    src: '/icons/icon-128x128.png',
-                    sizes: '128x128',
-                    type: 'image/png',
-                },
-                {
                     src: '/icons/icon-144x144.png',
                     sizes: '144x144',
                     type: 'image/png',
@@ -206,7 +202,7 @@ export default defineNuxtConfig({
                     src: '/icons/icon-192x192.png',
                     sizes: '192x192',
                     type: 'image/png',
-                    purpose: 'any maskable',
+                    purpose: 'any',
                 },
                 {
                     src: '/icons/icon-384x384.png',
@@ -217,14 +213,33 @@ export default defineNuxtConfig({
                     src: '/icons/icon-512x512.png',
                     sizes: '512x512',
                     type: 'image/png',
-                    purpose: 'any maskable',
+                    purpose: 'any',
                 },
             ],
         },
         workbox: {
-            navigateFallback: '/',
+            // Nuxt SSR 앱에서는 navigateFallback을 사용하지 않음
+            // navigateFallback: '/', // 제거
             globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+            // 네비게이션 요청은 네트워크 우선으로 처리
+            navigateFallbackDenylist: [/^\/api\//],
             runtimeCaching: [
+                {
+                    // HTML 페이지는 네트워크 우선
+                    urlPattern: /^https:\/\/.*\/.*/i,
+                    handler: 'NetworkFirst',
+                    options: {
+                        cacheName: 'pages-cache',
+                        expiration: {
+                            maxEntries: 50,
+                            maxAgeSeconds: 60 * 60 * 24, // 1 day
+                        },
+                        cacheableResponse: {
+                            statuses: [0, 200],
+                        },
+                        networkTimeoutSeconds: 3,
+                    },
+                },
                 {
                     urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
                     handler: 'NetworkFirst',
@@ -272,8 +287,10 @@ export default defineNuxtConfig({
         client: {
             installPrompt: true,
         },
+        includeAssets: ['favicon.ico', 'icons/*.png'],
         devOptions: {
             enabled: true,
+            suppressWarnings: true,
             type: 'module',
         },
     },
