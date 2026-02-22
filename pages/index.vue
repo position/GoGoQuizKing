@@ -19,6 +19,21 @@
             </div>
         </section>
 
+        <!-- 포인트/레벨 섹션 (로그인 시) -->
+        <section v-if="isLogin" class="point-level-section">
+            <div class="user-status-card">
+                <div class="status-header">
+                    <LevelBadge />
+                    <PointDisplay />
+                </div>
+                <LevelProgress />
+                <div v-if="streakDays > 0" class="streak-info">
+                    <q-icon name="local_fire_department" color="orange" size="20px" />
+                    <span>{{ streakDays }}일 연속 출석 중! 🔥</span>
+                </div>
+            </div>
+        </section>
+
         <!-- 통계 카드 -->
         <section v-if="isLogin" class="stats-section">
             <div class="stat-card">
@@ -127,18 +142,24 @@
 import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '~/store/auth.store';
 import { useQuizStore } from '~/store/quiz.store';
+import { usePointStore } from '~/store/point.store';
 import { DTO } from '@/models';
 import { CATEGORIES, type QuizCategory } from '@/models/quiz';
+import LevelBadge from '@/components/point/LevelBadge.vue';
+import LevelProgress from '@/components/point/LevelProgress.vue';
+import PointDisplay from '@/components/point/PointDisplay.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const quizStore = useQuizStore();
+const pointStore = usePointStore();
 const supabase = useSupabaseClient();
 
 const isLoading = ref(true);
 const isLogin = computed(() => authStore.isLogin);
 const isAdmin = computed(() => authStore.isAdmin);
 const hasAdminAccess = computed(() => authStore.hasAdminAccess);
+const streakDays = computed(() => pointStore.streakDays);
 
 // 사용자 통계 (Phase 2에서 실제 데이터 연동)
 const userStats = ref({
@@ -161,6 +182,9 @@ onMounted(async () => {
 
     // 로그인된 경우에만 통계 로드 (로그인 체크 이후 별도 실행)
     if (isLogin.value) {
+        // 포인트 정보 및 일일 출석 체크
+        pointStore.fetchPointSummary();
+        pointStore.checkDailyAttendance();
         // 통계는 비동기로 로드하여 UI 블로킹 방지
         fetchUserStats();
     }
@@ -278,6 +302,37 @@ function goToQuiz(quizId: string) {
             font-weight: 800;
             opacity: 0.9;
             margin: 0;
+        }
+    }
+
+    .point-level-section {
+        margin-bottom: 24px;
+
+        .user-status-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 16px var(--shadow-color);
+
+            .status-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 16px;
+            }
+
+            .streak-info {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid var(--border-color);
+                font-size: 14px;
+                color: #f57c00;
+                font-weight: 600;
+            }
         }
     }
 

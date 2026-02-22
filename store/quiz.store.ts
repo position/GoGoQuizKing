@@ -343,7 +343,21 @@ export const useQuizStore = defineStore('quiz', {
 
                 if (questionsError) throw questionsError;
 
-                ToastMessage.success('퀴즈가 생성되었습니다! 🎉');
+                // 퀴즈 생성 포인트 지급
+                try {
+                    await supabase.rpc('award_quiz_create_points', {
+                        p_user_id: user.id,
+                        p_quiz_id: quiz.id,
+                    });
+                    const { usePointStore } = await import('@/store/point.store');
+                    const pointStore = usePointStore();
+                    await pointStore.fetchPointSummary();
+                    ToastMessage.success('퀴즈가 생성되었습니다! +20 포인트 🎉');
+                } catch (pointError) {
+                    console.error('Failed to award quiz create points:', pointError);
+                    ToastMessage.success('퀴즈가 생성되었습니다! 🎉');
+                }
+                
                 return quiz.id;
             } catch (e) {
                 console.error('Failed to create quiz:', e);
@@ -497,16 +511,26 @@ export const useQuizStore = defineStore('quiz', {
             // 점수 계산
             let score = 0;
             const correctAnswers: string[] = [];
+            let consecutiveCorrect = 0;
+            let maxConsecutive = 0;
 
             this.playState.questions.forEach((question) => {
                 const userAnswer = this.playState.answers[question.id];
                 if (userAnswer === question.correct_answer) {
                     score++;
                     correctAnswers.push(question.id);
+                    consecutiveCorrect++;
+                    maxConsecutive = Math.max(maxConsecutive, consecutiveCorrect);
+                } else {
+                    consecutiveCorrect = 0;
                 }
             });
 
-            // 결과 저장
+            let earnedPoints = 0;
+            let bonusPoints = 0;
+            let levelUp = false;
+
+            // 결과 저장 및 포인트 지급
             try {
                 const supabase = useSupabaseClient<Database>();
                 const {
@@ -522,9 +546,33 @@ export const useQuizStore = defineStore('quiz', {
                         time_spent: timeSpent,
                         answers: this.playState.answers,
                     });
+
+                    // 포인트 지급
+                    if (score > 0) {
+                        const { data: pointResult } = await supabase.rpc('award_quiz_points', {
+                            p_user_id: user.id,
+                            p_quiz_id: this.playState.quiz.id,
+                            p_correct_count: score,
+                            p_total_questions: this.playState.questions.length,
+                            p_consecutive_correct: maxConsecutive,
+                        });
+
+                        if (pointResult && pointResult.length > 0) {
+                            const result = pointResult[0];
+                            earnedPoints = result.base_points || 0;
+                            bonusPoints = result.bonus_points || 0;
+                        }
+
+                        // point store 업데이트
+                        const { usePointStore } = await import('@/store/point.store');
+                        const pointStore = usePointStore();
+                        const oldLevel = pointStore.level;
+                        await pointStore.fetchPointSummary();
+                        levelUp = pointStore.level > oldLevel;
+                    }
                 }
             } catch (e) {
-                console.error('Failed to save attempt:', e);
+                console.error('Failed to save attempt or award points:', e);
             }
 
             return {
@@ -535,6 +583,9 @@ export const useQuizStore = defineStore('quiz', {
                 totalQuestions: this.playState.questions.length,
                 timeSpent,
                 correctAnswers,
+                earnedPoints,
+                bonusPoints,
+                levelUp,
             };
         },
 

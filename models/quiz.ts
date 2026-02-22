@@ -121,6 +121,9 @@ export interface QuizResultData {
     totalQuestions: number;
     timeSpent: number;
     correctAnswers: string[];
+    earnedPoints?: number;
+    bonusPoints?: number;
+    levelUp?: boolean;
 }
 
 // 퀴즈 목록 필터

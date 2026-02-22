@@ -16,6 +16,10 @@ export interface Database {
                     avatar_url: string | null;
                     preferred_username: string | null;
                     provider: string | null;
+                    points: number;
+                    level: number;
+                    streak_days: number;
+                    last_active_at: string | null;
                     created_at: string;
                     updated_at: string;
                 };
@@ -26,6 +30,10 @@ export interface Database {
                     avatar_url?: string | null;
                     preferred_username?: string | null;
                     provider?: string | null;
+                    points?: number;
+                    level?: number;
+                    streak_days?: number;
+                    last_active_at?: string | null;
                     created_at?: string;
                     updated_at?: string;
                 };
@@ -36,6 +44,10 @@ export interface Database {
                     avatar_url?: string | null;
                     preferred_username?: string | null;
                     provider?: string | null;
+                    points?: number;
+                    level?: number;
+                    streak_days?: number;
+                    last_active_at?: string | null;
                     created_at?: string;
                     updated_at?: string;
                 };
@@ -206,11 +218,97 @@ export interface Database {
                     created_at?: string;
                 };
             };
+            point_history: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    points: number;
+                    action_type: string;
+                    description: string | null;
+                    metadata: Json;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    user_id: string;
+                    points: number;
+                    action_type: string;
+                    description?: string | null;
+                    metadata?: Json;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    user_id?: string;
+                    points?: number;
+                    action_type?: string;
+                    description?: string | null;
+                    metadata?: Json;
+                    created_at?: string;
+                };
+            };
+        };
+        Views: {
+            level_info: {
+                Row: {
+                    level: number;
+                    name: string;
+                    icon: string;
+                    min_points: number;
+                    max_points: number;
+                };
+            };
+            user_point_summary: {
+                Row: {
+                    user_id: string;
+                    points: number;
+                    level: number;
+                    streak_days: number;
+                    last_active_at: string | null;
+                    level_name: string;
+                    level_icon: string;
+                    min_points: number;
+                    max_points: number;
+                    level_progress: number;
+                };
+            };
         };
         Functions: {
             increment_quiz_play_count: {
                 Args: { quiz_uuid: string };
                 Returns: void;
+            };
+            add_points: {
+                Args: {
+                    p_user_id: string;
+                    p_points: number;
+                    p_action_type: string;
+                    p_description?: string;
+                    p_metadata?: Json;
+                };
+                Returns: { new_points: number; new_level: number; level_up: boolean }[];
+            };
+            check_daily_attendance: {
+                Args: { p_user_id: string };
+                Returns: { attendance_points: number; new_streak: number; already_checked: boolean }[];
+            };
+            award_quiz_points: {
+                Args: {
+                    p_user_id: string;
+                    p_quiz_id: string;
+                    p_correct_count: number;
+                    p_total_questions: number;
+                    p_consecutive_correct?: number;
+                };
+                Returns: { total_earned: number; base_points: number; bonus_points: number }[];
+            };
+            award_quiz_create_points: {
+                Args: { p_user_id: string; p_quiz_id: string };
+                Returns: number;
+            };
+            calculate_level: {
+                Args: { total_points: number };
+                Returns: number;
             };
         };
     };

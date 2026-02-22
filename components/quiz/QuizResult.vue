@@ -10,6 +10,18 @@
             <p class="result-subtitle">{{ result.quiz.title }}</p>
         </div>
 
+        <!-- 획득 포인트 -->
+        <div v-if="totalPoints > 0" class="points-earned">
+            <div class="points-icon">⭐</div>
+            <div class="points-info">
+                <span class="points-label">획득 포인트</span>
+                <span class="points-value">+{{ totalPoints }}점</span>
+                <span v-if="result.bonusPoints && result.bonusPoints > 0" class="bonus-badge">
+                    🔥 연속 정답 보너스 +{{ result.bonusPoints }}점
+                </span>
+            </div>
+        </div>
+
         <!-- 통계 -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -111,6 +123,10 @@ const accuracy = computed(() => {
     return Math.round((props.result.score / props.result.totalQuestions) * 100);
 });
 
+const totalPoints = computed(() => {
+    return (props.result.earnedPoints || 0) + (props.result.bonusPoints || 0);
+});
+
 const formattedTime = computed(() => {
     const minutes = Math.floor(props.result.timeSpent / 60);
     const seconds = props.result.timeSpent % 60;
@@ -208,6 +224,60 @@ function isCorrect(questionId: string): boolean {
             font-size: 16px;
             color: var(--text-secondary);
             margin: 0;
+        }
+    }
+
+    .points-earned {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+        border: 2px solid #ffc107;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        animation: slideIn 0.5s ease;
+
+        .points-icon {
+            font-size: 40px;
+        }
+
+        .points-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .points-label {
+                font-size: 13px;
+                color: #795548;
+            }
+
+            .points-value {
+                font-size: 24px;
+                font-weight: 800;
+                color: #f57c00;
+            }
+
+            .bonus-badge {
+                display: inline-block;
+                font-size: 12px;
+                color: #ff6b6b;
+                background: rgba(255, 107, 107, 0.1);
+                padding: 4px 8px;
+                border-radius: 12px;
+                margin-top: 4px;
+            }
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
 
