@@ -50,7 +50,9 @@ const resultData = ref<QuizResultData | null>(null);
 
 // 동적 SEO - 퀴즈 정보에 따라 메타 태그 설정
 const quizTitle = computed(() => quizStore.currentQuiz?.title || '퀴즈');
-const quizDescription = computed(() => quizStore.currentQuiz?.description || '재미있는 퀴즈에 도전해보세요!');
+const quizDescription = computed(
+    () => quizStore.currentQuiz?.description || '재미있는 퀴즈에 도전해보세요!',
+);
 
 useSeoMeta({
     title: () => `${quizTitle.value} - GoGoQuizKing`,
@@ -118,7 +120,7 @@ function handleHome() {
 .quiz-play-page {
     min-height: 100vh;
     margin: -16px;
-    background: var(--bg-primary);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
     .loading-state,
     .error-state {

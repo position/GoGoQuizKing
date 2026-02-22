@@ -1,7 +1,10 @@
 <template>
     <div class="level-progress">
         <div class="progress-header">
-            <LevelBadge :level="currentLevel" />
+            <div class="level-point-container">
+                <LevelBadge :level="currentLevel" />
+                <PointDisplay />
+            </div>
             <div class="progress-text">
                 <span v-if="isMaxLevel">최고 레벨 달성! 👑</span>
                 <span v-else>
@@ -29,6 +32,7 @@
 import { computed } from 'vue';
 import { usePointStore } from '@/store/point.store';
 import LevelBadge from './LevelBadge.vue';
+import PointDisplay from '~/components/point/PointDisplay.vue';
 
 const pointStore = usePointStore();
 
@@ -47,9 +51,7 @@ const targetPoints = computed(() => {
 <style scoped lang="scss">
 .level-progress {
     padding: 16px;
-    background: #fff;
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
     .progress-header {
         display: flex;
@@ -57,6 +59,10 @@ const targetPoints = computed(() => {
         justify-content: space-between;
         margin-bottom: 12px;
 
+        .level-point-container {
+            display: flex;
+            gap: 5px;
+        }
         .progress-text {
             font-size: 14px;
             color: #666;

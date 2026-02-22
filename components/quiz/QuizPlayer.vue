@@ -119,8 +119,9 @@
                 label="⬅️ 이전"
                 icon="arrow_back"
                 flat
-                color="grey"
+                color="white"
                 size="large"
+                rounded
             />
             <div v-else></div>
 
@@ -256,10 +257,8 @@ function handleComplete() {
 
 <style scoped lang="scss">
 .quiz-player {
-    min-height: calc(100vh - 100px);
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 
     .player-header {
         display: flex;

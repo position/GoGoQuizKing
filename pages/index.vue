@@ -2,6 +2,21 @@
     <div class="home-page">
         <!-- 환영 섹션 -->
         <section class="welcome-section">
+            <!-- 어드민 배지 -->
+            <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
+                <div
+                    class="admin-badge"
+                    :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }"
+                    :to="{ path: '/admin/quiz-automation' }"
+                >
+                    <q-icon
+                        :name="isAdmin ? 'admin_panel_settings' : 'verified_user'"
+                        size="20px"
+                    />
+                    <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
+                </div>
+            </section>
+
             <div class="welcome-content">
                 <div class="mascot">
                     <NuxtImg
@@ -22,10 +37,6 @@
         <!-- 포인트/레벨 섹션 (로그인 시) -->
         <section v-if="isLogin" class="point-level-section">
             <div class="user-status-card">
-                <div class="status-header">
-                    <LevelBadge />
-                    <PointDisplay />
-                </div>
                 <LevelProgress />
                 <div v-if="streakDays > 0" class="streak-info">
                     <q-icon name="local_fire_department" color="orange" size="20px" />
@@ -50,18 +61,6 @@
                 <div class="stat-icon">🎯</div>
                 <div class="stat-value">{{ userStats.accuracy }}%</div>
                 <div class="stat-label">정답률</div>
-            </div>
-        </section>
-
-        <!-- 어드민 배지 -->
-        <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
-            <div
-                class="admin-badge"
-                :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }"
-                :to="{ path: '/admin/quiz-automation' }"
-            >
-                <q-icon :name="isAdmin ? 'admin_panel_settings' : 'verified_user'" size="20px" />
-                <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
             </div>
         </section>
 
@@ -270,6 +269,7 @@ function goToQuiz(quizId: string) {
     margin: 0 auto;
 
     .welcome-section {
+        position: relative;
         text-align: center;
         padding: 40px 20px;
         background: linear-gradient(135deg, #ff8200 0%, #f7b32b 100%);
@@ -277,6 +277,35 @@ function goToQuiz(quizId: string) {
         margin-bottom: 24px;
         color: white;
         box-shadow: 0 8px 32px rgba(255, 130, 0, 0.3);
+
+        .admin-badge-section {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            right: 20px;
+            top: 20px;
+
+            .admin-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 10px 20px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+                &.is-admin {
+                    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+                    color: white;
+                }
+
+                &.is-moderator {
+                    background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+                    color: white;
+                }
+            }
+        }
 
         .mascot {
             line-height: 0;
@@ -373,33 +402,6 @@ function goToQuiz(quizId: string) {
                 font-size: 12px;
                 color: var(--text-light);
                 margin-top: 4px;
-            }
-        }
-    }
-
-    .admin-badge-section {
-        margin-bottom: 24px;
-        display: flex;
-        justify-content: center;
-
-        .admin-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-            &.is-admin {
-                background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-                color: white;
-            }
-
-            &.is-moderator {
-                background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-                color: white;
             }
         }
     }

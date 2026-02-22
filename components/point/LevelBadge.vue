@@ -36,10 +36,10 @@ const levelInfo = computed(() => {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 12px;
+    padding: 0 12px;
     border-radius: 24px;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-    border: 2px solid #4caf50;
+    border: 1px solid #4caf50;
 
     .level-icon {
         font-size: 20px;

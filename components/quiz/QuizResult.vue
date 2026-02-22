@@ -1,5 +1,10 @@
 <template>
     <div class="quiz-result">
+        <!-- 폭죽 애니메이션 (100% 정답 시) -->
+        <div v-if="accuracy === 100" class="confetti-container">
+            <div v-for="i in 50" :key="i" class="confetti" :style="getConfettiStyle(i)"></div>
+        </div>
+
         <!-- 결과 헤더 -->
         <div class="result-header">
             <div class="score-circle" :class="scoreClass">
@@ -156,6 +161,34 @@ const scoreClass = computed(() => {
 function isCorrect(questionId: string): boolean {
     return props.result.correctAnswers.includes(questionId);
 }
+
+// 폭죽 스타일 생성
+function getConfettiStyle(index: number) {
+    const colors = [
+        '#ff6b6b',
+        '#4ecdc4',
+        '#45b7d1',
+        '#f7b32b',
+        '#667eea',
+        '#764ba2',
+        '#ff9ff3',
+        '#54a0ff',
+    ];
+    const randomColor = colors[index % colors.length];
+    const randomLeft = Math.random() * 100;
+    const randomDelay = Math.random() * 3;
+    const randomDuration = 2 + Math.random() * 2;
+    const randomSize = 8 + Math.random() * 8;
+
+    return {
+        left: `${randomLeft}%`,
+        backgroundColor: randomColor,
+        animationDelay: `${randomDelay}s`,
+        animationDuration: `${randomDuration}s`,
+        width: `${randomSize}px`,
+        height: `${randomSize}px`,
+    };
+}
 </script>
 
 <style scoped lang="scss">
@@ -163,6 +196,72 @@ function isCorrect(questionId: string): boolean {
     max-width: 600px;
     margin: 0 auto;
     padding: 24px 16px;
+    background: var(--bg-card);
+    box-shadow:
+        0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    position: relative;
+    overflow: hidden;
+
+    // 폭죽 컨테이너
+    .confetti-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+        overflow: hidden;
+
+        .confetti {
+            position: absolute;
+            top: -20px;
+            border-radius: 50%;
+            animation: confetti-fall linear infinite;
+            opacity: 0;
+
+            &:nth-child(odd) {
+                border-radius: 0;
+                transform: rotate(45deg);
+            }
+
+            &:nth-child(3n) {
+                border-radius: 50% 0 50% 0;
+            }
+
+            &:nth-child(4n) {
+                border-radius: 0;
+                width: 6px !important;
+                height: 16px !important;
+            }
+        }
+    }
+
+    @keyframes confetti-fall {
+        0% {
+            opacity: 1;
+            top: -10%;
+            transform: translateX(0) rotateZ(0deg);
+        }
+        25% {
+            opacity: 1;
+            transform: translateX(30px) rotateZ(90deg);
+        }
+        50% {
+            opacity: 1;
+            transform: translateX(-20px) rotateZ(180deg);
+        }
+        75% {
+            opacity: 0.8;
+            transform: translateX(40px) rotateZ(270deg);
+        }
+        100% {
+            opacity: 0;
+            top: 100%;
+            transform: translateX(-10px) rotateZ(360deg);
+        }
+    }
 
     .result-header {
         text-align: center;
