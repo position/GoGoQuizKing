@@ -310,6 +310,70 @@ export interface Database {
                 Args: { total_points: number };
                 Returns: number;
             };
+            get_period_rankings: {
+                Args: {
+                    p_period?: string;
+                    p_limit?: number;
+                };
+                Returns: {
+                    user_id: string;
+                    full_name: string | null;
+                    preferred_username: string | null;
+                    avatar_url: string | null;
+                    period_points: number;
+                    total_points: number;
+                    level: number;
+                    rank: number;
+                }[];
+            };
+            get_user_ranking: {
+                Args: {
+                    p_user_id: string;
+                    p_period?: string;
+                };
+                Returns: {
+                    user_id: string;
+                    full_name: string | null;
+                    preferred_username: string | null;
+                    avatar_url: string | null;
+                    period_points: number;
+                    total_points: number;
+                    level: number;
+                    rank: number;
+                    total_users: number;
+                }[];
+            };
+            get_category_rankings: {
+                Args: {
+                    p_category: string;
+                    p_limit?: number;
+                };
+                Returns: {
+                    user_id: string;
+                    full_name: string | null;
+                    preferred_username: string | null;
+                    avatar_url: string | null;
+                    category_points: number;
+                    total_points: number;
+                    level: number;
+                    rank: number;
+                }[];
+            };
+            get_quiz_attempt_rankings: {
+                Args: {
+                    p_limit?: number;
+                };
+                Returns: {
+                    user_id: string;
+                    full_name: string | null;
+                    preferred_username: string | null;
+                    avatar_url: string | null;
+                    attempt_count: number;
+                    total_points: number;
+                    level: number;
+                    rank: number;
+                }[];
+            };
         };
     };
 }
