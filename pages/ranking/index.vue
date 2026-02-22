@@ -72,13 +72,14 @@ const currentRankings = computed(() => {
 });
 
 async function loadInitialData() {
-    await Promise.all([
-        rankingStore.fetchRankings('all', 100),
-        rankingStore.fetchMyRanking('all'),
-    ]);
+    await Promise.all([rankingStore.fetchRankings('all', 100), rankingStore.fetchMyRanking('all')]);
 }
 
-async function onFilterChange(filter: { period: RankingPeriod; type: RankingType; category?: QuizCategory }) {
+async function onFilterChange(filter: {
+    period: RankingPeriod;
+    type: RankingType;
+    category?: QuizCategory;
+}) {
     await rankingStore.applyFilter({
         period: filter.period,
         type: filter.type,
@@ -109,7 +110,7 @@ onMounted(() => {
     .page-title {
         font-size: 28px;
         font-weight: 800;
-        color: #212121;
+        color: var(--text-primary);
         margin: 0 0 8px 0;
     }
 

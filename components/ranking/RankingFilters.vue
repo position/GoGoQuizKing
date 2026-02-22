@@ -72,7 +72,10 @@ const emit = defineEmits<{
     (e: 'update:period', value: RankingPeriod): void;
     (e: 'update:type', value: RankingType): void;
     (e: 'update:category', value: QuizCategory): void;
-    (e: 'change', value: { period: RankingPeriod; type: RankingType; category?: QuizCategory }): void;
+    (
+        e: 'change',
+        value: { period: RankingPeriod; type: RankingType; category?: QuizCategory },
+    ): void;
 }>();
 
 const selectedPeriod = ref<RankingPeriod>(props.period);
@@ -162,7 +165,8 @@ function emitChange() {
     flex-wrap: wrap;
     gap: 12px;
     padding: 16px;
-    background: #f5f5f5;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
 }
 

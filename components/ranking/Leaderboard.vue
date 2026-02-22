@@ -8,10 +8,12 @@
                 <div v-if="topThree[1]" class="top-card rank-2">
                     <div class="medal">🥈</div>
                     <q-avatar size="56px" class="user-avatar">
-                        <img v-if="topThree[1].avatar_url" :src="topThree[1].avatar_url" alt="avatar" />
-                        <span v-else class="avatar-placeholder">{{
-                            getInitial(topThree[1])
-                        }}</span>
+                        <img
+                            v-if="topThree[1].avatar_url"
+                            :src="topThree[1].avatar_url"
+                            alt="avatar"
+                        />
+                        <span v-else class="avatar-placeholder">{{ getInitial(topThree[1]) }}</span>
                     </q-avatar>
                     <span class="user-name">{{ getDisplayName(topThree[1]) }}</span>
                     <LevelBadge :level="topThree[1].level" />
@@ -23,10 +25,12 @@
                     <div class="crown">👑</div>
                     <div class="medal">🥇</div>
                     <q-avatar size="72px" class="user-avatar">
-                        <img v-if="topThree[0].avatar_url" :src="topThree[0].avatar_url" alt="avatar" />
-                        <span v-else class="avatar-placeholder">{{
-                            getInitial(topThree[0])
-                        }}</span>
+                        <img
+                            v-if="topThree[0].avatar_url"
+                            :src="topThree[0].avatar_url"
+                            alt="avatar"
+                        />
+                        <span v-else class="avatar-placeholder">{{ getInitial(topThree[0]) }}</span>
                     </q-avatar>
                     <span class="user-name">{{ getDisplayName(topThree[0]) }}</span>
                     <LevelBadge :level="topThree[0].level" />
@@ -37,10 +41,12 @@
                 <div v-if="topThree[2]" class="top-card rank-3">
                     <div class="medal">🥉</div>
                     <q-avatar size="56px" class="user-avatar">
-                        <img v-if="topThree[2].avatar_url" :src="topThree[2].avatar_url" alt="avatar" />
-                        <span v-else class="avatar-placeholder">{{
-                            getInitial(topThree[2])
-                        }}</span>
+                        <img
+                            v-if="topThree[2].avatar_url"
+                            :src="topThree[2].avatar_url"
+                            alt="avatar"
+                        />
+                        <span v-else class="avatar-placeholder">{{ getInitial(topThree[2]) }}</span>
                     </q-avatar>
                     <span class="user-name">{{ getDisplayName(topThree[2]) }}</span>
                     <LevelBadge :level="topThree[2].level" />
@@ -51,7 +57,9 @@
 
         <!-- 나머지 랭킹 리스트 -->
         <div class="ranking-list-section">
-            <h3 v-if="showTopThree && restRankings.length > 0" class="section-title">📋 전체 순위</h3>
+            <h3 v-if="showTopThree && restRankings.length > 0" class="section-title">
+                📋 전체 순위
+            </h3>
 
             <div v-if="loading" class="loading-state">
                 <q-spinner-dots color="primary" size="40px" />
@@ -79,7 +87,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { RankingEntry, CategoryRankingEntry, QuizAttemptRankingEntry, RankingType } from '@/models/ranking';
+import type {
+    RankingEntry,
+    CategoryRankingEntry,
+    QuizAttemptRankingEntry,
+    RankingType,
+} from '@/models/ranking';
 import { getDisplayName as getDisplayNameUtil } from '@/models/ranking';
 import { LevelBadge } from '@/components/point';
 import RankingCard from './RankingCard.vue';
@@ -142,10 +155,10 @@ function formatPoints(entry: AnyRankingEntry): string {
 }
 
 .section-title {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 700;
     color: #212121;
-    margin: 0 0 16px 0;
+    margin: 0 0 10px 0;
 }
 
 // TOP 3 섹션
@@ -185,7 +198,9 @@ function formatPoints(entry: AnyRankingEntry): string {
     }
 
     .user-avatar {
-        border: 3px solid #e0e0e0;
+        img {
+            border: 3px solid #e0e0e0;
+        }
 
         .avatar-placeholder {
             font-size: 20px;
@@ -227,7 +242,9 @@ function formatPoints(entry: AnyRankingEntry): string {
         }
 
         .user-avatar {
-            border-color: #ffd700;
+            img {
+                border-color: #ffd700;
+            }
         }
 
         .points {
@@ -237,13 +254,17 @@ function formatPoints(entry: AnyRankingEntry): string {
 
     &.rank-2 {
         .user-avatar {
-            border-color: #c0c0c0;
+            img {
+                border-color: #c0c0c0;
+            }
         }
     }
 
     &.rank-3 {
         .user-avatar {
-            border-color: #cd7f32;
+            img {
+                border-color: #cd7f32;
+            }
         }
     }
 }
