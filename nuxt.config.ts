@@ -268,18 +268,6 @@ export default defineNuxtConfig({
         prerender: {
             crawlLinks: true,
         },
-        routeRules: {
-            '/sitemap.xml': {
-                headers: {
-                    'Content-Type': 'application/xml; charset=utf-8',
-                },
-            },
-            '/robots.txt': {
-                headers: {
-                    'Content-Type': 'text/plain; charset=utf-8',
-                },
-            },
-        },
     },
 
     vite: {

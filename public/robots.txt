@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# 크롤링 제외 경로
+Disallow: /admin/
+Disallow: /confirm
+Disallow: /quiz/quiz-create
+Disallow: /quiz/edit/
+Disallow: /quiz/my-quizzes
+Disallow: /notice/create-notice
+Disallow: /notice/edit-notice/
+
+# 사이트맵
+Sitemap: https://gogoquizking.com/sitemap.xml
