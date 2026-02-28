@@ -95,6 +95,7 @@ const close = () => {
     border-radius: 24px;
     overflow: hidden;
     text-align: center;
+    background: var(--bg-card);
 
     .celebration {
         background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
@@ -139,7 +140,11 @@ const close = () => {
         justify-content: center;
         gap: 16px;
         padding: 24px;
-        background: #fffde7;
+        background: rgba(255, 253, 231, 0.9);
+
+        .dark-mode & {
+            background: rgba(255, 193, 7, 0.1);
+        }
 
         .badge-item {
             display: flex;
@@ -161,6 +166,14 @@ const close = () => {
                 border-radius: 50%;
                 box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
 
+                .dark-mode & {
+                    background: linear-gradient(
+                        135deg,
+                        rgba(255, 248, 225, 0.2) 0%,
+                        rgba(255, 236, 179, 0.2) 100%
+                    );
+                }
+
                 .badge-icon {
                     font-size: 32px;
                 }
@@ -169,7 +182,7 @@ const close = () => {
             .badge-name {
                 font-size: 13px;
                 font-weight: 600;
-                color: #333;
+                color: var(--text-primary);
                 max-width: 80px;
                 text-align: center;
             }
@@ -182,7 +195,7 @@ const close = () => {
         p {
             margin: 0;
             font-size: 14px;
-            color: #666;
+            color: var(--text-secondary);
         }
     }
 

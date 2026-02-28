@@ -30,7 +30,11 @@
 
                     <div class="info-section">
                         <h1 class="user-name">
-                            {{ authStore.userInfo.full_name || authStore.userInfo.preferred_username || '사용자' }}
+                            {{
+                                authStore.userInfo.full_name ||
+                                authStore.userInfo.preferred_username ||
+                                '사용자'
+                            }}
                         </h1>
                         <p class="user-email">{{ authStore.userInfo.email }}</p>
 
@@ -49,7 +53,9 @@
                     <div class="status-item points">
                         <q-icon name="star" size="24px" />
                         <div class="status-content">
-                            <span class="status-value">{{ pointStore.points.toLocaleString() }}</span>
+                            <span class="status-value">{{
+                                pointStore.points.toLocaleString()
+                            }}</span>
                             <span class="status-label">포인트</span>
                         </div>
                     </div>
@@ -118,11 +124,7 @@
                     />
                 </div>
                 <div v-if="recentBadges.length > 0" class="badges-preview">
-                    <div
-                        v-for="badge in recentBadges"
-                        :key="badge.badge_id"
-                        class="badge-item"
-                    >
+                    <div v-for="badge in recentBadges" :key="badge.badge_id" class="badge-item">
                         <span class="badge-icon">{{ badge.badge_icon }}</span>
                         <span class="badge-name">{{ badge.badge_name }}</span>
                     </div>
@@ -198,10 +200,7 @@
         </template>
 
         <!-- 프로필 수정 다이얼로그 -->
-        <ProfileEditDialog
-            v-model="showEditDialog"
-            @updated="handleProfileUpdated"
-        />
+        <ProfileEditDialog v-model="showEditDialog" @updated="handleProfileUpdated" />
     </div>
 </template>
 
@@ -233,7 +232,9 @@ const earnedBadgesCount = computed(() => {
 const recentBadges = computed(() => {
     return badgeStore.earnedBadges
         .slice()
-        .sort((a, b) => new Date(b.earned_at || '').getTime() - new Date(a.earned_at || '').getTime())
+        .sort(
+            (a, b) => new Date(b.earned_at || '').getTime() - new Date(a.earned_at || '').getTime(),
+        )
         .slice(0, 5);
 });
 
@@ -298,16 +299,18 @@ onMounted(() => {
         position: relative;
 
         .profile-avatar {
-            border: 3px solid rgba(255, 255, 255, 0.3);
             background: white;
+            img {
+                border: 3px solid rgba(255, 255, 255, 0.3);
+            }
         }
 
         .edit-btn {
             position: absolute;
             bottom: 0;
             right: 0;
-            background: white;
-            color: #5c6bc0;
+            background: var(--bg-card);
+            color: #5c6bc0 !important;
         }
     }
 
@@ -352,11 +355,11 @@ onMounted(() => {
 
 // Status Section
 .status-section {
-    background: white;
+    background: var(--bg-card);
     border-radius: 16px;
     padding: 20px;
     margin-bottom: 24px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px var(--shadow-color);
 
     .status-grid {
         display: grid;
@@ -370,7 +373,7 @@ onMounted(() => {
         align-items: center;
         gap: 12px;
         padding: 12px;
-        background: #f5f5f5;
+        background: var(--bg-surface);
         border-radius: 12px;
 
         &.points {
@@ -398,12 +401,12 @@ onMounted(() => {
             .status-value {
                 font-size: 20px;
                 font-weight: 700;
-                color: #212121;
+                color: var(--text-primary);
             }
 
             .status-label {
                 font-size: 12px;
-                color: #757575;
+                color: var(--text-secondary);
             }
         }
     }
@@ -414,7 +417,7 @@ onMounted(() => {
             justify-content: space-between;
             margin-bottom: 8px;
             font-size: 13px;
-            color: #757575;
+            color: var(--text-secondary);
 
             .progress-text {
                 font-weight: 600;
@@ -438,7 +441,7 @@ onMounted(() => {
     .section-title {
         font-size: 18px;
         font-weight: 700;
-        color: #212121;
+        color: var(--text-primary);
         margin: 0;
     }
 }
@@ -460,7 +463,7 @@ onMounted(() => {
         align-items: center;
         gap: 8px;
         padding: 10px 16px;
-        background: #f5f5f5;
+        background: var(--bg-surface);
         border-radius: 12px;
 
         .badge-icon {
@@ -470,7 +473,7 @@ onMounted(() => {
         .badge-name {
             font-size: 13px;
             font-weight: 500;
-            color: #424242;
+            color: var(--text-primary);
         }
     }
 }
@@ -478,9 +481,9 @@ onMounted(() => {
 .no-badges {
     text-align: center;
     padding: 20px;
-    background: #f5f5f5;
+    background: var(--bg-surface);
     border-radius: 12px;
-    color: #757575;
+    color: var(--text-secondary);
     font-size: 14px;
 }
 
@@ -489,10 +492,10 @@ onMounted(() => {
     margin-bottom: 24px;
 
     .menu-list {
-        background: white;
+        background: var(--bg-card);
         border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px var(--shadow-color);
 
         .q-item {
             padding: 16px;

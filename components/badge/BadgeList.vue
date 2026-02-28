@@ -95,7 +95,8 @@ const filteredBadges = computed((): BadgeWithStatus[] => {
     let badges = badgeStore.badges;
 
     // 카테고리 필터 (props 또는 선택된 카테고리)
-    const categoryToFilter = props.category || (selectedCategory.value !== 'all' ? selectedCategory.value : null);
+    const categoryToFilter =
+        props.category || (selectedCategory.value !== 'all' ? selectedCategory.value : null);
     if (categoryToFilter) {
         badges = badges.filter((b) => b.category === categoryToFilter);
     }
@@ -122,9 +123,21 @@ onMounted(async () => {
         align-items: center;
         gap: 8px;
         padding: 16px;
-        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        background: linear-gradient(
+            135deg,
+            rgba(92, 107, 192, 0.15) 0%,
+            rgba(121, 134, 203, 0.15) 100%
+        );
         border-radius: 16px;
         margin-bottom: 16px;
+
+        .dark-mode & {
+            background: linear-gradient(
+                135deg,
+                rgba(92, 107, 192, 0.25) 0%,
+                rgba(121, 134, 203, 0.25) 100%
+            );
+        }
 
         .summary-item {
             display: flex;
@@ -134,18 +147,22 @@ onMounted(async () => {
             .summary-value {
                 font-size: 24px;
                 font-weight: 700;
-                color: #1976d2;
+                color: #5c6bc0;
+
+                .dark-mode & {
+                    color: #9fa8da;
+                }
             }
 
             .summary-label {
                 font-size: 12px;
-                color: #666;
+                color: var(--text-secondary);
             }
         }
 
         .summary-divider {
             font-size: 24px;
-            color: #90caf9;
+            color: var(--text-light);
             margin: 0 4px;
         }
 
@@ -174,7 +191,7 @@ onMounted(async () => {
     .empty-state {
         text-align: center;
         padding: 48px 24px;
-        color: #888;
+        color: var(--text-secondary);
 
         p {
             margin: 8px 0 0;
@@ -182,7 +199,7 @@ onMounted(async () => {
 
             &.hint {
                 font-size: 12px;
-                color: #aaa;
+                color: var(--text-light);
             }
         }
     }

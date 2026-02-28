@@ -7,11 +7,7 @@
 
         <!-- 뱃지 목록 -->
         <section class="badges-section">
-            <BadgeList
-                :show-summary="true"
-                :show-category-filter="true"
-                :show-progress="true"
-            />
+            <BadgeList :show-summary="true" :show-category-filter="true" :show-progress="true" />
         </section>
 
         <!-- 뱃지 획득 다이얼로그 -->
@@ -55,7 +51,7 @@ onMounted(async () => {
 
     .page-description {
         font-size: 14px;
-        color: #757575;
+        color: var(--text-secondary);
         margin: 0;
     }
 }

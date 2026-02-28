@@ -54,9 +54,9 @@ const isCompleted = computed(() => props.currentValue >= props.targetValue);
 <style scoped lang="scss">
 .achievement-progress {
     padding: 16px;
-    background: white;
+    background: var(--bg-card);
     border-radius: 16px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color);
 
     .achievement-header {
         display: flex;
@@ -76,13 +76,13 @@ const isCompleted = computed(() => props.currentValue >= props.targetValue);
                 margin: 0;
                 font-size: 15px;
                 font-weight: 600;
-                color: #333;
+                color: var(--text-primary);
             }
 
             .achievement-description {
                 margin: 4px 0 0;
                 font-size: 13px;
-                color: #666;
+                color: var(--text-secondary);
             }
         }
     }
@@ -95,13 +95,17 @@ const isCompleted = computed(() => props.currentValue >= props.targetValue);
 
             .progress-text {
                 font-size: 12px;
-                color: #888;
+                color: var(--text-light);
             }
 
             .progress-percent {
                 font-size: 12px;
                 font-weight: 600;
-                color: #1976d2;
+                color: #5c6bc0;
+
+                .dark-mode & {
+                    color: #9fa8da;
+                }
             }
         }
     }
@@ -112,11 +116,16 @@ const isCompleted = computed(() => props.currentValue >= props.targetValue);
         gap: 4px;
         margin-top: 12px;
         padding: 4px 12px;
-        background: #e8f5e9;
+        background: rgba(76, 175, 80, 0.15);
         border-radius: 12px;
         font-size: 12px;
         font-weight: 600;
         color: #4caf50;
+
+        .dark-mode & {
+            background: rgba(129, 199, 132, 0.2);
+            color: #81c784;
+        }
     }
 }
 </style>

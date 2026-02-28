@@ -36,7 +36,7 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    Filler
+    Filler,
 );
 
 interface Props {
@@ -178,7 +178,7 @@ const chartOptions = computed(() => ({
         align-items: center;
         justify-content: center;
         height: 100%;
-        color: #9e9e9e;
+        color: var(--text-secondary);
 
         p {
             margin-top: 12px;

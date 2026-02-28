@@ -6,13 +6,13 @@ import { storeToRefs } from 'pinia';
 import { ToastMessage } from '@/helper/message';
 import { useCommonStore } from '@/store/common.store';
 
+const router = useRouter();
 const authStore = useAuthStore();
 const commonStore = useCommonStore();
 const { isLogin } = storeToRefs(authStore);
 const { userInfo } = storeToRefs(authStore);
 const { isMenuCollapse } = storeToRefs(commonStore);
 const userInfoHeight = '160px';
-
 const isDarkMode = computed(() => commonStore.isDarkMode);
 
 onMounted(() => {
@@ -23,6 +23,10 @@ onMounted(() => {
 async function logout() {
     await authStore.signOut();
     ToastMessage.success('Success');
+}
+
+function goProfile() {
+    router.push({ path: '/profile' });
 }
 </script>
 
@@ -68,6 +72,13 @@ async function logout() {
                     <q-item-section>내 퀴즈</q-item-section>
                 </q-item>
 
+                <q-item :to="{ path: '/profile/badges' }" clickable v-ripple class="nav-item">
+                    <q-item-section avatar>
+                        <q-icon name="emoji_events" color="amber" />
+                    </q-item-section>
+                    <q-item-section>내 뱃지</q-item-section>
+                </q-item>
+
                 <q-separator class="nav-separator" />
 
                 <q-item :to="{ path: '/ranking' }" clickable v-ripple class="nav-item">
@@ -75,13 +86,6 @@ async function logout() {
                         <q-icon name="leaderboard" color="purple" />
                     </q-item-section>
                     <q-item-section>랭킹</q-item-section>
-                </q-item>
-
-                <q-item :to="{ path: '/profile/badges' }" clickable v-ripple class="nav-item">
-                    <q-item-section avatar>
-                        <q-icon name="emoji_events" color="amber" />
-                    </q-item-section>
-                    <q-item-section>내 뱃지</q-item-section>
                 </q-item>
             </q-list>
         </q-scroll-area>
@@ -103,7 +107,7 @@ async function logout() {
                     />
                 </div>
                 <div v-else class="user-info-area">
-                    <dl class="user-info">
+                    <dl @click="goProfile" class="user-info">
                         <dt class="profile">
                             <q-avatar size="56px" class="user-avatar">
                                 <img
@@ -243,6 +247,7 @@ async function logout() {
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
 
             > .profile {
                 position: relative;

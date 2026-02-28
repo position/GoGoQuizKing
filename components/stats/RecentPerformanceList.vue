@@ -71,12 +71,12 @@ function getScoreClass(score: number, total: number): string {
         align-items: center;
         justify-content: space-between;
         padding: 12px 16px;
-        background: #f5f5f5;
+        background: var(--bg-surface);
         border-radius: 12px;
         transition: background-color 0.2s;
 
         &:hover {
-            background: #eeeeee;
+            background: var(--hover-overlay);
         }
     }
 
@@ -87,7 +87,7 @@ function getScoreClass(score: number, total: number): string {
         .quiz-title {
             font-size: 14px;
             font-weight: 600;
-            color: #212121;
+            color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -99,7 +99,7 @@ function getScoreClass(score: number, total: number): string {
             gap: 12px;
             margin-top: 4px;
             font-size: 12px;
-            color: #757575;
+            color: var(--text-secondary);
 
             .time {
                 display: flex;
@@ -126,23 +126,43 @@ function getScoreClass(score: number, total: number): string {
         }
 
         &.excellent {
-            background: #e8f5e9;
+            background: rgba(46, 125, 50, 0.15);
             color: #2e7d32;
+
+            .dark-mode & {
+                background: rgba(129, 199, 132, 0.2);
+                color: #81c784;
+            }
         }
 
         &.good {
-            background: #e3f2fd;
+            background: rgba(21, 101, 192, 0.15);
             color: #1565c0;
+
+            .dark-mode & {
+                background: rgba(100, 181, 246, 0.2);
+                color: #64b5f6;
+            }
         }
 
         &.average {
-            background: #fff3e0;
+            background: rgba(239, 108, 0, 0.15);
             color: #ef6c00;
+
+            .dark-mode & {
+                background: rgba(255, 183, 77, 0.2);
+                color: #ffb74d;
+            }
         }
 
         &.poor {
-            background: #ffebee;
+            background: rgba(198, 40, 40, 0.15);
             color: #c62828;
+
+            .dark-mode & {
+                background: rgba(239, 83, 80, 0.2);
+                color: #ef5350;
+            }
         }
     }
 
@@ -152,7 +172,7 @@ function getScoreClass(score: number, total: number): string {
         align-items: center;
         justify-content: center;
         padding: 40px 20px;
-        color: #9e9e9e;
+        color: var(--text-secondary);
 
         p {
             margin-top: 12px;

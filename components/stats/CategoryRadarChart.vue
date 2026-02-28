@@ -45,7 +45,7 @@ const chartData = computed(() => ({
             borderColor: CHART_COLORS.primary,
             borderWidth: 2,
             pointBackgroundColor: props.data.map(
-                (s) => CATEGORY_COLORS[s.category] || CHART_COLORS.primary
+                (s) => CATEGORY_COLORS[s.category] || CHART_COLORS.primary,
             ),
             pointBorderColor: '#fff',
             pointHoverBackgroundColor: '#fff',
@@ -119,7 +119,7 @@ const chartOptions = computed(() => ({
         align-items: center;
         justify-content: center;
         height: 100%;
-        color: #9e9e9e;
+        color: var(--text-secondary);
 
         p {
             margin-top: 12px;

@@ -16,7 +16,9 @@
                     <div class="stat-icon accuracy-icon">
                         <q-icon name="check_circle" size="24px" />
                     </div>
-                    <div class="stat-value">{{ stats?.averageScore || 0 }}<span class="stat-unit">%</span></div>
+                    <div class="stat-value">
+                        {{ stats?.averageScore || 0 }}<span class="stat-unit">%</span>
+                    </div>
                     <div class="stat-label">평균 정답률</div>
                 </q-card-section>
             </q-card>
@@ -84,12 +86,15 @@ const formattedTime = computed(() => {
 
     .stat-card {
         border-radius: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        transition:
+            transform 0.2s,
+            box-shadow 0.2s;
+        background: var(--bg-card);
 
         &:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 16px var(--shadow-color);
         }
 
         .q-card__section {
@@ -130,7 +135,7 @@ const formattedTime = computed(() => {
         .stat-value {
             font-size: 28px;
             font-weight: 700;
-            color: #212121;
+            color: var(--text-primary);
             line-height: 1.2;
 
             .stat-unit {
@@ -142,7 +147,7 @@ const formattedTime = computed(() => {
 
         .stat-label {
             font-size: 13px;
-            color: #757575;
+            color: var(--text-secondary);
             margin-top: 4px;
         }
     }

@@ -3,24 +3,14 @@
         <q-card class="profile-edit-dialog">
             <q-card-section class="dialog-header">
                 <div class="text-h6">프로필 수정</div>
-                <q-btn
-                    flat
-                    round
-                    dense
-                    icon="close"
-                    @click="closeDialog"
-                />
+                <q-btn flat round dense icon="close" @click="closeDialog" />
             </q-card-section>
 
             <q-card-section class="dialog-content">
                 <!-- 아바타 수정 -->
                 <div class="avatar-edit">
                     <q-avatar size="80px" class="edit-avatar">
-                        <img
-                            v-if="formData.avatar_url"
-                            :src="formData.avatar_url"
-                            alt="프로필"
-                        />
+                        <img v-if="formData.avatar_url" :src="formData.avatar_url" alt="프로필" />
                         <q-icon v-else name="person" size="40px" color="grey-5" />
                     </q-avatar>
                     <q-input
@@ -39,7 +29,7 @@
                     label="이름"
                     outlined
                     class="form-input"
-                    :rules="[val => !val || val.length <= 50 || '50자 이하로 입력해주세요']"
+                    :rules="[(val) => !val || val.length <= 50 || '50자 이하로 입력해주세요']"
                 />
 
                 <!-- 사용자 이름 -->
@@ -48,7 +38,7 @@
                     label="사용자 이름"
                     outlined
                     class="form-input"
-                    :rules="[val => !val || val.length <= 30 || '30자 이하로 입력해주세요']"
+                    :rules="[(val) => !val || val.length <= 30 || '30자 이하로 입력해주세요']"
                 >
                     <template v-slot:prepend>
                         <span class="username-prefix">@</span>
@@ -57,12 +47,7 @@
             </q-card-section>
 
             <q-card-actions class="dialog-actions">
-                <q-btn
-                    flat
-                    label="취소"
-                    color="grey"
-                    @click="closeDialog"
-                />
+                <q-btn flat label="취소" color="grey" @click="closeDialog" />
                 <q-btn
                     unelevated
                     label="저장"
@@ -108,16 +93,19 @@ const dialogModel = computed({
     set: (value) => emit('update:modelValue', value),
 });
 
-watch(() => props.modelValue, (newVal) => {
-    if (newVal) {
-        // 다이얼로그 열릴 때 현재 값으로 초기화
-        formData.value = {
-            full_name: authStore.userInfo.full_name || '',
-            preferred_username: authStore.userInfo.preferred_username || '',
-            avatar_url: authStore.userInfo.avatar_url || '',
-        };
-    }
-});
+watch(
+    () => props.modelValue,
+    (newVal) => {
+        if (newVal) {
+            // 다이얼로그 열릴 때 현재 값으로 초기화
+            formData.value = {
+                full_name: authStore.userInfo.full_name || '',
+                preferred_username: authStore.userInfo.preferred_username || '',
+                avatar_url: authStore.userInfo.avatar_url || '',
+            };
+        }
+    },
+);
 
 function closeDialog() {
     dialogModel.value = false;
@@ -132,7 +120,7 @@ async function handleSave() {
             authStore.userInfo.full_name = formData.value.full_name || null;
             authStore.userInfo.preferred_username = formData.value.preferred_username || null;
             authStore.userInfo.avatar_url = formData.value.avatar_url || null;
-            
+
             emit('updated');
             closeDialog();
         }
@@ -147,6 +135,7 @@ async function handleSave() {
     width: 100%;
     max-width: 420px;
     border-radius: 16px;
+    background: var(--bg-card);
 }
 
 .dialog-header {
@@ -169,8 +158,8 @@ async function handleSave() {
         margin-bottom: 24px;
 
         .edit-avatar {
-            border: 2px solid #e0e0e0;
-            background: #f5f5f5;
+            border: 2px solid var(--border-color);
+            background: var(--bg-surface);
         }
 
         .avatar-url-input {
@@ -183,7 +172,7 @@ async function handleSave() {
     }
 
     .username-prefix {
-        color: #757575;
+        color: var(--text-secondary);
         font-weight: 500;
     }
 }

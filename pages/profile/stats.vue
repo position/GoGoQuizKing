@@ -281,7 +281,7 @@ onMounted(() => {
     margin-bottom: 24px;
 
     .back-btn {
-        color: #757575;
+        color: var(--text-secondary);
     }
 
     .header-content {
@@ -294,7 +294,7 @@ onMounted(() => {
 
         .page-description {
             font-size: 14px;
-            color: #757575;
+            color: var(--text-secondary);
             margin: 4px 0 0;
         }
     }
@@ -306,7 +306,7 @@ onMounted(() => {
     justify-content: center;
     align-items: center;
     min-height: 400px;
-    color: #757575;
+    color: var(--text-secondary);
 
     p {
         margin-top: 16px;
@@ -344,8 +344,9 @@ onMounted(() => {
 .detail-card,
 .recent-card {
     border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px var(--shadow-color);
     height: 100%;
+    background: var(--bg-card);
 }
 
 .card-header {
@@ -360,7 +361,7 @@ onMounted(() => {
         gap: 8px;
         font-size: 16px;
         font-weight: 600;
-        color: #212121;
+        color: var(--text-primary);
 
         .q-icon {
             color: #5c6bc0;
@@ -409,7 +410,7 @@ onMounted(() => {
 .no-data-table {
     text-align: center;
     padding: 40px;
-    color: #9e9e9e;
+    color: var(--text-secondary);
 }
 
 .list-content {

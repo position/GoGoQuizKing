@@ -66,17 +66,38 @@ const formatDate = (dateStr: string): string => {
     gap: 12px;
     padding: 16px;
     border-radius: 16px;
-    background: white;
-    border: 2px solid #e0e0e0;
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
     transition: all 0.3s ease;
 
     &.earned {
         border-color: #4caf50;
-        background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+        background: linear-gradient(
+            135deg,
+            rgba(241, 248, 233, 0.8) 0%,
+            rgba(232, 245, 233, 0.8) 100%
+        );
+
+        .dark-mode & {
+            background: linear-gradient(
+                135deg,
+                rgba(76, 175, 80, 0.15) 0%,
+                rgba(129, 199, 132, 0.15) 100%
+            );
+            border-color: #66bb6a;
+        }
 
         .badge-icon-wrapper {
             background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
             border-color: #ffc107;
+
+            .dark-mode & {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 193, 7, 0.2) 0%,
+                    rgba(255, 236, 179, 0.2) 100%
+                );
+            }
         }
     }
 
@@ -84,8 +105,8 @@ const formatDate = (dateStr: string): string => {
         opacity: 0.85;
 
         .badge-icon-wrapper {
-            background: #f5f5f5;
-            border-color: #e0e0e0;
+            background: var(--bg-surface);
+            border-color: var(--border-color);
         }
 
         .badge-icon {
@@ -121,7 +142,7 @@ const formatDate = (dateStr: string): string => {
             align-items: center;
             justify-content: center;
             color: white;
-            border: 2px solid white;
+            border: 2px solid var(--bg-card);
         }
     }
 
@@ -133,13 +154,13 @@ const formatDate = (dateStr: string): string => {
             margin: 0 0 4px;
             font-size: 15px;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .badge-description {
             margin: 0 0 8px;
             font-size: 13px;
-            color: #666;
+            color: var(--text-secondary);
             line-height: 1.4;
         }
 
@@ -148,7 +169,7 @@ const formatDate = (dateStr: string): string => {
                 display: block;
                 margin-top: 4px;
                 font-size: 12px;
-                color: #888;
+                color: var(--text-light);
                 text-align: right;
             }
         }
@@ -159,6 +180,10 @@ const formatDate = (dateStr: string): string => {
             gap: 4px;
             font-size: 12px;
             color: #4caf50;
+
+            .dark-mode & {
+                color: #81c784;
+            }
         }
     }
 }

@@ -43,7 +43,9 @@ const difficultyLabels: Record<string, string> = {
 
 const sortedData = computed(() => {
     const order = ['easy', 'medium', 'hard'];
-    return [...props.data].sort((a, b) => order.indexOf(a.difficulty) - order.indexOf(b.difficulty));
+    return [...props.data].sort(
+        (a, b) => order.indexOf(a.difficulty) - order.indexOf(b.difficulty),
+    );
 });
 
 const chartData = computed(() => ({
@@ -53,7 +55,7 @@ const chartData = computed(() => ({
             label: '정답률 (%)',
             data: sortedData.value.map((s) => s.accuracy),
             backgroundColor: sortedData.value.map(
-                (s) => DIFFICULTY_COLORS[s.difficulty] || '#78909c'
+                (s) => DIFFICULTY_COLORS[s.difficulty] || '#78909c',
             ),
             borderRadius: 8,
             borderSkipped: false,
@@ -123,7 +125,7 @@ const chartOptions = computed(() => ({
         align-items: center;
         justify-content: center;
         height: 100%;
-        color: #9e9e9e;
+        color: var(--text-secondary);
 
         p {
             margin-top: 12px;
