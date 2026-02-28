@@ -16,13 +16,13 @@
                                 :src="authStore.userInfo.avatar_url"
                                 alt="프로필"
                             />
-                            <q-icon v-else name="sym_o_person" size="50px" color="grey-5" />
+                            <q-icon v-else name="person" size="50px" color="grey-5" />
                         </q-avatar>
                         <q-btn
                             round
                             flat
                             size="sm"
-                            icon="sym_o_edit"
+                            icon="edit"
                             class="edit-btn"
                             @click="showEditDialog = true"
                         />
@@ -47,7 +47,7 @@
             <section class="status-section">
                 <div class="status-grid">
                     <div class="status-item points">
-                        <q-icon name="sym_o_stars" size="24px" />
+                        <q-icon name="star" size="24px" />
                         <div class="status-content">
                             <span class="status-value">{{ pointStore.points.toLocaleString() }}</span>
                             <span class="status-label">포인트</span>
@@ -55,7 +55,7 @@
                     </div>
 
                     <div class="status-item streak">
-                        <q-icon name="sym_o_local_fire_department" size="24px" />
+                        <q-icon name="local_fire_department" size="24px" />
                         <div class="status-content">
                             <span class="status-value">{{ pointStore.streakDays }}</span>
                             <span class="status-label">연속 출석일</span>
@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="status-item badges">
-                        <q-icon name="sym_o_military_tech" size="24px" />
+                        <q-icon name="military_tech" size="24px" />
                         <div class="status-content">
                             <span class="status-value">{{ earnedBadgesCount }}</span>
                             <span class="status-label">획득 뱃지</span>
@@ -97,7 +97,7 @@
                         dense
                         color="primary"
                         label="상세 통계"
-                        icon-right="sym_o_arrow_forward"
+                        icon-right="arrow_forward"
                         @click="$router.push('/profile/stats')"
                     />
                 </div>
@@ -113,7 +113,7 @@
                         dense
                         color="primary"
                         label="전체 보기"
-                        icon-right="sym_o_arrow_forward"
+                        icon-right="arrow_forward"
                         @click="$router.push('/profile/badges')"
                     />
                 </div>
@@ -145,40 +145,40 @@
                 <q-list class="menu-list">
                     <q-item clickable v-ripple @click="$router.push('/profile/stats')">
                         <q-item-section avatar>
-                            <q-icon name="sym_o_analytics" color="primary" />
+                            <q-icon name="analytics" color="primary" />
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>상세 통계 보기</q-item-label>
                             <q-item-label caption>카테고리별, 난이도별 분석</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                            <q-icon name="sym_o_chevron_right" color="grey" />
+                            <q-icon name="chevron_right" color="grey" />
                         </q-item-section>
                     </q-item>
 
                     <q-item clickable v-ripple @click="$router.push('/profile/badges')">
                         <q-item-section avatar>
-                            <q-icon name="sym_o_workspace_premium" color="amber" />
+                            <q-icon name="workspace_premium" color="amber" />
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>내 뱃지</q-item-label>
                             <q-item-label caption>획득 뱃지 및 진행 상황</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                            <q-icon name="sym_o_chevron_right" color="grey" />
+                            <q-icon name="chevron_right" color="grey" />
                         </q-item-section>
                     </q-item>
 
                     <q-item clickable v-ripple @click="$router.push('/quiz/my')">
                         <q-item-section avatar>
-                            <q-icon name="sym_o_edit_note" color="secondary" />
+                            <q-icon name="edit_note" color="secondary" />
                         </q-item-section>
                         <q-item-section>
                             <q-item-label>내가 만든 퀴즈</q-item-label>
                             <q-item-label caption>퀴즈 관리 및 수정</q-item-label>
                         </q-item-section>
                         <q-item-section side>
-                            <q-icon name="sym_o_chevron_right" color="grey" />
+                            <q-icon name="chevron_right" color="grey" />
                         </q-item-section>
                     </q-item>
                 </q-list>
@@ -190,7 +190,7 @@
                     outline
                     color="negative"
                     label="로그아웃"
-                    icon="sym_o_logout"
+                    icon="logout"
                     class="logout-btn"
                     @click="handleLogout"
                 />

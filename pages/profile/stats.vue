@@ -6,7 +6,7 @@
                 flat
                 round
                 dense
-                icon="sym_o_arrow_back"
+                icon="arrow_back"
                 class="back-btn"
                 @click="$router.push('/profile')"
             />
@@ -35,7 +35,7 @@
                     <q-card class="chart-card">
                         <q-card-section class="card-header">
                             <div class="card-title">
-                                <q-icon name="sym_o_category" size="20px" />
+                                <q-icon name="category" size="20px" />
                                 <span>카테고리별 정답률</span>
                             </div>
                             <q-chip
@@ -58,7 +58,7 @@
                     <q-card class="chart-card">
                         <q-card-section class="card-header">
                             <div class="card-title">
-                                <q-icon name="sym_o_signal_cellular_alt" size="20px" />
+                                <q-icon name="signal_cellular_alt" size="20px" />
                                 <span>난이도별 성과</span>
                             </div>
                         </q-card-section>
@@ -73,7 +73,7 @@
                     <q-card class="chart-card">
                         <q-card-section class="card-header">
                             <div class="card-title">
-                                <q-icon name="sym_o_show_chart" size="20px" />
+                                <q-icon name="show_chart" size="20px" />
                                 <span>일별 활동 추이</span>
                             </div>
                             <q-btn-toggle
@@ -98,7 +98,7 @@
                     <q-card class="chart-card">
                         <q-card-section class="card-header">
                             <div class="card-title">
-                                <q-icon name="sym_o_trending_up" size="20px" />
+                                <q-icon name="trending_up" size="20px" />
                                 <span>포인트 획득 추이</span>
                             </div>
                             <q-toggle
@@ -123,7 +123,7 @@
                 <q-card class="detail-card">
                     <q-card-section class="card-header">
                         <div class="card-title">
-                            <q-icon name="sym_o_table_chart" size="20px" />
+                            <q-icon name="table_chart" size="20px" />
                             <span>카테고리별 상세 통계</span>
                         </div>
                     </q-card-section>
@@ -166,7 +166,7 @@
                 <q-card class="recent-card">
                     <q-card-section class="card-header">
                         <div class="card-title">
-                            <q-icon name="sym_o_history" size="20px" />
+                            <q-icon name="history" size="20px" />
                             <span>최근 퀴즈 기록</span>
                         </div>
                     </q-card-section>

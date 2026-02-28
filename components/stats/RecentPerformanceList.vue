@@ -11,7 +11,7 @@
                     <div class="quiz-meta">
                         <span class="date">{{ formatDate(item.completedAt) }}</span>
                         <span class="time">
-                            <q-icon name="sym_o_schedule" size="14px" />
+                            <q-icon name="schedule" size="14px" />
                             {{ formatTime(item.timeSpent) }}
                         </span>
                     </div>
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div v-else class="no-data">
-            <q-icon name="sym_o_history" size="48px" color="grey-5" />
+            <q-icon name="history" size="48px" color="grey-5" />
             <p>최근 풀이 기록이 없습니다</p>
         </div>
     </div>

@@ -4,7 +4,7 @@
             <Bar :data="chartData" :options="chartOptions" />
         </div>
         <div v-else class="no-data">
-            <q-icon name="sym_o_bar_chart" size="48px" color="grey-5" />
+            <q-icon name="bar_chart" size="48px" color="grey-5" />
             <p>난이도별 데이터가 없습니다</p>
         </div>
     </div>

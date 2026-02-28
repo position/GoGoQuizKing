@@ -42,7 +42,7 @@
                         :src="authStore.userInfo.avatar_url"
                         alt="프로필"
                     />
-                    <q-icon v-else name="sym_o_person" size="18px" color="white" />
+                    <q-icon v-else name="person" size="18px" color="white" />
                 </q-avatar>
                 <q-tooltip>마이페이지</q-tooltip>
             </q-btn>

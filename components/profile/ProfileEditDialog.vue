@@ -7,7 +7,7 @@
                     flat
                     round
                     dense
-                    icon="sym_o_close"
+                    icon="close"
                     @click="closeDialog"
                 />
             </q-card-section>
@@ -21,7 +21,7 @@
                             :src="formData.avatar_url"
                             alt="프로필"
                         />
-                        <q-icon v-else name="sym_o_person" size="40px" color="grey-5" />
+                        <q-icon v-else name="person" size="40px" color="grey-5" />
                     </q-avatar>
                     <q-input
                         v-model="formData.avatar_url"

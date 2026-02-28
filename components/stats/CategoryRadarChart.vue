@@ -4,7 +4,7 @@
             <Radar :data="chartData" :options="chartOptions" />
         </div>
         <div v-else class="no-data">
-            <q-icon name="sym_o_category" size="48px" color="grey-5" />
+            <q-icon name="category" size="48px" color="grey-5" />
             <p>카테고리별 데이터가 없습니다</p>
         </div>
     </div>

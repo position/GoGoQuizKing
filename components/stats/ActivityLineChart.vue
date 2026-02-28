@@ -4,7 +4,7 @@
             <Line :data="chartData" :options="chartOptions" />
         </div>
         <div v-else class="no-data">
-            <q-icon name="sym_o_show_chart" size="48px" color="grey-5" />
+            <q-icon name="show_chart" size="48px" color="grey-5" />
             <p>활동 데이터가 없습니다</p>
         </div>
     </div>

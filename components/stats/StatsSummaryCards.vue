@@ -4,7 +4,7 @@
             <q-card class="stat-card">
                 <q-card-section>
                     <div class="stat-icon quiz-icon">
-                        <q-icon name="sym_o_quiz" size="24px" />
+                        <q-icon name="quiz" size="24px" />
                     </div>
                     <div class="stat-value">{{ stats?.totalQuizzesTaken || 0 }}</div>
                     <div class="stat-label">풀이한 퀴즈</div>
@@ -14,7 +14,7 @@
             <q-card class="stat-card">
                 <q-card-section>
                     <div class="stat-icon accuracy-icon">
-                        <q-icon name="sym_o_check_circle" size="24px" />
+                        <q-icon name="check_circle" size="24px" />
                     </div>
                     <div class="stat-value">{{ stats?.averageScore || 0 }}<span class="stat-unit">%</span></div>
                     <div class="stat-label">평균 정답률</div>
@@ -24,7 +24,7 @@
             <q-card class="stat-card">
                 <q-card-section>
                     <div class="stat-icon create-icon">
-                        <q-icon name="sym_o_edit_note" size="24px" />
+                        <q-icon name="edit_note" size="24px" />
                     </div>
                     <div class="stat-value">{{ stats?.totalQuizzesCreated || 0 }}</div>
                     <div class="stat-label">생성한 퀴즈</div>
@@ -34,7 +34,7 @@
             <q-card class="stat-card">
                 <q-card-section>
                     <div class="stat-icon time-icon">
-                        <q-icon name="sym_o_schedule" size="24px" />
+                        <q-icon name="schedule" size="24px" />
                     </div>
                     <div class="stat-value">{{ formattedTime }}</div>
                     <div class="stat-label">총 학습 시간</div>
