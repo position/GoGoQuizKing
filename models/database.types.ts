@@ -247,6 +247,87 @@ export interface Database {
                     created_at?: string;
                 };
             };
+            badges: {
+                Row: {
+                    id: string;
+                    name: string;
+                    description: string;
+                    icon: string;
+                    category: string;
+                    condition_type: string;
+                    condition_value: number;
+                    is_active: boolean;
+                    sort_order: number;
+                    created_at: string;
+                };
+                Insert: {
+                    id: string;
+                    name: string;
+                    description: string;
+                    icon: string;
+                    category: string;
+                    condition_type: string;
+                    condition_value?: number;
+                    is_active?: boolean;
+                    sort_order?: number;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    name?: string;
+                    description?: string;
+                    icon?: string;
+                    category?: string;
+                    condition_type?: string;
+                    condition_value?: number;
+                    is_active?: boolean;
+                    sort_order?: number;
+                    created_at?: string;
+                };
+            };
+            user_badges: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    badge_id: string;
+                    earned_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    user_id: string;
+                    badge_id: string;
+                    earned_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    user_id?: string;
+                    badge_id?: string;
+                    earned_at?: string;
+                };
+            };
+            user_achievements: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    achievement_type: string;
+                    current_value: number;
+                    last_updated_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    user_id: string;
+                    achievement_type: string;
+                    current_value?: number;
+                    last_updated_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    user_id?: string;
+                    achievement_type?: string;
+                    current_value?: number;
+                    last_updated_at?: string;
+                };
+            };
         };
         Views: {
             level_info: {
@@ -372,6 +453,86 @@ export interface Database {
                     total_points: number;
                     level: number;
                     rank: number;
+                }[];
+            };
+            // Badge System Functions
+            award_badge: {
+                Args: {
+                    p_user_id: string;
+                    p_badge_id: string;
+                };
+                Returns: boolean;
+            };
+            update_achievement_progress: {
+                Args: {
+                    p_user_id: string;
+                    p_achievement_type: string;
+                    p_increment?: number;
+                };
+                Returns: number;
+            };
+            check_and_award_badges: {
+                Args: {
+                    p_user_id: string;
+                };
+                Returns: {
+                    badge_id: string;
+                    badge_name: string;
+                    badge_icon: string;
+                    newly_awarded: boolean;
+                }[];
+            };
+            on_quiz_completed: {
+                Args: {
+                    p_user_id: string;
+                    p_quiz_id: string;
+                    p_correct_count: number;
+                    p_total_questions: number;
+                    p_category?: string;
+                };
+                Returns: {
+                    badge_id: string;
+                    badge_name: string;
+                    badge_icon: string;
+                }[];
+            };
+            on_quiz_created: {
+                Args: {
+                    p_user_id: string;
+                    p_quiz_id: string;
+                };
+                Returns: {
+                    badge_id: string;
+                    badge_name: string;
+                    badge_icon: string;
+                }[];
+            };
+            check_streak_badges: {
+                Args: {
+                    p_user_id: string;
+                };
+                Returns: {
+                    badge_id: string;
+                    badge_name: string;
+                    badge_icon: string;
+                }[];
+            };
+            get_user_badges_with_status: {
+                Args: {
+                    p_user_id: string;
+                };
+                Returns: {
+                    badge_id: string;
+                    badge_name: string;
+                    badge_description: string;
+                    badge_icon: string;
+                    category: string;
+                    condition_type: string;
+                    condition_value: number;
+                    current_progress: number;
+                    is_earned: boolean;
+                    earned_at: string | null;
+                    sort_order: number;
                 }[];
             };
         };
