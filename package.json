@@ -14,6 +14,7 @@
         "@supabase/supabase-js": "^2.45.6",
         "ably": "^2.10.1",
         "axios": "^1.13.5",
+        "chart.js": "^4.5.1",
         "dayjs": "^1.11.5",
         "nuxt": "3.16.0",
         "pinia": "^3.0.3",
@@ -21,6 +22,7 @@
         "quasar": "^2.16.0",
         "unenv": "^1.10.0",
         "vue": "latest",
+        "vue-chartjs": "^5.3.3",
         "vue-router": "latest"
     },
     "devDependencies": {
