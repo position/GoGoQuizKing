@@ -193,7 +193,6 @@ import {
 
 definePageMeta({
     layout: 'default',
-    middleware: 'auth-guard',
 });
 
 const statsStore = useStatsStore();

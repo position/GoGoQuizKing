@@ -21,6 +21,10 @@ export const routeRules: NitroConfig['routeRules'] = {
         ssr: true,
         prerender: false,
     },
+    '/profile/**': {
+        ssr: false,
+        prerender: false,
+    },
 
     /*
         API Cache Rules

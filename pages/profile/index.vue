@@ -216,7 +216,6 @@ import ProfileEditDialog from '@/components/profile/ProfileEditDialog.vue';
 
 definePageMeta({
     layout: 'default',
-    middleware: 'auth-guard',
 });
 
 const authStore = useAuthStore();
