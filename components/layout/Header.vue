@@ -26,6 +26,26 @@
                     }}</span></q-tooltip
                 >
             </q-btn>
+
+            <!-- 프로필 버튼 -->
+            <q-btn
+                v-if="authStore.isLogin"
+                flat
+                round
+                dense
+                class="profile-btn"
+                @click="goProfile"
+            >
+                <q-avatar size="32px" class="profile-avatar">
+                    <img
+                        v-if="authStore.userInfo.avatar_url"
+                        :src="authStore.userInfo.avatar_url"
+                        alt="프로필"
+                    />
+                    <q-icon v-else name="sym_o_person" size="18px" color="white" />
+                </q-avatar>
+                <q-tooltip>마이페이지</q-tooltip>
+            </q-btn>
         </q-toolbar>
     </q-header>
 </template>
@@ -33,8 +53,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCommonStore } from '~/store/common.store';
+import { useAuthStore } from '~/store/auth.store';
 
 const commonStore = useCommonStore();
+const authStore = useAuthStore();
 const router = useRouter();
 
 const isDarkMode = computed(() => commonStore.isDarkMode);
@@ -45,6 +67,10 @@ function onExpendedMenu() {
 
 function goMain() {
     router.push({ path: '/' });
+}
+
+function goProfile() {
+    router.push({ path: '/profile' });
 }
 
 function toggleTheme() {
@@ -95,6 +121,20 @@ function toggleTheme() {
 
         &:hover {
             transform: rotate(15deg);
+        }
+    }
+
+    .profile-btn {
+        margin-left: 4px;
+
+        .profile-avatar {
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.2);
+            transition: border-color 0.2s;
+        }
+
+        &:hover .profile-avatar {
+            border-color: rgba(255, 255, 255, 0.8);
         }
     }
 }
