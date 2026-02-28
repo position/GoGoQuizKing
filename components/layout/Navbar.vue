@@ -76,6 +76,13 @@ async function logout() {
                     </q-item-section>
                     <q-item-section>랭킹</q-item-section>
                 </q-item>
+
+                <q-item :to="{ path: '/profile/badges' }" clickable v-ripple class="nav-item">
+                    <q-item-section avatar>
+                        <q-icon name="emoji_events" color="amber" />
+                    </q-item-section>
+                    <q-item-section>내 뱃지</q-item-section>
+                </q-item>
             </q-list>
         </q-scroll-area>
 
