@@ -2,12 +2,10 @@
     <div class="today-quiz-card" @click="handleClick">
         <div class="card-header">
             <div class="badge">
-                <q-icon name="star" size="16px" />
+                <q-icon name="star" size="16px" color="primary" />
                 <span>오늘의 퀴즈</span>
             </div>
-            <div v-if="quiz?.bonus_points" class="bonus">
-                +{{ quiz.bonus_points }}P 보너스!
-            </div>
+            <div v-if="quiz?.bonus_points" class="bonus">+{{ quiz.bonus_points }}P 보너스!</div>
         </div>
 
         <div v-if="isLoading" class="loading-state">
@@ -28,7 +26,7 @@
                     {{ getDifficultyLabel(quiz.difficulty) }}
                 </span>
                 <span class="play-count">
-                    <q-icon name="play_circle" size="14px" />
+                    <q-icon name="play_circle" size="14px" color="black" />
                     {{ quiz.play_count }}회
                 </span>
             </div>
@@ -133,7 +131,7 @@ function getDifficultyLabel(difficulty: string): string {
         }
 
         .bonus {
-            background: #ff6b6b;
+            background: var(--color-negative);
             color: white;
             padding: 4px 10px;
             border-radius: 12px;

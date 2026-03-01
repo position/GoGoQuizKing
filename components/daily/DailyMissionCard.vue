@@ -15,12 +15,7 @@
             <p class="mission-description">{{ mission.description }}</p>
 
             <div v-if="!mission.is_completed" class="progress-section">
-                <q-linear-progress
-                    :value="progress"
-                    color="primary"
-                    class="progress-bar"
-                    rounded
-                />
+                <q-linear-progress :value="progress" color="primary" class="progress-bar" rounded />
                 <span class="progress-text">
                     {{ mission.current_value }} / {{ mission.target_value }}
                 </span>
@@ -47,12 +42,7 @@
                 @click="handleClaim"
             />
 
-            <q-icon
-                v-else-if="mission.reward_claimed"
-                name="verified"
-                color="grey"
-                size="24px"
-            />
+            <q-icon v-else-if="mission.reward_claimed" name="verified" color="grey" size="24px" />
         </div>
     </div>
 </template>
@@ -94,34 +84,33 @@ async function handleClaim() {
 .mission-card {
     display: flex;
     align-items: center;
-    gap: 16px;
-    background: var(--bg-card);
-    border-radius: 16px;
-    padding: 16px;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 14px;
     transition:
         transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background-color 0.3s ease;
+        box-shadow 0.2s ease;
 
     &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px var(--shadow-color);
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     &.completed {
-        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        background: rgba(255, 255, 255, 0.98);
 
-        .body--dark & {
-            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+        .mission-icon {
+            opacity: 0.7;
         }
     }
 
     &.claimable {
-        animation: glow 2s infinite;
+        animation: pulse-card 2s infinite;
     }
 
     .mission-icon {
-        font-size: 32px;
+        font-size: 28px;
         flex-shrink: 0;
     }
 
@@ -131,15 +120,24 @@ async function handleClaim() {
 
         .mission-name {
             margin: 0 0 4px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--text-primary);
+
+            .dark-mode & {
+                color: #333;
+            }
         }
 
         .mission-description {
             margin: 0 0 8px;
-            font-size: 13px;
-            color: var(--text-light);
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+
+            .dark-mode & {
+                color: #666;
+            }
         }
 
         .progress-section {
@@ -149,14 +147,18 @@ async function handleClaim() {
 
             .progress-bar {
                 flex: 1;
-                height: 8px;
+                height: 6px;
             }
 
             .progress-text {
                 font-size: 12px;
                 font-weight: 600;
-                color: var(--text-light);
+                color: var(--text-secondary);
                 white-space: nowrap;
+
+                .dark-mode & {
+                    color: #555;
+                }
             }
         }
 
@@ -164,7 +166,7 @@ async function handleClaim() {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            color: #4caf50;
+            color: #00897b;
             font-size: 13px;
             font-weight: 600;
         }
@@ -176,34 +178,41 @@ async function handleClaim() {
         align-items: center;
         gap: 4px;
         flex-shrink: 0;
+        min-width: 60px;
 
         .reward-amount {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            color: #f57c00;
+            color: var(--color-primary);
         }
 
         .reward-label {
             font-size: 11px;
             color: var(--text-light);
+
+            .dark-mode & {
+                color: #888;
+            }
         }
 
         .claim-btn {
             margin-top: 4px;
             font-weight: 700;
+            font-size: 12px;
+            padding: 4px 12px;
         }
     }
-}
 
-@keyframes glow {
-    0%,
-    100% {
-        box-shadow: 0 4px 12px var(--shadow-color);
-    }
-    50% {
-        box-shadow:
-            0 4px 20px rgba(76, 175, 80, 0.4),
-            0 0 0 3px rgba(76, 175, 80, 0.2);
+    @keyframes pulse-card {
+        0%,
+        100% {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        50% {
+            box-shadow:
+                0 2px 12px rgba(0, 137, 123, 0.3),
+                0 0 0 2px rgba(0, 137, 123, 0.2);
+        }
     }
 }
 </style>

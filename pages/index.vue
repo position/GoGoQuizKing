@@ -64,14 +64,19 @@
             </div>
         </section>
 
-        <!-- 오늘의 퀴즈 -->
-        <section class="today-quiz-section">
-            <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
+        <!-- 오늘의 퀴즈 & 데일리 미션 (위/아래 레이아웃) -->
+        <section v-if="isLogin" class="today-section">
+            <div class="today-quiz-wrapper">
+                <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
+            </div>
+            <div class="daily-mission-wrapper">
+                <DailyMissionList :missions="dailyMissions" :is-loading="isMissionsLoading" />
+            </div>
         </section>
 
-        <!-- 데일리 미션 (로그인 시) -->
-        <section v-if="isLogin" class="daily-mission-section">
-            <DailyMissionList :missions="dailyMissions" :is-loading="isMissionsLoading" />
+        <!-- 비로그인 시 오늘의 퀴즈만 표시 -->
+        <section v-else class="today-quiz-section">
+            <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
         </section>
 
         <!-- 퀵 액션 -->
@@ -295,6 +300,7 @@ function goToQuiz(quizId: string) {
     max-width: 800px;
     margin: 0 auto;
 
+    // 환영 섹션
     .welcome-section {
         position: relative;
         text-align: center;
@@ -338,6 +344,7 @@ function goToQuiz(quizId: string) {
             line-height: 0;
             animation: bounce 2s ease-in-out infinite;
             will-change: transform;
+
             img {
                 max-width: 320px;
                 height: auto;
@@ -361,6 +368,7 @@ function goToQuiz(quizId: string) {
         }
     }
 
+    // 포인트/레벨 섹션
     .point-level-section {
         margin-bottom: 24px;
 
@@ -392,6 +400,7 @@ function goToQuiz(quizId: string) {
         }
     }
 
+    // 통계 섹션
     .stats-section {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -433,14 +442,25 @@ function goToQuiz(quizId: string) {
         }
     }
 
+    // 오늘의 퀴즈 & 데일리 미션 (세로 레이아웃)
+    .today-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-bottom: 24px;
+
+        .today-quiz-wrapper,
+        .daily-mission-wrapper {
+            width: 100%;
+        }
+    }
+
+    // 비로그인 시 오늘의 퀴즈만
     .today-quiz-section {
         margin-bottom: 24px;
     }
 
-    .daily-mission-section {
-        margin-bottom: 24px;
-    }
-
+    // 퀵 액션 버튼
     .quick-actions {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -498,6 +518,7 @@ function goToQuiz(quizId: string) {
         }
     }
 
+    // 인기 퀴즈 섹션
     .popular-section {
         background: var(--bg-card);
         border-radius: 20px;
@@ -613,20 +634,10 @@ function goToQuiz(quizId: string) {
             }
         }
     }
-}
 
-@keyframes bounce {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
+    // 반응형
 
-@media (max-width: 600px) {
-    .home-page {
+    @media (max-width: 600px) {
         .stats-section {
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
@@ -643,6 +654,16 @@ function goToQuiz(quizId: string) {
         .quick-actions {
             grid-template-columns: 1fr;
         }
+    }
+}
+
+@keyframes bounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
     }
 }
 </style>

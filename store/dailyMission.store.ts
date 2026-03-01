@@ -116,7 +116,22 @@ export const useDailyMissionStore = defineStore('dailyMission', {
                     throw error;
                 }
 
-                this.missions = (data as UserDailyMission[]) || [];
+                // RPC 반환 컬럼명 매핑 (out_ 접두사 제거)
+                const mappedData = (data || []).map((item: any) => ({
+                    mission_id: item.out_mission_id ?? item.mission_id,
+                    name: item.out_name ?? item.name,
+                    description: item.out_description ?? item.description,
+                    icon: item.out_icon ?? item.icon,
+                    mission_type: item.out_mission_type ?? item.mission_type,
+                    target_value: item.out_target_value ?? item.target_value,
+                    current_value: item.out_current_value ?? item.current_value,
+                    reward_points: item.out_reward_points ?? item.reward_points,
+                    is_completed: item.out_is_completed ?? item.is_completed,
+                    reward_claimed: item.out_reward_claimed ?? item.reward_claimed,
+                    sort_order: item.out_sort_order ?? item.sort_order,
+                }));
+
+                this.missions = mappedData as UserDailyMission[];
                 this.lastFetched = new Date().toISOString();
             } catch (e) {
                 console.error('Failed to fetch daily missions:', e);
@@ -157,7 +172,13 @@ export const useDailyMissionStore = defineStore('dailyMission', {
                     throw error;
                 }
 
-                const results = (data as MissionProgressResult[]) || [];
+                // RPC 반환 컬럼명 매핑 (out_ 접두사 제거)
+                const results = (data || []).map((item: any) => ({
+                    mission_id: item.out_mission_id ?? item.mission_id,
+                    mission_name: item.out_mission_name ?? item.mission_name,
+                    is_newly_completed: item.out_is_newly_completed ?? item.is_newly_completed,
+                    reward_points: item.out_reward_points ?? item.reward_points,
+                })) as MissionProgressResult[];
 
                 // 새로 완료된 미션이 있으면 알림
                 for (const result of results) {
@@ -196,9 +217,16 @@ export const useDailyMissionStore = defineStore('dailyMission', {
                     throw error;
                 }
 
-                const results = data as ClaimRewardResult[] | null;
-                if (results && results.length > 0) {
-                    const result = results[0];
+                // RPC 반환 컬럼명 매핑 (out_ 접두사 제거)
+                const rawResults = data as any[] | null;
+                if (rawResults && rawResults.length > 0) {
+                    const rawResult = rawResults[0];
+                    const result: ClaimRewardResult = {
+                        success: rawResult.out_success ?? rawResult.success,
+                        points_earned: rawResult.out_points_earned ?? rawResult.points_earned,
+                        message: rawResult.out_message ?? rawResult.message,
+                    };
+
                     if (result.success) {
                         ToastMessage.success(`💰 +${result.points_earned}포인트 획득!`);
                         // 미션 목록 새로고침
@@ -244,7 +272,9 @@ export const useDailyMissionStore = defineStore('dailyMission', {
                 if (results && results.length > 0) {
                     const result = results[0];
                     if (result.is_today_quiz && result.bonus_awarded) {
-                        ToastMessage.success(`⭐ 오늘의 퀴즈 보너스 +${result.bonus_points}포인트!`);
+                        ToastMessage.success(
+                            `⭐ 오늘의 퀴즈 보너스 +${result.bonus_points}포인트!`,
+                        );
                         // 포인트 스토어 업데이트
                         const { usePointStore } = await import('@/store/point.store');
                         const pointStore = usePointStore();
