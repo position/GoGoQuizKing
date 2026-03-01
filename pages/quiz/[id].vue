@@ -136,14 +136,22 @@ const formattedDate = computed(() => {
                     <div class="badges-row">
                         <q-chip
                             v-if="categoryInfo"
-                            :style="{ backgroundColor: categoryInfo.color, color: 'white' }"
+                            :style="{
+                                backgroundColor: categoryInfo.color,
+                                color: 'white',
+                                textShadow: '1px 1px 1px rgb(0 0 0 / 0.5)',
+                            }"
                             size="md"
                         >
                             {{ categoryInfo.icon }} {{ categoryInfo.label }}
                         </q-chip>
                         <q-chip
                             v-if="difficultyInfo"
-                            :style="{ backgroundColor: difficultyInfo.color, color: 'white' }"
+                            :style="{
+                                backgroundColor: difficultyInfo.color,
+                                color: 'white',
+                                textShadow: '1px 1px 1px rgb(0 0 0 / 0.5)',
+                            }"
                             size="md"
                         >
                             {{ difficultyIcon }} {{ difficultyInfo.label }}
@@ -242,7 +250,6 @@ const formattedDate = computed(() => {
         .badges-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
             margin-bottom: 16px;
 
             .grade-level {
