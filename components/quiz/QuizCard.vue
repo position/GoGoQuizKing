@@ -18,6 +18,10 @@
                     <q-icon name="play_arrow" size="16px" />
                     {{ quiz.play_count }}번 도전!
                 </span>
+                <span v-if="quiz.like_count !== undefined" class="like-count">
+                    <q-icon name="favorite" size="16px" color="red-5" />
+                    {{ quiz.like_count }}
+                </span>
                 <span class="date">
                     <q-icon name="schedule" size="16px" />
                     {{ formatDate(quiz.created_at) }}

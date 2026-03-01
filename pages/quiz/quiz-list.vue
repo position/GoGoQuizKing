@@ -298,7 +298,7 @@ onMounted(() => {
 });
 
 function handlePlay(quizId: string) {
-    router.push({ path: `/quiz/play/${quizId}` });
+    router.push({ path: `/quiz/${quizId}` });
 }
 </script>
 

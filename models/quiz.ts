@@ -51,6 +51,7 @@ export interface Quiz {
     difficulty: DifficultyLevel;
     is_public: boolean;
     play_count: number;
+    like_count?: number;
     created_at: string;
     updated_at: string;
 }

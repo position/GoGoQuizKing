@@ -4,3 +4,4 @@ export * from './point';
 export * from './ranking';
 export * from './badge';
 export * from './stats';
+export * from './comment';
