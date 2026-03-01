@@ -51,7 +51,7 @@ export function useQuizComments(options: UseQuizCommentsOptions): UseQuizComment
                 .from('quiz_comments')
                 .select(`
                     *,
-                    profiles (
+                    profiles!quiz_comments_user_id_fkey (
                         full_name,
                         avatar_url
                     )
@@ -112,7 +112,7 @@ export function useQuizComments(options: UseQuizCommentsOptions): UseQuizComment
                 })
                 .select(`
                     *,
-                    profiles (
+                    profiles!quiz_comments_user_id_fkey (
                         full_name,
                         avatar_url
                     )
