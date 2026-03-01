@@ -182,6 +182,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useStatsStore } from '@/store/stats.store';
+import { CATEGORIES, type QuizCategory } from '@/models/quiz';
 import {
     StatsSummaryCards,
     CategoryRadarChart,
@@ -205,6 +206,12 @@ const filteredDailyActivity = computed(() => {
     return statsStore.dailyActivity.slice(-activityPeriod.value);
 });
 
+// 카테고리 타입명을 한글 라벨로 변환
+const getCategoryLabel = (category: string): string => {
+    const categoryInfo = CATEGORIES[category as QuizCategory];
+    return categoryInfo ? categoryInfo.label : category;
+};
+
 const categoryColumns = [
     {
         name: 'category',
@@ -212,6 +219,7 @@ const categoryColumns = [
         field: 'category',
         align: 'left' as const,
         sortable: true,
+        format: (val: string) => getCategoryLabel(val),
     },
     {
         name: 'attemptCount',

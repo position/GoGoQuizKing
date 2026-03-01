@@ -23,7 +23,8 @@ import {
 } from 'chart.js';
 import { Radar } from 'vue-chartjs';
 import type { CategoryStats } from '@/models/stats';
-import { CATEGORY_COLORS, CHART_COLORS } from '@/models/stats';
+import { CHART_COLORS } from '@/models/stats';
+import { CATEGORIES, type QuizCategory } from '@/models/quiz';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
@@ -35,8 +36,19 @@ const props = defineProps<Props>();
 
 const hasData = computed(() => props.data.length > 0);
 
+// 카테고리 타입명을 한글 라벨로 변환
+const getCategoryLabel = (category: string): string => {
+    const categoryInfo = CATEGORIES[category as QuizCategory];
+    return categoryInfo ? categoryInfo.label : category;
+};
+
+const getCategoryColor = (category: string): string => {
+    const categoryInfo = CATEGORIES[category as QuizCategory];
+    return categoryInfo ? categoryInfo.color : CHART_COLORS.primary;
+};
+
 const chartData = computed(() => ({
-    labels: props.data.map((s) => s.category),
+    labels: props.data.map((s) => getCategoryLabel(s.category)),
     datasets: [
         {
             label: '정답률 (%)',
@@ -44,9 +56,7 @@ const chartData = computed(() => ({
             backgroundColor: `${CHART_COLORS.primary}40`,
             borderColor: CHART_COLORS.primary,
             borderWidth: 2,
-            pointBackgroundColor: props.data.map(
-                (s) => CATEGORY_COLORS[s.category] || CHART_COLORS.primary
-            ),
+            pointBackgroundColor: props.data.map((s) => getCategoryColor(s.category)),
             pointBorderColor: '#fff',
             pointHoverBackgroundColor: '#fff',
             pointHoverBorderColor: CHART_COLORS.primary,

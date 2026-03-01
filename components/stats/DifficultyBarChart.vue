@@ -23,7 +23,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'vue-chartjs';
 import type { DifficultyStats } from '@/models/stats';
-import { DIFFICULTY_COLORS } from '@/models/stats';
+import { DIFFICULTIES, type DifficultyLevel } from '@/models/quiz';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -35,26 +35,29 @@ const props = defineProps<Props>();
 
 const hasData = computed(() => props.data.length > 0);
 
-const difficultyLabels: Record<string, string> = {
-    easy: '쉬움',
-    medium: '보통',
-    hard: '어려움',
+// 난이도 타입명을 한글 라벨로 변환
+const getDifficultyLabel = (difficulty: string): string => {
+    const difficultyInfo = DIFFICULTIES[difficulty as DifficultyLevel];
+    return difficultyInfo ? difficultyInfo.label : difficulty;
+};
+
+const getDifficultyColor = (difficulty: string): string => {
+    const difficultyInfo = DIFFICULTIES[difficulty as DifficultyLevel];
+    return difficultyInfo ? difficultyInfo.color : '#78909c';
 };
 
 const sortedData = computed(() => {
-    const order = ['easy', 'medium', 'hard'];
+    const order = ['seedling', 'leaf', 'tree', 'king'];
     return [...props.data].sort((a, b) => order.indexOf(a.difficulty) - order.indexOf(b.difficulty));
 });
 
 const chartData = computed(() => ({
-    labels: sortedData.value.map((s) => difficultyLabels[s.difficulty] || s.difficulty),
+    labels: sortedData.value.map((s) => getDifficultyLabel(s.difficulty)),
     datasets: [
         {
             label: '정답률 (%)',
             data: sortedData.value.map((s) => s.accuracy),
-            backgroundColor: sortedData.value.map(
-                (s) => DIFFICULTY_COLORS[s.difficulty] || '#78909c'
-            ),
+            backgroundColor: sortedData.value.map((s) => getDifficultyColor(s.difficulty)),
             borderRadius: 8,
             borderSkipped: false,
         },
