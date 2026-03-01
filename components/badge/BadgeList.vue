@@ -29,7 +29,7 @@
                 :options="categoryOptions"
                 rounded
                 unelevated
-                size="sm"
+                size="md"
             />
         </div>
 

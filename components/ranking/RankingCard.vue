@@ -1,7 +1,11 @@
 <template>
     <div class="ranking-card" :class="{ 'is-top-three': isTopThree, 'is-me': isCurrentUser }">
         <div class="rank-section">
-            <div v-if="rankBadge" class="rank-badge" :style="{ backgroundColor: rankBadge.bgColor }">
+            <div
+                v-if="rankBadge"
+                class="rank-badge"
+                :style="{ backgroundColor: rankBadge.bgColor }"
+            >
                 <span class="rank-emoji">{{ rankBadge.emoji }}</span>
             </div>
             <div v-else class="rank-number">
@@ -173,19 +177,19 @@ const pointsLabel = computed(() => {
 
 .points-section {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+    gap: 10px;
     min-width: 60px;
 }
 
 .points-value {
-    font-size: 18px;
+    font-size: 28px;
     font-weight: 700;
     color: #ff6b6b;
 }
 
 .points-label {
-    font-size: 11px;
+    font-size: 14px;
     color: #9e9e9e;
 }
 </style>

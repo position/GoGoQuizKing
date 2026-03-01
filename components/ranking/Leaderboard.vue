@@ -152,13 +152,13 @@ function formatPoints(entry: AnyRankingEntry): string {
     display: flex;
     flex-direction: column;
     gap: 24px;
-}
 
-.section-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #212121;
-    margin: 0 0 10px 0;
+    .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0 0 10px 0;
+    }
 }
 
 // TOP 3 섹션
@@ -166,13 +166,21 @@ function formatPoints(entry: AnyRankingEntry): string {
     padding: 20px;
     background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
     border-radius: 20px;
-}
 
-.top-three-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr;
-    gap: 12px;
-    align-items: flex-end;
+    .dark-mode & {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 236, 210, 0.2) 0%,
+            rgba(252, 182, 159, 0.2) 100%
+        );
+    }
+
+    .top-three-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr 1fr;
+        gap: 12px;
+        align-items: flex-end;
+    }
 }
 
 .top-card {
@@ -181,9 +189,9 @@ function formatPoints(entry: AnyRankingEntry): string {
     align-items: center;
     gap: 8px;
     padding: 16px 12px;
-    background: white;
+    background: var(--bg-card);
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px var(--shadow-color);
     position: relative;
 
     .medal {
@@ -199,14 +207,14 @@ function formatPoints(entry: AnyRankingEntry): string {
 
     .user-avatar {
         img {
-            border: 3px solid #e0e0e0;
+            border: 3px solid var(--border-color);
         }
 
         .avatar-placeholder {
             font-size: 20px;
             font-weight: 600;
-            color: #9e9e9e;
-            background: #f5f5f5;
+            color: var(--text-light);
+            background: var(--bg-surface);
             width: 100%;
             height: 100%;
             display: flex;
@@ -218,7 +226,7 @@ function formatPoints(entry: AnyRankingEntry): string {
     .user-name {
         font-size: 14px;
         font-weight: 600;
-        color: #212121;
+        color: var(--text-primary);
         text-align: center;
         white-space: nowrap;
         overflow: hidden;
@@ -229,7 +237,7 @@ function formatPoints(entry: AnyRankingEntry): string {
     .points {
         font-size: 16px;
         font-weight: 700;
-        color: #ff6b6b;
+        color: var(--color-negative);
     }
 
     &.rank-1 {
@@ -237,14 +245,20 @@ function formatPoints(entry: AnyRankingEntry): string {
         background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
         border: 2px solid #ffd700;
 
+        .dark-mode & {
+            background: linear-gradient(
+                135deg,
+                rgba(255, 248, 225, 0.15) 0%,
+                rgba(255, 236, 179, 0.15) 100%
+            );
+        }
+
         .medal {
             font-size: 36px;
         }
 
-        .user-avatar {
-            img {
-                border-color: #ffd700;
-            }
+        .user-avatar img {
+            border-color: #ffd700;
         }
 
         .points {
@@ -253,18 +267,14 @@ function formatPoints(entry: AnyRankingEntry): string {
     }
 
     &.rank-2 {
-        .user-avatar {
-            img {
-                border-color: #c0c0c0;
-            }
+        .user-avatar img {
+            border-color: #c0c0c0;
         }
     }
 
     &.rank-3 {
-        .user-avatar {
-            img {
-                border-color: #cd7f32;
-            }
+        .user-avatar img {
+            border-color: #cd7f32;
         }
     }
 }
@@ -272,15 +282,15 @@ function formatPoints(entry: AnyRankingEntry): string {
 // 랭킹 리스트 섹션
 .ranking-list-section {
     padding: 20px;
-    background: #fff;
+    background: var(--bg-card);
     border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
+    box-shadow: 0 2px 8px var(--shadow-color);
 
-.ranking-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    .ranking-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 }
 
 .loading-state,
@@ -294,7 +304,7 @@ function formatPoints(entry: AnyRankingEntry): string {
 }
 
 .loading-state {
-    color: #757575;
+    color: var(--text-secondary);
 }
 
 .empty-state {
@@ -305,12 +315,12 @@ function formatPoints(entry: AnyRankingEntry): string {
     .empty-title {
         font-size: 16px;
         font-weight: 600;
-        color: #424242;
+        color: var(--text-primary);
     }
 
     .empty-description {
         font-size: 14px;
-        color: #9e9e9e;
+        color: var(--text-light);
     }
 }
 
@@ -326,38 +336,40 @@ function formatPoints(entry: AnyRankingEntry): string {
 
 // 모바일 반응형
 @media (max-width: 600px) {
-    .top-three-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
+    .top-three-section {
+        .top-three-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+    }
 
-        .top-card {
-            flex-direction: row;
-            justify-content: flex-start;
-            padding: 12px 16px;
+    .top-card {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 12px 16px;
 
-            &.rank-1 {
-                padding: 16px;
+        &.rank-1 {
+            padding: 16px;
 
-                .crown {
-                    position: static;
-                    font-size: 24px;
-                    animation: none;
-                }
-            }
-
-            .medal {
+            .crown {
+                position: static;
                 font-size: 24px;
+                animation: none;
             }
+        }
 
-            .user-avatar {
-                width: 48px !important;
-                height: 48px !important;
-            }
+        .medal {
+            font-size: 24px;
+        }
 
-            .user-name {
-                flex: 1;
-                text-align: left;
-            }
+        .user-avatar {
+            width: 48px !important;
+            height: 48px !important;
+        }
+
+        .user-name {
+            flex: 1;
+            text-align: left;
         }
     }
 }
