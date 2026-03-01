@@ -13,6 +13,7 @@
         "@google/generative-ai": "^0.24.1",
         "@quasar/extras": "^1.16.17",
         "@supabase/supabase-js": "^2.45.6",
+        "@vercel/analytics": "^1.6.1",
         "ably": "^2.10.1",
         "axios": "^1.13.5",
         "chart.js": "^4.5.1",
