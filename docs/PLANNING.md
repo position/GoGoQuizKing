@@ -173,6 +173,170 @@ Lv.7  퀴즈 킹       (5001점~)
 - 친구 퀴즈 도전
 - 친구에게 퀴즈 추천
 
+### 5. ⚔️ 실시간 1:1 퀴즈 대결
+
+#### 5.1 개요
+실시간으로 다른 사용자와 1:1 퀴즈 대결을 할 수 있는 기능입니다.
+Supabase Realtime을 활용하여 실시간 동기화를 구현합니다.
+
+```
+[대결 모드]
+├── 🎲 랜덤 매칭 - 비슷한 레벨의 상대와 자동 매칭
+├── 👥 친구 대결 - 친구에게 대결 신청
+├── 🔗 초대 링크 - 링크로 대결 초대
+└── 🏆 랭킹전 - 시즌 랭킹 포인트 획득
+```
+
+#### 5.2 대결 흐름
+
+```mermaid
+flowchart TD
+    A[대결 시작] --> B{매칭 방식}
+    B -->|랜덤| C[매칭 대기열 등록]
+    B -->|친구| D[친구에게 초대 전송]
+    B -->|링크| E[초대 링크 생성]
+    C --> F[상대 매칭 완료]
+    D --> F
+    E --> F
+    F --> G[카운트다운 3초]
+    G --> H[퀴즈 시작]
+    H --> I[문제 출제 - 동시에 같은 문제]
+    I --> J{두 명 모두 응답?}
+    J -->|Yes| K[정답 공개 & 점수 계산]
+    J -->|타임아웃| K
+    K --> L{남은 문제 있음?}
+    L -->|Yes| I
+    L -->|No| M[최종 결과 화면]
+    M --> N[포인트 & 랭킹 반영]
+```
+
+#### 5.3 대결 규칙
+
+| 항목 | 내용 |
+|------|------|
+| 문제 수 | 5문제 (빠른 대결) / 10문제 (일반 대결) |
+| 문제당 제한 시간 | 15초 |
+| 점수 계산 | 정답 +100점, 빠른 응답 보너스 최대 +50점 |
+| 연속 정답 보너스 | 3연속 +30점, 5연속 +50점 |
+| 매칭 제한 시간 | 30초 (초과 시 봇 매칭 또는 취소) |
+
+#### 5.4 점수 계산 공식
+
+```typescript
+// 기본 점수
+const BASE_SCORE = 100;
+
+// 시간 보너스 (15초 기준, 빨리 맞출수록 높음)
+const timeBonus = Math.floor((15 - responseTime) * 3.33); // 최대 50점
+
+// 연속 정답 보너스
+const streakBonus = streak >= 5 ? 50 : streak >= 3 ? 30 : 0;
+
+// 최종 점수
+const finalScore = isCorrect ? BASE_SCORE + timeBonus + streakBonus : 0;
+```
+
+#### 5.5 매칭 시스템
+
+```
+[매칭 알고리즘]
+├── 레벨 기반 매칭
+│   ├── 동일 레벨 우선
+│   ├── ±1 레벨 범위 확장 (10초 후)
+│   └── ±2 레벨 범위 확장 (20초 후)
+├── 학년 기반 필터 (선택)
+│   └── 같은 학년끼리 대결 옵션
+└── 봇 매칭 (30초 초과)
+    └── AI 봇과 대결 (레벨별 난이도 조절)
+```
+
+#### 5.6 대결 보상
+
+| 결과 | 포인트 | 랭킹 포인트 (랭킹전) |
+|------|--------|---------------------|
+| 🏆 승리 | +50점 | +25 RP |
+| 🤝 무승부 | +20점 | +5 RP |
+| 😢 패배 | +10점 | -10 RP |
+| 🔥 완승 (전문제 정답) | +100점 | +50 RP |
+
+#### 5.7 대결 뱃지
+
+| 뱃지 | 조건 | 아이콘 |
+|------|------|--------|
+| 첫 승리 | 첫 대결 승리 | ⚔️ |
+| 연승왕 | 5연승 달성 | 🔥 |
+| 스피드스터 | 평균 응답 3초 이내 승리 | ⚡ |
+| 대결왕 | 100승 달성 | 👑 |
+| 완벽한 승리 | 전문제 정답 승리 10회 | 💎 |
+| 라이벌 | 같은 상대와 10회 대결 | 🤝 |
+
+#### 5.8 실시간 대결 화면
+
+```
+┌─────────────────────────────────┐
+│  ⚔️ 퀴즈 대결                    │
+├─────────────────────────────────┤
+│  ┌───────────┐  ┌───────────┐  │
+│  │ 🧒 나      │  │ 👧 상대    │  │
+│  │ Lv.5      │  │ Lv.6      │  │
+│  │ 350점     │  │ 420점     │  │
+│  │ ⭕⭕❌     │  │ ⭕⭕⭕     │  │
+│  └───────────┘  └───────────┘  │
+├─────────────────────────────────┤
+│           Q.4 / 5               │
+│          ⏱️ 12초               │
+├─────────────────────────────────┤
+│                                 │
+│   "대한민국의 수도는?"           │
+│                                 │
+│  ┌────────────────────────┐    │
+│  │  ① 서울               │    │
+│  └────────────────────────┘    │
+│  ┌────────────────────────┐    │
+│  │  ② 부산               │    │
+│  └────────────────────────┘    │
+│  ┌────────────────────────┐    │
+│  │  ③ 대전               │    │
+│  └────────────────────────┘    │
+│  ┌────────────────────────┐    │
+│  │  ④ 인천               │    │
+│  └────────────────────────┘    │
+│                                 │
+│  ████████████░░░  80%          │
+└─────────────────────────────────┘
+```
+
+#### 5.9 대결 결과 화면
+
+```
+┌─────────────────────────────────┐
+│        🎉 대결 종료! 🎉          │
+├─────────────────────────────────┤
+│                                 │
+│         🏆 승리! 🏆              │
+│                                 │
+│  ┌───────────────────────────┐ │
+│  │  나 (520점)  VS  상대 (380점) │ │
+│  │  ⭕⭕⭕⭕⭕      ⭕⭕⭕❌❌    │ │
+│  └───────────────────────────┘ │
+│                                 │
+│  📊 상세 결과                    │
+│  ├── 정답 수: 5/5 🎯            │
+│  ├── 평균 응답: 4.2초 ⚡        │
+│  ├── 획득 점수: +520점          │
+│  └── 보너스: +50점 (승리)       │
+│                                 │
+│  🎁 획득 보상                    │
+│  ├── 포인트: +100점 💰          │
+│  └── 랭킹 포인트: +25 RP 📈     │
+│                                 │
+│  ┌────────┐  ┌────────┐        │
+│  │ 재대결  │  │  홈으로 │        │
+│  └────────┘  └────────┘        │
+│                                 │
+└─────────────────────────────────┘
+```
+
 ---
 
 ## 🗂️ 데이터베이스 설계
@@ -241,6 +405,75 @@ CREATE TABLE user_profiles (
 );
 ```
 
+#### battle_rooms (대결 방)
+```sql
+CREATE TABLE battle_rooms (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  room_code VARCHAR(10) UNIQUE, -- 초대 링크용 코드
+  host_id UUID REFERENCES auth.users(id),
+  guest_id UUID REFERENCES auth.users(id),
+  quiz_id UUID REFERENCES quizzes(id),
+  status VARCHAR(20) DEFAULT 'waiting', -- 'waiting', 'ready', 'playing', 'finished', 'cancelled'
+  battle_type VARCHAR(20) DEFAULT 'quick', -- 'quick'(5문제), 'normal'(10문제), 'ranked'
+  current_question_index INT DEFAULT 0,
+  host_score INT DEFAULT 0,
+  guest_score INT DEFAULT 0,
+  host_answers JSONB DEFAULT '[]',
+  guest_answers JSONB DEFAULT '[]',
+  winner_id UUID REFERENCES auth.users(id),
+  started_at TIMESTAMP,
+  finished_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### battle_matchmaking (매칭 대기열)
+```sql
+CREATE TABLE battle_matchmaking (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) UNIQUE,
+  user_level INT NOT NULL,
+  grade_level INT,
+  battle_type VARCHAR(20) DEFAULT 'quick',
+  same_grade_only BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- 자동 만료 (30초 후)
+CREATE INDEX idx_matchmaking_created ON battle_matchmaking(created_at);
+```
+
+#### battle_history (대결 기록)
+```sql
+CREATE TABLE battle_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  room_id UUID REFERENCES battle_rooms(id),
+  user_id UUID REFERENCES auth.users(id),
+  opponent_id UUID REFERENCES auth.users(id),
+  result VARCHAR(10) NOT NULL, -- 'win', 'lose', 'draw'
+  my_score INT NOT NULL,
+  opponent_score INT NOT NULL,
+  points_earned INT DEFAULT 0,
+  ranking_points_earned INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### user_ranking_stats (랭킹전 통계)
+```sql
+CREATE TABLE user_ranking_stats (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  ranking_points INT DEFAULT 1000, -- 기본 1000 RP (ELO 방식)
+  season_wins INT DEFAULT 0,
+  season_losses INT DEFAULT 0,
+  season_draws INT DEFAULT 0,
+  win_streak INT DEFAULT 0,
+  best_win_streak INT DEFAULT 0,
+  season_id INT DEFAULT 1,
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
 ---
 
 ## 📅 개발 로드맵
@@ -275,6 +508,14 @@ CREATE TABLE user_profiles (
 | 13주차 | 모바일 반응형 완성 |
 | 14주차 | 베타 테스트, 버그 수정 |
 
+### Phase 5: 실시간 대결 - 4주
+| 주차 | 작업 항목 |
+|------|----------|
+| 15주차 | 대결 방 생성/참가 시스템, Supabase Realtime 연동 |
+| 16주차 | 매칭 시스템 (랜덤/친구/초대링크) |
+| 17주차 | 실시간 대결 게임 로직, 점수 계산 |
+| 18주차 | 대결 결과/보상/랭킹전 시스템 |
+
 ---
 
 ## 📐 화면 구성
@@ -290,6 +531,12 @@ CREATE TABLE user_profiles (
   /quiz-edit/:id     # 퀴즈 수정
   /quiz-play/:id     # 퀴즈 풀기
   /quiz-result/:id   # 결과 화면
+/battle
+  /lobby             # 대결 로비 (매칭 선택)
+  /matchmaking       # 매칭 대기 화면
+  /room/:id          # 대결 방 (실시간 대결)
+  /result/:id        # 대결 결과
+  /history           # 대결 기록
 /profile
   /my-quizzes        # 내 퀴즈 관리
   /my-stats          # 내 통계
@@ -390,6 +637,20 @@ CREATE TABLE user_profiles (
 - [ ] 공유 기능
 - [ ] 알림 시스템
 
+### 실시간 대결
+- [ ] 대결 로비 UI
+- [ ] 랜덤 매칭 시스템
+- [ ] 친구 초대 대결
+- [ ] 초대 링크 생성
+- [ ] Supabase Realtime 연동
+- [ ] 실시간 대결 게임 로직
+- [ ] 점수 계산 시스템
+- [ ] 대결 결과 화면
+- [ ] 대결 보상 시스템
+- [ ] 랭킹전 시스템
+- [ ] 대결 기록/통계
+- [ ] 대결 뱃지
+
 ---
 
 ## 📞 참고 사항
@@ -406,4 +667,4 @@ CREATE TABLE user_profiles (
 
 ---
 
-*마지막 업데이트: 2026년 2월 10일*
+*마지막 업데이트: 2026년 3월 1일*
