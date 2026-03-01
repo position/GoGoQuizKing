@@ -221,6 +221,9 @@ const formattedDate = computed(() => {
     .back-btn {
         margin-bottom: 16px;
         color: var(--text-secondary);
+        &:hover {
+            color: var(--text-primary);
+        }
     }
 
     .loading-state {
