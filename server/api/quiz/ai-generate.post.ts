@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 interface AIGenerateQuizBody {
     topic: string;
@@ -24,7 +24,7 @@ interface GeneratedQuiz {
 }
 
 /**
- * AI를 통한 퀴즈 자동 생성 API
+ * AI를 통한 퀴즈 자동 생성 API (Gemini 사용)
  *
  * @body topic - 퀴즈 주제/토픽
  * @body category - 카테고리
@@ -46,10 +46,10 @@ export default defineEventHandler(async (event) => {
             };
         }
 
-        // OpenAI API 키 확인
-        const openaiApiKey = config.openaiApiKey;
-        if (!openaiApiKey) {
-            console.error('OpenAI API 키가 설정되지 않았습니다.');
+        // Gemini API 키 확인
+        const geminiApiKey = config.public.geminiApiKey as string;
+        if (!geminiApiKey) {
+            console.error('Gemini API 키가 설정되지 않았습니다.');
             return {
                 success: false,
                 error: 'AI 서비스가 설정되지 않았습니다.',
@@ -82,25 +82,28 @@ export default defineEventHandler(async (event) => {
         const questionTypes = body.questionTypes?.length > 0 ? body.questionTypes : ['multiple'];
 
         // 문제 유형 설명
-        const typeDescriptions = questionTypes.map(type => {
-            if (type === 'multiple') {
-                return '객관식 (4지선다)';
-            }
-            if (type === 'ox') {
-                return 'OX 퀴즈';
-            }
-            if (type === 'short') {
-                return '단답형';
-            }
-            return '';
-        }).filter(Boolean).join(', ');
+        const typeDescriptions = questionTypes
+            .map((type) => {
+                if (type === 'multiple') {
+                    return '객관식 (4지선다)';
+                }
+                if (type === 'ox') {
+                    return 'OX 퀴즈';
+                }
+                if (type === 'short') {
+                    return '단답형';
+                }
+                return '';
+            })
+            .filter(Boolean)
+            .join(', ');
 
-        // OpenAI API 호출을 위한 프롬프트 구성
-        const systemPrompt = `당신은 초등학생을 위한 교육용 퀴즈 생성 전문가입니다. 
+        // Gemini 프롬프트 구성
+        const prompt = `당신은 초등학생을 위한 교육용 퀴즈 생성 전문가입니다. 
 한국 초등학교 ${body.gradeLevel}학년 학생들을 대상으로 ${difficultyDesc} 난이도의 퀴즈를 만들어주세요.
-퀴즈는 교육적이면서도 재미있어야 합니다. 이모지를 적절히 활용해주세요.`;
+퀴즈는 교육적이면서도 재미있어야 합니다. 이모지를 적절히 활용해주세요.
 
-        const userPrompt = `다음 조건에 맞는 퀴즈를 JSON 형식으로 생성해주세요:
+다음 조건에 맞는 퀴즈를 JSON 형식으로 생성해주세요:
 
 - 주제: ${body.topic}
 - 카테고리: ${categoryDesc}
@@ -132,35 +135,51 @@ export default defineEventHandler(async (event) => {
 5. 힌트는 직접적인 답을 알려주지 않으면서 도움이 되어야 합니다.
 6. JSON만 반환하고, 다른 텍스트는 포함하지 마세요.`;
 
-        // OpenAI API 호출
-        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${openaiApiKey}`,
-            },
-            body: JSON.stringify({
-                model: 'gpt-4o-mini',
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt },
-                ],
-                temperature: 0.7,
-                max_tokens: 2000,
-            }),
-        });
+        // Gemini API 호출
+        const genAI = new GoogleGenerativeAI(geminiApiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-        if (!openaiResponse.ok) {
-            const errorData = await openaiResponse.json();
-            console.error('OpenAI API 에러:', errorData);
+        let result;
+        try {
+            result = await model.generateContent(prompt);
+        } catch (apiError: any) {
+            console.error('Gemini API 에러:', apiError);
+
+            // 구체적인 에러 메시지 처리
+            const errorMessage = apiError?.message || '';
+
+            if (errorMessage.includes('quota') || errorMessage.includes('RESOURCE_EXHAUSTED')) {
+                return {
+                    success: false,
+                    error: 'AI 서비스 사용량이 초과되었습니다. 관리자에게 문의해주세요.',
+                    errorCode: 'QUOTA_EXCEEDED',
+                };
+            }
+
+            if (errorMessage.includes('rate') || errorMessage.includes('429')) {
+                return {
+                    success: false,
+                    error: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+                    errorCode: 'RATE_LIMIT',
+                };
+            }
+
+            if (errorMessage.includes('API_KEY') || errorMessage.includes('invalid')) {
+                return {
+                    success: false,
+                    error: 'AI 서비스 설정에 문제가 있습니다. 관리자에게 문의해주세요.',
+                    errorCode: 'INVALID_KEY',
+                };
+            }
+
             return {
                 success: false,
                 error: 'AI 퀴즈 생성에 실패했습니다. 잠시 후 다시 시도해주세요.',
+                errorCode: 'AI_ERROR',
             };
         }
 
-        const openaiData = await openaiResponse.json();
-        const content = openaiData.choices?.[0]?.message?.content;
+        const content = result.response?.text();
 
         if (!content) {
             return {
@@ -193,7 +212,11 @@ export default defineEventHandler(async (event) => {
         }
 
         // 응답 데이터 검증 및 정규화
-        if (!generatedQuiz.title || !generatedQuiz.questions || !Array.isArray(generatedQuiz.questions)) {
+        if (
+            !generatedQuiz.title ||
+            !generatedQuiz.questions ||
+            !Array.isArray(generatedQuiz.questions)
+        ) {
             return {
                 success: false,
                 error: '생성된 퀴즈 형식이 올바르지 않습니다.',

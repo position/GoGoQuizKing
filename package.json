@@ -10,6 +10,7 @@
         "postinstall": "nuxt prepare"
     },
     "dependencies": {
+        "@google/generative-ai": "^0.24.1",
         "@quasar/extras": "^1.16.17",
         "@supabase/supabase-js": "^2.45.6",
         "ably": "^2.10.1",
