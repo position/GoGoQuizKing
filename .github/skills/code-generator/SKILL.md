@@ -37,6 +37,7 @@ flowchart LR
 | 페이지 | `references/page.md` |
 | Composable | `references/composable.md` |
 | Helper | `references/helper.md` |
+| **SCSS 스타일** | `references/scss.md` |
 
 ### ⚠️ 기존 헬퍼 활용 필수
 

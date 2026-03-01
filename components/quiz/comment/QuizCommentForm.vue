@@ -53,7 +53,7 @@ watch(
     () => props.initialContent,
     (newVal) => {
         content.value = newVal;
-    }
+    },
 );
 </script>
 
@@ -99,27 +99,27 @@ watch(
 
 <style scoped lang="scss">
 .quiz-comment-form {
-    background: #fff;
+    background: var(--bg-card);
     border-radius: 12px;
     padding: 12px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
+    box-shadow: 0 1px 3px var(--shadow-color);
 
-.comment-input {
-    :deep(.q-field__control) {
-        border-radius: 8px;
+    .comment-input {
+        :deep(.q-field__control) {
+            border-radius: 8px;
+        }
+
+        .hint-text {
+            color: var(--text-light);
+            font-size: 12px;
+        }
     }
-}
 
-.hint-text {
-    color: #999;
-    font-size: 12px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 8px;
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+    }
 }
 </style>

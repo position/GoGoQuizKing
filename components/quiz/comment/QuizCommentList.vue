@@ -9,8 +9,16 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { comments, loading, error, totalCount, fetchComments, createComment, updateComment, deleteComment } =
-    useQuizComments({ quizId: props.quizId });
+const {
+    comments,
+    loading,
+    error,
+    totalCount,
+    fetchComments,
+    createComment,
+    updateComment,
+    deleteComment,
+} = useQuizComments({ quizId: props.quizId });
 
 // 현재 사용자 ID
 const supabase = useSupabaseClient<Database>();
@@ -176,72 +184,73 @@ function handleCancelEdit() {
 <style scoped lang="scss">
 .quiz-comment-list {
     padding: 16px 0;
-}
 
-.comment-header {
-    margin-bottom: 16px;
-}
+    .comment-header {
+        margin-bottom: 16px;
 
-.section-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    align-items: center;
-}
+        .section-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
 
-.comment-count {
-    font-weight: normal;
-    color: #888;
-    margin-left: 4px;
-}
+            .comment-count {
+                font-weight: normal;
+                color: var(--text-light);
+                margin-left: 4px;
+            }
+        }
+    }
 
-.loading-container {
-    display: flex;
-    justify-content: center;
-    padding: 40px 0;
-}
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        padding: 40px 0;
+    }
 
-.comment-form-container,
-.edit-form-container,
-.reply-form-container {
-    margin-bottom: 16px;
-}
+    .comment-form-container,
+    .edit-form-container,
+    .reply-form-container {
+        margin-bottom: 16px;
+    }
 
-.reply-form-container {
-    margin-left: 32px;
-    margin-top: 8px;
-}
+    .reply-form-container {
+        margin-left: 32px;
+        margin-top: 8px;
+    }
 
-.edit-label {
-    font-size: 14px;
-    font-weight: 600;
-    color: #666;
-    margin-bottom: 8px;
-}
+    .edit-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
 
-.comments-container {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+    .comments-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
 
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: #888;
-}
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text-secondary);
 
-.empty-text {
-    margin: 16px 0 8px;
-    font-size: 16px;
-    font-weight: 500;
-}
+        .empty-text {
+            margin: 16px 0 8px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
 
-.empty-subtext {
-    margin: 0;
-    font-size: 14px;
-    color: #aaa;
+        .empty-subtext {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+    }
 }
 </style>

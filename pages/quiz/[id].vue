@@ -42,7 +42,7 @@ async function fetchQuiz() {
                     full_name,
                     avatar_url
                 )
-            `
+            `,
             )
             .eq('id', quizId.value)
             .eq('is_public', true)
@@ -148,7 +148,9 @@ const formattedDate = computed(() => {
                         >
                             {{ difficultyIcon }} {{ difficultyInfo.label }}
                         </q-chip>
-                        <q-chip outline size="md"> {{ quiz.grade_level }}학년 </q-chip>
+                        <q-chip class="grade-level" outline size="md">
+                            {{ quiz.grade_level }}학년
+                        </q-chip>
                     </div>
 
                     <!-- 제목 -->
@@ -207,105 +209,114 @@ const formattedDate = computed(() => {
     max-width: 800px;
     margin: 0 auto;
     padding: 16px;
-}
 
-.back-btn {
-    margin-bottom: 16px;
-}
-
-.loading-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    gap: 16px;
-
-    p {
-        color: #666;
-    }
-}
-
-.quiz-content {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
-.quiz-main-card {
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.badges-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.quiz-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #333;
-    margin: 0 0 12px;
-    line-height: 1.3;
-}
-
-.quiz-description {
-    font-size: 16px;
-    color: #666;
-    line-height: 1.6;
-    margin: 0 0 20px;
-}
-
-.quiz-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-}
-
-.meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #888;
-    font-size: 14px;
-}
-
-.action-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.play-btn {
-    flex: 1;
-    max-width: 300px;
-    border-radius: 12px;
-    font-weight: 600;
-}
-
-.comments-card {
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-@media (max-width: 600px) {
-    .quiz-title {
-        font-size: 24px;
+    .back-btn {
+        margin-bottom: 16px;
+        color: var(--text-secondary);
     }
 
-    .action-row {
+    .loading-state {
+        display: flex;
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        gap: 16px;
+
+        p {
+            color: var(--text-secondary);
+        }
     }
 
-    .play-btn {
-        max-width: none;
+    .quiz-content {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .quiz-main-card {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px var(--shadow-color);
+        background: var(--bg-card);
+
+        .badges-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+
+            .grade-level {
+                color: var(--text-primary);
+            }
+        }
+
+        .quiz-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 12px;
+            line-height: 1.3;
+        }
+
+        .quiz-description {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0 0 20px;
+        }
+
+        .quiz-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+
+            .meta-item {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: var(--text-light);
+                font-size: 14px;
+            }
+        }
+
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            .play-btn {
+                flex: 1;
+                max-width: 300px;
+                border-radius: 12px;
+                font-weight: 600;
+            }
+        }
+    }
+
+    .comments-card {
+        border-radius: 16px;
+        box-shadow: 0 4px 12px var(--shadow-color);
+        background: var(--bg-card);
+    }
+
+    @media (max-width: 600px) {
+        .quiz-main-card {
+            .quiz-title {
+                font-size: 24px;
+            }
+
+            .action-row {
+                flex-direction: column;
+                align-items: stretch;
+
+                .play-btn {
+                    max-width: none;
+                }
+            }
+        }
     }
 }
 </style>
