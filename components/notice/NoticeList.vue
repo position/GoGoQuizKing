@@ -106,7 +106,7 @@ function goToNoticeDetail(id: number) {
                 class="button-create"
                 unelevated
             >
-                <q-icon name="add" left />
+                <q-icon name="add" />
             </q-btn>
         </div>
 
