@@ -64,6 +64,16 @@
             </div>
         </section>
 
+        <!-- 오늘의 퀴즈 -->
+        <section class="today-quiz-section">
+            <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
+        </section>
+
+        <!-- 데일리 미션 (로그인 시) -->
+        <section v-if="isLogin" class="daily-mission-section">
+            <DailyMissionList :missions="dailyMissions" :is-loading="isMissionsLoading" />
+        </section>
+
         <!-- 퀵 액션 -->
         <section class="quick-actions">
             <q-btn
@@ -142,16 +152,20 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '~/store/auth.store';
 import { useQuizStore } from '~/store/quiz.store';
 import { usePointStore } from '~/store/point.store';
+import { useDailyMissionStore } from '~/store/dailyMission.store';
 import { DTO } from '@/models';
 import { CATEGORIES, type QuizCategory } from '@/models/quiz';
 import LevelBadge from '@/components/point/LevelBadge.vue';
 import LevelProgress from '@/components/point/LevelProgress.vue';
 import PointDisplay from '@/components/point/PointDisplay.vue';
+import TodayQuiz from '@/components/daily/TodayQuiz.vue';
+import DailyMissionList from '@/components/daily/DailyMissionList.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const quizStore = useQuizStore();
 const pointStore = usePointStore();
+const dailyMissionStore = useDailyMissionStore();
 const supabase = useSupabaseClient();
 
 const isLoading = ref(true);
@@ -159,6 +173,12 @@ const isLogin = computed(() => authStore.isLogin);
 const isAdmin = computed(() => authStore.isAdmin);
 const hasAdminAccess = computed(() => authStore.hasAdminAccess);
 const streakDays = computed(() => pointStore.streakDays);
+
+// 오늘의 퀴즈 & 미션
+const todayQuiz = computed(() => dailyMissionStore.todayQuiz);
+const dailyMissions = computed(() => dailyMissionStore.missions);
+const isTodayQuizLoading = computed(() => dailyMissionStore.isTodayQuizLoading);
+const isMissionsLoading = computed(() => dailyMissionStore.isLoading);
 
 // 사용자 통계 (Phase 2에서 실제 데이터 연동)
 const userStats = ref({
@@ -169,13 +189,18 @@ const userStats = ref({
 
 // 인기 퀴즈 (상위 5개) - 메모이제이션 적용
 const popularQuizzes = computed(() => {
-    if (quizStore.quizzes.length === 0) return [];
+    if (quizStore.quizzes.length === 0) {
+        return [];
+    }
     return [...quizStore.quizzes].sort((a, b) => b.play_count - a.play_count).slice(0, 5);
 });
 
 // 병렬 로딩으로 성능 개선
 onMounted(async () => {
     const promises: Promise<void>[] = [getUserInfo(), quizStore.fetchQuizzes()];
+
+    // 오늘의 퀴즈는 항상 로드 (비로그인도 볼 수 있음)
+    dailyMissionStore.fetchTodayQuiz();
 
     await Promise.all(promises);
 
@@ -184,6 +209,8 @@ onMounted(async () => {
         // 포인트 정보 및 일일 출석 체크
         pointStore.fetchPointSummary();
         pointStore.checkDailyAttendance();
+        // 데일리 미션 로드
+        dailyMissionStore.fetchMissions();
         // 통계는 비동기로 로드하여 UI 블로킹 방지
         fetchUserStats();
     }
@@ -404,6 +431,14 @@ function goToQuiz(quizId: string) {
                 margin-top: 4px;
             }
         }
+    }
+
+    .today-quiz-section {
+        margin-bottom: 24px;
+    }
+
+    .daily-mission-section {
+        margin-bottom: 24px;
     }
 
     .quick-actions {

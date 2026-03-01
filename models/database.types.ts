@@ -328,6 +328,102 @@ export interface Database {
                     last_updated_at?: string;
                 };
             };
+            daily_quizzes: {
+                Row: {
+                    id: string;
+                    quiz_id: string;
+                    feature_date: string;
+                    bonus_points: number;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    quiz_id: string;
+                    feature_date: string;
+                    bonus_points?: number;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    quiz_id?: string;
+                    feature_date?: string;
+                    bonus_points?: number;
+                    created_at?: string;
+                };
+            };
+            daily_missions: {
+                Row: {
+                    id: string;
+                    name: string;
+                    description: string;
+                    icon: string;
+                    mission_type: string;
+                    target_value: number;
+                    reward_points: number;
+                    is_active: boolean;
+                    sort_order: number;
+                    created_at: string;
+                };
+                Insert: {
+                    id: string;
+                    name: string;
+                    description: string;
+                    icon: string;
+                    mission_type: string;
+                    target_value?: number;
+                    reward_points: number;
+                    is_active?: boolean;
+                    sort_order?: number;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    name?: string;
+                    description?: string;
+                    icon?: string;
+                    mission_type?: string;
+                    target_value?: number;
+                    reward_points?: number;
+                    is_active?: boolean;
+                    sort_order?: number;
+                    created_at?: string;
+                };
+            };
+            user_daily_missions: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    mission_id: string;
+                    mission_date: string;
+                    current_value: number;
+                    is_completed: boolean;
+                    completed_at: string | null;
+                    reward_claimed: boolean;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    user_id: string;
+                    mission_id: string;
+                    mission_date?: string;
+                    current_value?: number;
+                    is_completed?: boolean;
+                    completed_at?: string | null;
+                    reward_claimed?: boolean;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    user_id?: string;
+                    mission_id?: string;
+                    mission_date?: string;
+                    current_value?: number;
+                    is_completed?: boolean;
+                    completed_at?: string | null;
+                    reward_claimed?: boolean;
+                    created_at?: string;
+                };
+            };
         };
         Views: {
             level_info: {
@@ -533,6 +629,74 @@ export interface Database {
                     is_earned: boolean;
                     earned_at: string | null;
                     sort_order: number;
+                }[];
+            };
+            // Daily Mission System Functions
+            get_today_quiz: {
+                Args: Record<string, never>;
+                Returns: {
+                    quiz_id: string;
+                    title: string;
+                    description: string | null;
+                    category: string;
+                    difficulty: string;
+                    play_count: number;
+                    bonus_points: number;
+                    author_name: string;
+                    author_avatar: string | null;
+                }[];
+            };
+            get_user_daily_missions: {
+                Args: {
+                    p_user_id: string;
+                };
+                Returns: {
+                    mission_id: string;
+                    name: string;
+                    description: string;
+                    icon: string;
+                    mission_type: string;
+                    target_value: number;
+                    current_value: number;
+                    reward_points: number;
+                    is_completed: boolean;
+                    reward_claimed: boolean;
+                    sort_order: number;
+                }[];
+            };
+            update_mission_progress: {
+                Args: {
+                    p_user_id: string;
+                    p_mission_type: string;
+                    p_increment?: number;
+                };
+                Returns: {
+                    mission_id: string;
+                    mission_name: string;
+                    is_newly_completed: boolean;
+                    reward_points: number;
+                }[];
+            };
+            claim_mission_reward: {
+                Args: {
+                    p_user_id: string;
+                    p_mission_id: string;
+                };
+                Returns: {
+                    success: boolean;
+                    points_earned: number;
+                    message: string;
+                }[];
+            };
+            complete_today_quiz: {
+                Args: {
+                    p_user_id: string;
+                    p_quiz_id: string;
+                };
+                Returns: {
+                    is_today_quiz: boolean;
+                    bonus_awarded: boolean;
+                    bonus_points: number;
                 }[];
             };
         };

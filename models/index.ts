@@ -5,3 +5,4 @@ export * from './ranking';
 export * from './badge';
 export * from './stats';
 export * from './comment';
+export * from './dailyMission';

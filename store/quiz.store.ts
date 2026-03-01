@@ -352,6 +352,12 @@ export const useQuizStore = defineStore('quiz', {
                     const { usePointStore } = await import('@/store/point.store');
                     const pointStore = usePointStore();
                     await pointStore.fetchPointSummary();
+
+                    // 데일리 미션 업데이트
+                    const { useDailyMissionStore } = await import('@/store/dailyMission.store');
+                    const dailyMissionStore = useDailyMissionStore();
+                    await dailyMissionStore.onQuizCreated();
+
                     ToastMessage.success('퀴즈가 생성되었습니다! +20 포인트 🎉');
                 } catch (pointError) {
                     console.error('Failed to award quiz create points:', pointError);
@@ -579,6 +585,14 @@ export const useQuizStore = defineStore('quiz', {
                         score,
                         this.playState.questions.length,
                         this.playState.quiz!.category,
+                    );
+
+                    // 데일리 미션 업데이트
+                    const { useDailyMissionStore } = await import('@/store/dailyMission.store');
+                    const dailyMissionStore = useDailyMissionStore();
+                    await dailyMissionStore.onQuizCompleted(
+                        this.playState.quiz!.id,
+                        maxConsecutive,
                     );
                 }
             } catch (e) {
