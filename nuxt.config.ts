@@ -123,6 +123,8 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
+        // 서버 전용 (클라이언트에 노출되지 않음)
+        openaiApiKey: process.env.OPENAI_API_KEY,
         public: {
             supabaseUrl: process.env.SUPABASE_URL,
             supabaseKey: process.env.SUPABASE_KEY,

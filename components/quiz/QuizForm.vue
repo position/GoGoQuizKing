@@ -69,6 +69,73 @@
             </q-card-section>
         </q-card>
 
+        <!-- AI 자동 생성 섹션 -->
+        <q-card class="form-section ai-section">
+            <q-card-section>
+                <div class="ai-header">
+                    <h3 class="section-title">🤖 AI로 퀴즈 자동 생성</h3>
+                    <q-badge color="purple" label="Beta" />
+                </div>
+                <p class="ai-description">주제만 입력하면 AI가 자동으로 퀴즈를 만들어줘요!</p>
+
+                <div class="ai-input-row">
+                    <q-input
+                        v-model="aiTopic"
+                        label="퀴즈 주제"
+                        placeholder="예: 한국의 역사, 태양계 행성, 구구단..."
+                        outlined
+                        class="ai-topic-input"
+                        :disable="isGeneratingAI"
+                    />
+                    <q-select
+                        v-model="aiQuestionCount"
+                        :options="questionCountOptions"
+                        label="문제 수"
+                        outlined
+                        emit-value
+                        map-options
+                        class="ai-count-select"
+                        :disable="isGeneratingAI"
+                    />
+                </div>
+
+                <div class="ai-options-row">
+                    <q-btn-toggle
+                        v-model="aiQuestionTypes"
+                        :options="aiTypeOptions"
+                        multiple
+                        no-caps
+                        rounded
+                        unelevated
+                        toggle-color="primary"
+                        class="ai-type-toggle"
+                        :disable="isGeneratingAI"
+                    />
+                </div>
+
+                <div class="ai-action-row">
+                    <q-btn
+                        @click="generateWithAI"
+                        label="AI로 퀴즈 생성하기 ✨"
+                        icon="auto_awesome"
+                        color="purple"
+                        unelevated
+                        :loading="isGeneratingAI"
+                        :disable="!aiTopic.trim() || isGeneratingAI"
+                        class="ai-generate-btn"
+                        size="lg"
+                    />
+                </div>
+
+                <q-linear-progress
+                    v-if="isGeneratingAI"
+                    indeterminate
+                    color="purple"
+                    class="q-mt-sm"
+                />
+            </q-card-section>
+        </q-card>
+
         <!-- 문제 목록 -->
         <div class="questions-section">
             <div class="section-header">
@@ -208,8 +275,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useQuasar } from 'quasar';
 import { CATEGORIES, DIFFICULTIES, DEFAULT_QUESTION_FORM, DEFAULT_QUIZ_FORM } from '@/models/quiz';
 import type { QuizFormData, QuestionFormData } from '@/models/quiz';
+
+const $q = useQuasar();
 
 const props = withDefaults(
     defineProps<{
@@ -253,6 +323,95 @@ watch(
     },
     { deep: true },
 );
+
+// AI 자동 생성 관련 상태
+const aiTopic = ref('');
+const aiQuestionCount = ref(5);
+const aiQuestionTypes = ref<string[]>(['multiple']);
+const isGeneratingAI = ref(false);
+
+// 문제 수 옵션
+const questionCountOptions = [
+    { label: '3문제', value: 3 },
+    { label: '5문제', value: 5 },
+    { label: '7문제', value: 7 },
+    { label: '10문제', value: 10 },
+];
+
+// AI 문제 유형 옵션
+const aiTypeOptions = [
+    { label: '📝 객관식', value: 'multiple' },
+    { label: '⭕ OX', value: 'ox' },
+    { label: '✏️ 단답형', value: 'short' },
+];
+
+// AI로 퀴즈 생성
+async function generateWithAI() {
+    if (!aiTopic.value.trim()) {
+        $q.notify({
+            type: 'warning',
+            message: '퀴즈 주제를 입력해주세요!',
+            icon: 'warning',
+        });
+        return;
+    }
+
+    if (aiQuestionTypes.value.length === 0) {
+        $q.notify({
+            type: 'warning',
+            message: '문제 유형을 하나 이상 선택해주세요!',
+            icon: 'warning',
+        });
+        return;
+    }
+
+    isGeneratingAI.value = true;
+
+    try {
+        const response = await $fetch('/api/quiz/ai-generate', {
+            method: 'POST',
+            body: {
+                topic: aiTopic.value.trim(),
+                category: formData.value.category,
+                difficulty: formData.value.difficulty,
+                gradeLevel: formData.value.grade_level,
+                questionCount: aiQuestionCount.value,
+                questionTypes: aiQuestionTypes.value,
+            },
+        });
+
+        if (response.success && response.quiz) {
+            // 생성된 퀴즈 데이터로 폼 업데이트
+            formData.value.title = response.quiz.title;
+            formData.value.description = response.quiz.description;
+            formData.value.questions = response.quiz.questions;
+
+            $q.notify({
+                type: 'positive',
+                message: `🎉 AI가 ${response.quiz.questions.length}개의 문제를 생성했어요!`,
+                icon: 'auto_awesome',
+            });
+
+            // 입력 필드 초기화
+            aiTopic.value = '';
+        } else {
+            $q.notify({
+                type: 'negative',
+                message: response.error || 'AI 퀴즈 생성에 실패했습니다.',
+                icon: 'error',
+            });
+        }
+    } catch (error: any) {
+        console.error('AI 퀴즈 생성 오류:', error);
+        $q.notify({
+            type: 'negative',
+            message: '네트워크 오류가 발생했습니다. 다시 시도해주세요.',
+            icon: 'error',
+        });
+    } finally {
+        isGeneratingAI.value = false;
+    }
+}
 
 // 카테고리 옵션
 const categoryOptions = Object.entries(CATEGORIES).map(([value, info]) => ({
@@ -355,6 +514,75 @@ function handleCancel() {
         font-weight: 700;
         color: var(--text-primary);
         margin: 0 0 20px;
+    }
+
+    // AI 자동 생성 섹션 스타일
+    .ai-section {
+        border: 2px solid rgba(156, 39, 176, 0.3);
+        background: linear-gradient(135deg, rgba(156, 39, 176, 0.05) 0%, rgba(103, 58, 183, 0.05) 100%);
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+
+            .section-title {
+                margin: 0;
+            }
+        }
+
+        .ai-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0 0 20px;
+        }
+
+        .ai-input-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+
+            .ai-topic-input {
+                flex: 1;
+            }
+
+            .ai-count-select {
+                width: 120px;
+                flex-shrink: 0;
+            }
+        }
+
+        .ai-options-row {
+            margin-bottom: 16px;
+
+            .ai-type-toggle {
+                flex-wrap: wrap;
+            }
+        }
+
+        .ai-action-row {
+            display: flex;
+            justify-content: center;
+
+            .ai-generate-btn {
+                min-width: 200px;
+                border-radius: 12px;
+                font-weight: 600;
+            }
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ai-section {
+            .ai-input-row {
+                flex-direction: column;
+
+                .ai-count-select {
+                    width: 100%;
+                }
+            }
+        }
     }
 
     .questions-section {
