@@ -108,6 +108,7 @@ function goProfile() {
                 </div>
                 <div v-else class="user-info-area">
                     <dl @click="goProfile" class="user-info">
+                        <q-tooltip class="bg-black text-white">👤 마이 페이지</q-tooltip>
                         <dt class="profile">
                             <q-avatar size="56px" class="user-avatar">
                                 <img

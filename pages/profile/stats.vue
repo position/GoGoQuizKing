@@ -298,6 +298,7 @@ onMounted(() => {
             font-weight: 800;
             color: var(--text-primary);
             margin: 0;
+            line-height: 100%;
         }
 
         .page-description {

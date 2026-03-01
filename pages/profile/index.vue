@@ -190,7 +190,7 @@
             <section class="logout-section">
                 <q-btn
                     outline
-                    color="negative"
+                    color="primary"
                     label="로그아웃"
                     icon="logout"
                     class="logout-btn"
@@ -321,6 +321,7 @@ onMounted(() => {
             font-size: 24px;
             font-weight: 700;
             margin: 0;
+            line-height: 100%;
         }
 
         .user-email {
