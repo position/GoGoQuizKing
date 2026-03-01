@@ -10,14 +10,26 @@
             </q-page-container>
             <Footer />
         </q-layout>
+
+        <!-- 뱃지 획득 다이얼로그 -->
+        <BadgeUnlockDialog v-model="showBadgeDialog" />
     </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+import { useBadgeStore } from '@/store/badge.store';
+import { storeToRefs } from 'pinia';
+
 // Lazy load 레이아웃 컴포넌트들
 const Header = defineAsyncComponent(() => import('@/components/layout/Header.vue'));
 const Footer = defineAsyncComponent(() => import('@/components/layout/Footer.vue'));
 const Navbar = defineAsyncComponent(() => import('@/components/layout/Navbar.vue'));
+const BadgeUnlockDialog = defineAsyncComponent(
+    () => import('@/components/badge/BadgeUnlockDialog.vue'),
+);
+
+const badgeStore = useBadgeStore();
+const { showUnlockDialog: showBadgeDialog } = storeToRefs(badgeStore);
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();

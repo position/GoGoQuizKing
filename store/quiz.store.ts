@@ -570,6 +570,16 @@ export const useQuizStore = defineStore('quiz', {
                         await pointStore.fetchPointSummary();
                         levelUp = pointStore.level > oldLevel;
                     }
+
+                    // 뱃지 체크 및 업데이트
+                    const { useBadgeStore } = await import('@/store/badge.store');
+                    const badgeStore = useBadgeStore();
+                    await badgeStore.onQuizCompleted(
+                        this.playState.quiz!.id,
+                        score,
+                        this.playState.questions.length,
+                        this.playState.quiz!.category,
+                    );
                 }
             } catch (e) {
                 console.error('Failed to save attempt or award points:', e);
