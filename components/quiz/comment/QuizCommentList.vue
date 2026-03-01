@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQuizComments } from '~/composables/use-quiz-comments';
 import type { QuizComment } from '~/models/comment';
+import type { Database } from '~/models/database.types';
 
 interface Props {
     quizId: string;
@@ -12,7 +13,7 @@ const { comments, loading, error, totalCount, fetchComments, createComment, upda
     useQuizComments({ quizId: props.quizId });
 
 // 현재 사용자 ID
-const supabase = useSupabase();
+const supabase = useSupabaseClient<Database>();
 const currentUserId = ref<string | undefined>();
 
 // 대댓글 작성 상태

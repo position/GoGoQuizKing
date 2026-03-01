@@ -1,8 +1,8 @@
 // ~/composables/use-quiz-comments.ts
 import { ref, computed, readonly } from 'vue';
 import type { Ref, ComputedRef } from 'vue';
-import { useSupabase } from './use-supabase';
 import type { QuizComment, QuizCommentCreateRequest } from '~/models/comment';
+import type { Database } from '~/models/database.types';
 
 interface UseQuizCommentsOptions {
     quizId: string;
@@ -20,7 +20,7 @@ interface UseQuizCommentsReturn {
 }
 
 export function useQuizComments(options: UseQuizCommentsOptions): UseQuizCommentsReturn {
-    const supabase = useSupabase();
+    const supabase = useSupabaseClient<Database>();
     const { quizId } = options;
 
     const comments = ref<QuizComment[]>([]);

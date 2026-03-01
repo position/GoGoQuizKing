@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuizLikes } from '~/composables/use-quiz-likes';
+import type { Database } from '~/models/database.types';
 
 interface Props {
     quizId: string;
@@ -16,7 +17,7 @@ const { isLiked, likeCount, loading, error, fetchLikeStatus, toggleLike } = useQ
     quizId: props.quizId,
 });
 
-const supabase = useSupabase();
+const supabase = useSupabaseClient<Database>();
 const isLoggedIn = ref(false);
 
 onMounted(async () => {

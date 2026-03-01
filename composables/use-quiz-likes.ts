@@ -1,8 +1,8 @@
 // ~/composables/use-quiz-likes.ts
 import { ref, readonly } from 'vue';
 import type { Ref } from 'vue';
-import { useSupabase } from './use-supabase';
 import type { QuizLikeStatus } from '~/models/comment';
+import type { Database } from '~/models/database.types';
 
 interface UseQuizLikesOptions {
     quizId: string;
@@ -18,7 +18,7 @@ interface UseQuizLikesReturn {
 }
 
 export function useQuizLikes(options: UseQuizLikesOptions): UseQuizLikesReturn {
-    const supabase = useSupabase();
+    const supabase = useSupabaseClient<Database>();
     const { quizId } = options;
 
     const isLiked = ref(false);

@@ -2,6 +2,7 @@
 import { useQuizStore } from '@/store/quiz.store';
 import { CATEGORIES, DIFFICULTIES } from '@/models/quiz';
 import type { QuizWithAuthor } from '@/models/quiz';
+import type { Database } from '@/models/database.types';
 
 definePageMeta({
     title: '퀴즈 상세',
@@ -10,7 +11,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 const quizStore = useQuizStore();
-const supabase = useSupabase();
+const supabase = useSupabaseClient<Database>();
 
 const quizId = computed(() => route.params.id as string);
 const quiz = ref<QuizWithAuthor | null>(null);
