@@ -1,0 +1,54 @@
+// Quasar Sass Variables Override
+// https://quasar.dev/style/sass-scss-variables
+
+// Typography 비활성화 - 기본 h1~h6 스타일 오버라이드
+$h1: (
+    size: 2rem,
+    line-height: 1.5,
+    letter-spacing: normal,
+    weight: 700,
+) !default;
+
+$h2: (
+    size: 1.5rem,
+    line-height: 1.5,
+    letter-spacing: normal,
+    weight: 700,
+) !default;
+
+$h3: (
+    size: 1.25rem,
+    line-height: 1.5,
+    letter-spacing: normal,
+    weight: 700,
+) !default;
+
+$h4: (
+    size: 1.125rem,
+    line-height: 1.5,
+    letter-spacing: normal,
+    weight: 700,
+) !default;
+
+$h5: (
+    size: 1rem,
+    line-height: 1.5,
+    letter-spacing: normal,
+    weight: 700,
+) !default;
+
+$h6: (
+    size: 0.875rem,
+    line-height: 1.5,
+    letter-spacing: normal,
+    weight: 700,
+) !default;
+
+// 프로젝트 Primary 색상 오버라이드
+$primary: #ff8200;
+$secondary: #9acd32;
+$accent: #fdee00;
+$positive: #95e77e;
+$negative: #ff6b6b;
+$info: #45b7d1;
+$warning: #f7b32b;

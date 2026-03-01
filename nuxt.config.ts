@@ -166,6 +166,7 @@ export default defineNuxtConfig({
     },
     quasar: {
         plugins: ['Notify', 'Dialog'],
+        sassVariables: '~/assets/scss/quasar-variables.scss',
         quietSassWarnings: true,
         lang: 'en-US',
         iconSet: 'material-icons',
