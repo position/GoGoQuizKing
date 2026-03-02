@@ -8,71 +8,79 @@
             <div v-if="quiz?.bonus_points" class="bonus">+{{ quiz.bonus_points }}P 보너스!</div>
         </div>
 
-        <div v-if="isLoading" class="skeleton-content">
-            <q-skeleton
-                type="text"
-                width="70%"
-                height="22px"
-                animation="wave"
-                class="skeleton-title"
-            />
-            <q-skeleton type="text" width="90%" height="14px" animation="wave" />
-            <div class="skeleton-meta">
-                <q-skeleton type="QChip" width="60px" height="24px" animation="wave" />
-                <q-skeleton type="QChip" width="50px" height="24px" animation="wave" />
-                <q-skeleton type="QChip" width="70px" height="24px" animation="wave" />
+        <!-- 로딩 상태 -->
+        <template v-if="isLoading">
+            <div class="skeleton-content">
+                <q-skeleton
+                    type="text"
+                    width="70%"
+                    height="22px"
+                    animation="wave"
+                    class="skeleton-title"
+                />
+                <q-skeleton type="text" width="90%" height="14px" animation="wave" />
+                <div class="skeleton-meta">
+                    <q-skeleton type="QChip" width="60px" height="24px" animation="wave" />
+                    <q-skeleton type="QChip" width="50px" height="24px" animation="wave" />
+                    <q-skeleton type="QChip" width="70px" height="24px" animation="wave" />
+                </div>
+                <div class="skeleton-author">
+                    <q-skeleton type="circle" size="20px" animation="wave" />
+                    <q-skeleton type="text" width="80px" height="14px" animation="wave" />
+                </div>
             </div>
-            <div class="skeleton-author">
-                <q-skeleton type="circle" size="20px" animation="wave" />
-                <q-skeleton type="text" width="80px" height="14px" animation="wave" />
-            </div>
-        </div>
+        </template>
 
-        <div v-else-if="quiz" class="quiz-content">
-            <h3 class="quiz-title">{{ quiz.title }}</h3>
-            <p v-if="quiz.description" class="quiz-description">
-                {{ truncateDescription(quiz.description) }}
-            </p>
-            <div class="quiz-meta">
-                <span class="category">
-                    {{ getCategoryLabel(quiz.category) }}
-                </span>
-                <span class="difficulty">
-                    {{ getDifficultyLabel(quiz.difficulty) }}
-                </span>
-                <span class="play-count">
-                    <q-icon name="play_circle" size="14px" color="black" />
-                    {{ quiz.play_count }}회
-                </span>
+        <!-- 퀴즈 존재 -->
+        <template v-else-if="quiz">
+            <div class="quiz-content">
+                <h3 class="quiz-title">{{ quiz.title }}</h3>
+                <p v-if="quiz.description" class="quiz-description">
+                    {{ truncateDescription(quiz.description) }}
+                </p>
+                <div class="quiz-meta">
+                    <span class="category">
+                        {{ getCategoryLabel(quiz.category) }}
+                    </span>
+                    <span class="difficulty">
+                        {{ getDifficultyLabel(quiz.difficulty) }}
+                    </span>
+                    <span class="play-count">
+                        <q-icon name="play_circle" size="14px" color="black" />
+                        {{ quiz.play_count }}회
+                    </span>
+                </div>
+                <div v-if="quiz.author_name" class="author">
+                    <q-avatar size="20px">
+                        <img
+                            v-if="quiz.author_avatar"
+                            :src="quiz.author_avatar"
+                            :alt="quiz.author_name"
+                        />
+                        <q-icon v-else name="person" />
+                    </q-avatar>
+                    <span>{{ quiz.author_name }}</span>
+                </div>
             </div>
-            <div v-if="quiz.author_name" class="author">
-                <q-avatar size="20px">
-                    <img
-                        v-if="quiz.author_avatar"
-                        :src="quiz.author_avatar"
-                        :alt="quiz.author_name"
-                    />
-                    <q-icon v-else name="person" />
-                </q-avatar>
-                <span>{{ quiz.author_name }}</span>
+            <div class="action-area">
+                <q-btn
+                    class="challenge-btn"
+                    unelevated
+                    color="amber"
+                    text-color="dark"
+                    label="도전하기! 🚀"
+                    @click.stop="handleClick"
+                />
             </div>
-        </div>
+        </template>
 
-        <div v-else class="empty-state">
-            <q-icon name="quiz" size="48px" />
-            <p>오늘의 퀴즈가 아직 없어요~</p>
-        </div>
-
-        <div v-if="quiz" class="action-area">
-            <q-btn
-                class="challenge-btn"
-                unelevated
-                color="amber"
-                text-color="dark"
-                label="도전하기! 🚀"
-                @click.stop="handleClick"
-            />
-        </div>
+        <!-- 퀴즈 없음 -->
+        <template v-else>
+            <div class="empty-state">
+                <q-icon name="quiz" size="48px" />
+                <p>오늘의 퀴즈가 아직 없어요~</p>
+            </div>
+        </template>
     </div>
 </template>
 
