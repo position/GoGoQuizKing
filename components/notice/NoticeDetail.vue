@@ -95,7 +95,7 @@ async function editNotice() {
 <template>
     <q-card flat bordered class="notice-detail-area">
         <q-card-section class="title-area">
-            <div class="text-h6">
+            <h3 class="text-h3">
                 <template v-if="props.isEdit">
                     <q-input
                         v-model="noticeForm.title"
@@ -110,7 +110,7 @@ async function editNotice() {
                 <template v-else>
                     {{ noticeDetail.title }}
                 </template>
-            </div>
+            </h3>
             <div class="text-caption">
                 {{ dayjs(noticeDetail.created_at).format('YYYY-MM-DD hh:mm A') }}
             </div>

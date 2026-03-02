@@ -519,7 +519,11 @@ function handleCancel() {
     // AI 자동 생성 섹션 스타일
     .ai-section {
         border: 2px solid rgba(156, 39, 176, 0.3);
-        background: linear-gradient(135deg, rgba(156, 39, 176, 0.05) 0%, rgba(103, 58, 183, 0.05) 100%);
+        background: linear-gradient(
+            135deg,
+            rgba(156, 39, 176, 0.05) 0%,
+            rgba(103, 58, 183, 0.05) 100%
+        );
 
         .ai-header {
             display: flex;

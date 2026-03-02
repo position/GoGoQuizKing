@@ -125,7 +125,6 @@ function goToNoticeDetail(id: number) {
                 <tr>
                     <th class="text-center">번호</th>
                     <th class="text-left">제목</th>
-                    <th class="text-left">내용</th>
                     <th class="text-center">작성일</th>
                     <th class="text-center">관리</th>
                 </tr>
@@ -134,7 +133,6 @@ function goToNoticeDetail(id: number) {
                 <tr @click="goToNoticeDetail(notice.row.id)" class="cursor-pointer table-row">
                     <td>{{ notice.row.id }}</td>
                     <td class="notice-title">{{ notice.row.title }}</td>
-                    <td class="notice-body">{{ notice.row.body }}</td>
                     <td class="notice-date">
                         {{
                             dayjs.utc(notice.row.created_at).local().format('YYYY-MM-DD hh:mm:ss A')
@@ -318,7 +316,7 @@ function goToNoticeDetail(id: number) {
             }
 
             &.notice-title {
-                width: 200px;
+                width: auto;
                 font-weight: 600;
                 color: var(--text-primary);
                 cursor: pointer;
@@ -326,16 +324,6 @@ function goToNoticeDetail(id: number) {
                 &:hover {
                     color: var(--color-primary);
                 }
-            }
-
-            &.notice-body {
-                width: auto;
-                max-width: 300px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                color: var(--text-secondary);
-                font-size: $font-size-sm;
             }
 
             &.notice-date {
