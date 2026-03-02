@@ -19,11 +19,21 @@ const isDarkMode = computed(() => commonStore.isDarkMode);
 const isInitialized = ref(false);
 
 onMounted(() => {
+    // 초기 로드 시 body에 클래스 추가 (CLS 방지)
+    if (import.meta.client) {
+        document.body.classList.add('layout-initializing');
+    }
+
     commonStore.initTheme();
     commonStore.initMenuState();
+
     // 마운트 후 애니메이션 활성화
     requestAnimationFrame(() => {
         isInitialized.value = true;
+        // 초기화 완료 후 클래스 제거 (트랜지션 정상 동작)
+        if (import.meta.client) {
+            document.body.classList.remove('layout-initializing');
+        }
     });
 });
 

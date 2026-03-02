@@ -140,10 +140,10 @@
                 <h2 class="section-title">🔥 인기 퀴즈</h2>
                 <q-btn
                     :to="{ path: '/quiz/quiz-list' }"
-                    label="더보기"
+                    label="많이보기"
                     flat
                     color="primary"
-                    size="sm"
+                    size="md"
                 />
             </div>
 

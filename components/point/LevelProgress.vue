@@ -67,6 +67,7 @@ const targetPoints = computed(() => {
             padding-left: 10px;
             font-size: 14px;
             color: var(--color-text);
+            text-align: right;
 
             strong {
                 color: #ff6b6b;

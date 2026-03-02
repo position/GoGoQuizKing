@@ -57,12 +57,6 @@ function toggleTheme() {
     background: linear-gradient(135deg, var(--color-primary) 0%, #e55a5a 100%);
     height: 56px; // CLS 방지 - 고정 높이
 
-    // CLS 방지 - 데스크탑에서 Drawer 너비를 미리 고려
-    @media (min-width: 769px) {
-        left: var(--drawer-width) !important;
-        width: calc(100% - var(--drawer-width)) !important;
-    }
-
     .header-toolbar {
         height: 56px;
         min-height: 56px;

@@ -179,14 +179,14 @@ BEGIN
       AND udm.mission_id = p_mission_id
       AND udm.mission_date = v_today;
 
-    -- 포인트 지급
+    -- 포인트 지급 (profiles.points 컬럼 사용)
     UPDATE profiles
-    SET total_points = total_points + v_reward
+    SET points = points + v_reward
     WHERE id = p_user_id;
 
-    -- 포인트 히스토리 기록
-    INSERT INTO point_history (user_id, amount, reason, reason_type)
-    VALUES (p_user_id, v_reward, v_mission_record.name || ' 미션 완료', 'mission_reward');
+    -- 포인트 히스토리 기록 (올바른 컬럼명 사용)
+    INSERT INTO point_history (user_id, points, action_type, description)
+    VALUES (p_user_id, v_reward, 'mission_reward', v_mission_record.name || ' 미션 완료');
 
     RETURN QUERY SELECT true, v_reward, ('🎉 ' || v_reward || ' 포인트를 받았습니다!')::TEXT;
 END;

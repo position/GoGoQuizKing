@@ -114,23 +114,26 @@
     --hover-overlay: rgba(78, 205, 196, 0.08);
 }
 
-// CLS 방지 - 데스크탑에서 레이아웃 초기화 (body 클래스 적용 전에도 동작)
-@media (min-width: 769px) {
-    .q-header,
-    .q-footer {
-        left: var(--drawer-width, 220px) !important;
-        width: calc(100% - var(--drawer-width, 220px)) !important;
-        transition: none !important;
-    }
+// CLS 방지 - 초기 로드 시에만 레이아웃 트랜지션 비활성화
+// body.layout-initializing 클래스가 있을 때만 적용
+body.layout-initializing {
+    @media (min-width: 769px) {
+        .q-header,
+        .q-footer {
+            left: var(--drawer-width, 220px) !important;
+            width: calc(100% - var(--drawer-width, 220px)) !important;
+            transition: none !important;
+        }
 
-    .q-drawer--left {
-        transform: translateX(0) !important;
-        transition: none !important;
-    }
+        .q-drawer--left {
+            transform: translateX(0) !important;
+            transition: none !important;
+        }
 
-    .q-page-container {
-        padding-left: var(--drawer-width, 220px) !important;
-        transition: none !important;
+        .q-page-container {
+            padding-left: var(--drawer-width, 220px) !important;
+            transition: none !important;
+        }
     }
 }
 
@@ -358,29 +361,8 @@ h6 {
         min-height: var(--footer-height);
     }
 
-    // 데스크탑에서 Header/Footer가 Drawer 너비를 미리 고려
-    @media (min-width: 769px) {
-        .q-header,
-        .q-footer {
-            left: var(--drawer-width);
-            width: calc(100% - var(--drawer-width));
-            transition: none;
-        }
-    }
-
     .q-drawer {
         width: var(--drawer-width);
-    }
-
-    // 데스크탑에서 drawer 초기 애니메이션 비활성화 (CLS 방지)
-    @media (min-width: 769px) {
-        .q-drawer--left {
-            transform: translateX(0) !important;
-        }
-
-        .q-drawer--on-top {
-            box-shadow: none;
-        }
     }
 
     .q-textarea {
@@ -511,7 +493,7 @@ h6 {
 
     // Fix for icons
     .q-icon {
-        color: #fff;
+        color: var(--text-primary);
     }
 
     // Fix for menu
@@ -543,29 +525,8 @@ h6 {
         min-height: var(--footer-height);
     }
 
-    // 데스크탑에서 Header/Footer가 Drawer 너비를 미리 고려
-    @media (min-width: 769px) {
-        .q-header,
-        .q-footer {
-            left: var(--drawer-width);
-            width: calc(100% - var(--drawer-width));
-            transition: none;
-        }
-    }
-
     .q-drawer {
         width: var(--drawer-width);
-    }
-
-    // 데스크탑에서 drawer 초기 애니메이션 비활성화 (CLS 방지)
-    @media (min-width: 769px) {
-        .q-drawer--left {
-            transform: translateX(0) !important;
-        }
-
-        .q-drawer--on-top {
-            box-shadow: none;
-        }
     }
 
     .q-header,
