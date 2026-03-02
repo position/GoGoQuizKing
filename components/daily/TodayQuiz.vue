@@ -1,12 +1,12 @@
 <template>
     <div class="today-quiz-card" @click="handleClick">
-        <div class="card-header">
+        <section class="card-header">
             <div class="badge">
                 <q-icon name="star" size="16px" color="primary" />
                 <span>오늘의 퀴즈</span>
             </div>
             <div v-if="quiz?.bonus_points" class="bonus">+{{ quiz.bonus_points }}P 보너스!</div>
-        </div>
+        </section>
 
         <!-- 로딩 상태 -->
         <template v-if="isLoading">
@@ -33,7 +33,7 @@
 
         <!-- 퀴즈 존재 -->
         <template v-else-if="quiz">
-            <div class="quiz-content">
+            <section class="quiz-content">
                 <h3 class="quiz-title">{{ quiz.title }}</h3>
                 <p v-if="quiz.description" class="quiz-description">
                     {{ truncateDescription(quiz.description) }}
@@ -61,8 +61,8 @@
                     </q-avatar>
                     <span>{{ quiz.author_name }}</span>
                 </div>
-            </div>
-            <div class="action-area">
+            </section>
+            <section class="action-area">
                 <q-btn
                     class="challenge-btn"
                     unelevated
@@ -71,7 +71,7 @@
                     label="도전하기! 🚀"
                     @click.stop="handleClick"
                 />
-            </div>
+            </section>
         </template>
 
         <!-- 퀴즈 없음 -->
