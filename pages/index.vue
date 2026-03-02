@@ -2,25 +2,27 @@
     <div class="home-page">
         <!-- 환영 섹션 -->
         <section class="welcome-section">
-            <!-- 어드민 배지 -->
-            <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
-                <div
-                    class="admin-badge"
-                    :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }"
-                    :to="{ path: '/admin/quiz-automation' }"
-                >
-                    <q-icon
-                        :name="isAdmin ? 'admin_panel_settings' : 'verified_user'"
-                        size="20px"
-                    />
-                    <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
-                </div>
-            </section>
+            <!-- 어드민 배지 (클라이언트 전용) -->
+            <ClientOnly>
+                <section v-if="isLogin && hasAdminAccess" class="admin-badge-section">
+                    <NuxtLink
+                        :to="{ path: '/admin/quiz-automation' }"
+                        class="admin-badge"
+                        :class="{ 'is-admin': isAdmin, 'is-moderator': !isAdmin }"
+                    >
+                        <q-icon
+                            :name="isAdmin ? 'admin_panel_settings' : 'verified_user'"
+                            size="20px"
+                        />
+                        <span>{{ isAdmin ? '관리자' : '모더레이터' }}</span>
+                    </NuxtLink>
+                </section>
+            </ClientOnly>
 
             <div class="welcome-content">
                 <div class="mascot">
                     <NuxtImg
-                        :src="`${$imgHost}/img/quizking-character.png`"
+                        :src="`${imgHost}/img/quizking-character.png`"
                         alt="GoGo! Quiz King"
                         width="320"
                         height="320"
@@ -37,48 +39,69 @@
             </div>
         </section>
 
-        <!-- 포인트/레벨 섹션 (로그인 시) -->
-        <section v-if="isLogin" class="point-level-section">
-            <div class="user-status-card">
-                <LevelProgress />
-                <div v-if="streakDays > 0" class="streak-info">
-                    <q-icon name="local_fire_department" color="orange" size="20px" />
-                    <span>{{ streakDays }}일 연속 출석 중! 🔥</span>
+        <!-- 로그인 사용자 전용 섹션 (클라이언트 전용 - 하이드레이션 미스매치 방지) -->
+        <ClientOnly>
+            <template #fallback>
+                <!-- 로그인 섹션 스켈레톤 -->
+                <div class="login-section-skeleton">
+                    <div class="skeleton-status-card">
+                        <q-skeleton type="rect" height="202px" animation="wave" />
+                    </div>
+                    <div class="skeleton-stats">
+                        <q-skeleton
+                            v-for="i in 3"
+                            :key="i"
+                            type="rect"
+                            height="148px"
+                            animation="wave"
+                        />
+                    </div>
                 </div>
-            </div>
-        </section>
+            </template>
 
-        <!-- 통계 카드 -->
-        <section v-if="isLogin" class="stats-section">
-            <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-value">{{ userStats.totalPlayed }}</div>
-                <div class="stat-label">풀었어요!</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">✏️</div>
-                <div class="stat-value">{{ userStats.totalCreated }}</div>
-                <div class="stat-label">만들었어요!</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">🎯</div>
-                <div class="stat-value">{{ userStats.accuracy }}%</div>
-                <div class="stat-label">정답률</div>
-            </div>
-        </section>
+            <!-- 포인트/레벨 섹션 -->
+            <section v-if="isLogin" class="point-level-section">
+                <div class="user-status-card">
+                    <LevelProgress />
+                    <div v-if="streakDays > 0" class="streak-info">
+                        <q-icon name="local_fire_department" color="orange" size="20px" />
+                        <span>{{ streakDays }}일 연속 출석 중! 🔥</span>
+                    </div>
+                </div>
+            </section>
 
-        <!-- 오늘의 퀴즈 & 데일리 미션 (위/아래 레이아웃) -->
-        <section v-if="isLogin" class="today-section">
-            <div class="today-quiz-wrapper">
-                <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
-            </div>
-            <div class="daily-mission-wrapper">
-                <DailyMissionList :missions="dailyMissions" :is-loading="isMissionsLoading" />
-            </div>
-        </section>
+            <!-- 통계 카드 -->
+            <section v-if="isLogin" class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value">{{ userStats.totalPlayed }}</div>
+                    <div class="stat-label">풀었어요!</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✏️</div>
+                    <div class="stat-value">{{ userStats.totalCreated }}</div>
+                    <div class="stat-label">만들었어요!</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value">{{ userStats.accuracy }}%</div>
+                    <div class="stat-label">정답률</div>
+                </div>
+            </section>
 
-        <!-- 비로그인 시 오늘의 퀴즈만 표시 -->
-        <section v-else class="today-quiz-section">
+            <!-- 오늘의 퀴즈 & 데일리 미션 -->
+            <section v-if="isLogin" class="today-section">
+                <div class="today-quiz-wrapper">
+                    <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
+                </div>
+                <div class="daily-mission-wrapper">
+                    <DailyMissionList :missions="dailyMissions" :is-loading="isMissionsLoading" />
+                </div>
+            </section>
+        </ClientOnly>
+
+        <!-- 비로그인 시 오늘의 퀴즈 (SSR 가능) -->
+        <section v-if="!isLogin" class="today-quiz-section">
             <TodayQuiz :quiz="todayQuiz" :is-loading="isTodayQuizLoading" />
         </section>
 
@@ -140,16 +163,15 @@
                 <div
                     v-for="(quiz, index) in popularQuizzes"
                     :key="quiz.id"
-                    @click="goToQuiz(quiz.id)"
                     class="quiz-item"
+                    @click="goToQuiz(quiz.id)"
                 >
                     <span class="rank" :class="`rank-${index + 1}`">{{ index + 1 }}</span>
                     <div class="quiz-info">
                         <span class="quiz-title">{{ quiz.title }}</span>
-                        <span class="quiz-meta"
-                            >{{ getCategoryLabel(quiz.category) }} · {{ quiz.play_count }}회
-                            플레이</span
-                        >
+                        <span class="quiz-meta">
+                            {{ getCategoryLabel(quiz.category) }} · {{ quiz.play_count }}회 플레이
+                        </span>
                     </div>
                     <q-icon name="chevron_right" class="arrow-icon" />
                 </div>
@@ -164,76 +186,97 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useAuthStore } from '~/store/auth.store';
-import { useQuizStore } from '~/store/quiz.store';
-import { usePointStore } from '~/store/point.store';
-import { useDailyMissionStore } from '~/store/dailyMission.store';
-import { DTO } from '@/models';
 import { CATEGORIES, type QuizCategory } from '@/models/quiz';
-import LevelBadge from '@/components/point/LevelBadge.vue';
-import LevelProgress from '@/components/point/LevelProgress.vue';
-import PointDisplay from '@/components/point/PointDisplay.vue';
-import TodayQuiz from '@/components/daily/TodayQuiz.vue';
-import DailyMissionList from '@/components/daily/DailyMissionList.vue';
+import type { Database } from '@/models/database.types';
+import { DTO } from '@/models';
+import { useAuthStore } from '@/store/auth.store';
+import { useQuizStore } from '@/store/quiz.store';
+import { usePointStore } from '@/store/point.store';
+import { useDailyMissionStore } from '@/store/dailyMission.store';
 
+// ============================================
+// Composables & Stores
+// ============================================
 const router = useRouter();
+const runtimeConfig = useRuntimeConfig();
+const supabase = useSupabaseClient<Database>();
+
 const authStore = useAuthStore();
 const quizStore = useQuizStore();
 const pointStore = usePointStore();
 const dailyMissionStore = useDailyMissionStore();
-const supabase = useSupabaseClient();
 
+// ============================================
+// Constants
+// ============================================
+const imgHost = runtimeConfig.public.supabaseStorage as string;
+
+// ============================================
+// State
+// ============================================
 const isLoading = ref(true);
-const isLogin = computed(() => authStore.isLogin);
-const isAdmin = computed(() => authStore.isAdmin);
-const hasAdminAccess = computed(() => authStore.hasAdminAccess);
-const streakDays = computed(() => pointStore.streakDays);
 
-// 오늘의 퀴즈 & 미션
-const todayQuiz = computed(() => dailyMissionStore.todayQuiz);
-const dailyMissions = computed(() => dailyMissionStore.missions);
-const isTodayQuizLoading = computed(() => dailyMissionStore.isTodayQuizLoading);
-const isMissionsLoading = computed(() => dailyMissionStore.isLoading);
-
-// 사용자 통계 (Phase 2에서 실제 데이터 연동)
 const userStats = ref({
     totalPlayed: 0,
     totalCreated: 0,
     accuracy: 0,
 });
 
-// 인기 퀴즈 (상위 5개) - 메모이제이션 적용
+// ============================================
+// Computed (Store 기반)
+// ============================================
+const isLogin = computed(() => authStore.isLogin);
+const isAdmin = computed(() => authStore.isAdmin);
+const hasAdminAccess = computed(() => authStore.hasAdminAccess);
+const streakDays = computed(() => pointStore.streakDays);
+
+const todayQuiz = computed(() => dailyMissionStore.todayQuiz);
+const dailyMissions = computed(() => dailyMissionStore.missions);
+const isTodayQuizLoading = computed(() => dailyMissionStore.isTodayQuizLoading);
+const isMissionsLoading = computed(() => dailyMissionStore.isLoading);
+
 const popularQuizzes = computed(() => {
-    if (quizStore.quizzes.length === 0) {
+    if (!quizStore.quizzes.length) {
         return [];
     }
     return [...quizStore.quizzes].sort((a, b) => b.play_count - a.play_count).slice(0, 5);
 });
 
-// 병렬 로딩으로 성능 개선
+// ============================================
+// Lifecycle
+// ============================================
 onMounted(async () => {
-    const promises: Promise<void>[] = [getUserInfo(), quizStore.fetchQuizzes()];
-
-    // 오늘의 퀴즈는 항상 로드 (비로그인도 볼 수 있음)
-    dailyMissionStore.fetchTodayQuiz();
-
-    await Promise.all(promises);
-
-    // 로그인된 경우에만 통계 로드 (로그인 체크 이후 별도 실행)
-    if (isLogin.value) {
-        // 포인트 정보 및 일일 출석 체크
-        pointStore.fetchPointSummary();
-        pointStore.checkDailyAttendance();
-        // 데일리 미션 로드
-        dailyMissionStore.fetchMissions();
-        // 통계는 비동기로 로드하여 UI 블로킹 방지
-        fetchUserStats();
-    }
-    isLoading.value = false;
+    await initializePage();
 });
 
-async function getUserInfo() {
+// ============================================
+// Methods
+// ============================================
+
+/**
+ * 페이지 초기화 - 병렬 로딩으로 성능 최적화
+ */
+async function initializePage() {
+    try {
+        // 1. 기본 데이터 병렬 로드
+        await Promise.all([initUserSession(), quizStore.fetchQuizzes()]);
+
+        // 2. 오늘의 퀴즈는 별도 로드 (비로그인도 볼 수 있음)
+        dailyMissionStore.fetchTodayQuiz();
+
+        // 3. 로그인 사용자 전용 데이터 로드
+        if (isLogin.value) {
+            loadUserData();
+        }
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+/**
+ * 사용자 세션 초기화
+ */
+async function initUserSession() {
     const {
         data: { user },
     } = await supabase.auth.getUser();
@@ -244,47 +287,59 @@ async function getUserInfo() {
     }
 
     const userInfo = { ...user.user_metadata } as DTO.Auth.LoginResponse;
-    authStore.registerInfo(userInfo, user?.app_metadata.provider);
-
-    // role 정보 가져오기
+    authStore.registerInfo(userInfo, user.app_metadata.provider);
     await authStore.fetchUserRole(user.id);
 }
 
+/**
+ * 로그인 사용자 데이터 로드 (비동기, UI 블로킹 방지)
+ */
+function loadUserData() {
+    // 포인트 정보 및 출석 체크
+    pointStore.fetchPointSummary();
+    pointStore.checkDailyAttendance();
+
+    // 데일리 미션 로드
+    dailyMissionStore.fetchMissions();
+
+    // 통계 로드 (별도 비동기)
+    fetchUserStats();
+}
+
+/**
+ * 사용자 통계 조회
+ */
 async function fetchUserStats() {
     try {
         const {
             data: { user },
         } = await supabase.auth.getUser();
+        if (!user) {
+            return;
+        }
 
-        if (!user) return;
-
-        // 병렬로 통계 조회 (성능 개선)
         const [playedResult, createdResult, attemptsResult] = await Promise.all([
-            // 풀은 퀴즈 수
             supabase
                 .from('quiz_attempts')
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', user.id),
-            // 만든 퀴즈 수
             supabase
                 .from('quizzes')
                 .select('*', { count: 'exact', head: true })
                 .eq('created_by', user.id),
-            // 정답률 계산용 데이터
             supabase.from('quiz_attempts').select('score, total_questions').eq('user_id', user.id),
         ]);
 
-        const playedCount = playedResult.count || 0;
-        const createdCount = createdResult.count || 0;
-        const attempts = attemptsResult.data;
+        const playedCount = playedResult.count ?? 0;
+        const createdCount = createdResult.count ?? 0;
+        const attempts = attemptsResult.data ?? [];
 
         let totalScore = 0;
         let totalQuestions = 0;
-        if (attempts) {
-            for (const a of attempts) {
-                totalScore += a.score;
-                totalQuestions += a.total_questions;
-            }
+
+        for (const attempt of attempts) {
+            totalScore += attempt.score ?? 0;
+            totalQuestions += attempt.total_questions ?? 0;
         }
 
         userStats.value = {
@@ -292,20 +347,23 @@ async function fetchUserStats() {
             totalCreated: createdCount,
             accuracy: totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0,
         };
-    } catch (e) {
-        console.error('Failed to fetch user stats:', e);
+    } catch (error) {
+        console.error('Failed to fetch user stats:', error);
     }
 }
 
+/**
+ * 카테고리 라벨 조회
+ */
 function getCategoryLabel(category: QuizCategory): string {
-    return CATEGORIES[category]?.label || '기타';
+    return CATEGORIES[category]?.label ?? '기타';
 }
 
-// INP 개선 - requestAnimationFrame으로 UI 업데이트 최적화
+/**
+ * 퀴즈 상세 페이지로 이동
+ */
 function goToQuiz(quizId: string) {
-    requestAnimationFrame(() => {
-        router.push({ path: `/quiz/play/${quizId}` });
-    });
+    router.push({ path: `/quiz/play/${quizId}` });
 }
 </script>
 
@@ -313,6 +371,21 @@ function goToQuiz(quizId: string) {
 .home-page {
     max-width: 800px;
     margin: 0 auto;
+
+    // 로그인 섹션 스켈레톤 (ClientOnly fallback)
+    .login-section-skeleton {
+        margin-bottom: 24px;
+
+        .skeleton-status-card {
+            margin-bottom: 24px;
+        }
+
+        .skeleton-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+    }
 
     // 환영 섹션
     .welcome-section {

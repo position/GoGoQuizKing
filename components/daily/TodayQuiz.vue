@@ -5,7 +5,7 @@
                 <q-icon name="star" size="16px" color="primary" />
                 <span>오늘의 퀴즈</span>
             </div>
-            <div v-if="quiz?.bonus_points" class="bonus">+{{ quiz.bonus_points }}P 보너스!</div>
+            <span v-if="quiz?.bonus_points" class="bonus">+{{ quiz.bonus_points }}P 보너스!</span>
         </section>
 
         <!-- 로딩 상태 -->
@@ -160,6 +160,7 @@ function getDifficultyLabel(difficulty: string): string {
         }
 
         .bonus {
+            display: block;
             background: var(--color-negative);
             color: white;
             padding: 4px 10px;
