@@ -296,6 +296,10 @@ export default defineNuxtConfig({
         disablePrefetchLinks: true,
     },
 
+    features: {
+        inlineStyles: false,
+    },
+
     experimental: {
         payloadExtraction: true,
         renderJsonPayloads: true,
