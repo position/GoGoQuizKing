@@ -83,6 +83,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+    // CLS 방지 - 레이아웃 고정 크기
+    --header-height: 56px;
+    --footer-height: 48px;
+    --drawer-width: 220px;
+
     // CSS Custom Properties for dynamic theming (Light Mode)
     --color-primary: #{$primary};
     --color-secondary: #{$secondary};
@@ -107,6 +112,26 @@
     --shadow-color: rgba(45, 52, 54, 0.08);
     --border-color: rgba(45, 52, 54, 0.1);
     --hover-overlay: rgba(78, 205, 196, 0.08);
+}
+
+// CLS 방지 - 데스크탑에서 레이아웃 초기화 (body 클래스 적용 전에도 동작)
+@media (min-width: 769px) {
+    .q-header,
+    .q-footer {
+        left: var(--drawer-width, 220px) !important;
+        width: calc(100% - var(--drawer-width, 220px)) !important;
+        transition: none !important;
+    }
+
+    .q-drawer--left {
+        transform: translateX(0) !important;
+        transition: none !important;
+    }
+
+    .q-page-container {
+        padding-left: var(--drawer-width, 220px) !important;
+        transition: none !important;
+    }
 }
 
 // Dark Mode Theme
@@ -322,6 +347,42 @@ h6 {
         background-color: var(--bg-primary);
     }
 
+    // CLS 방지 - 레이아웃 고정 크기
+    .q-header {
+        height: var(--header-height);
+        min-height: var(--header-height);
+    }
+
+    .q-footer {
+        height: var(--footer-height);
+        min-height: var(--footer-height);
+    }
+
+    // 데스크탑에서 Header/Footer가 Drawer 너비를 미리 고려
+    @media (min-width: 769px) {
+        .q-header,
+        .q-footer {
+            left: var(--drawer-width);
+            width: calc(100% - var(--drawer-width));
+            transition: none;
+        }
+    }
+
+    .q-drawer {
+        width: var(--drawer-width);
+    }
+
+    // 데스크탑에서 drawer 초기 애니메이션 비활성화 (CLS 방지)
+    @media (min-width: 769px) {
+        .q-drawer--left {
+            transform: translateX(0) !important;
+        }
+
+        .q-drawer--on-top {
+            box-shadow: none;
+        }
+    }
+
     .q-textarea {
         .q-field__control {
             background-color: var(--bg-input);
@@ -469,6 +530,42 @@ h6 {
 .body--light {
     .q-layout {
         background-color: var(--bg-primary);
+    }
+
+    // CLS 방지 - 레이아웃 고정 크기
+    .q-header {
+        height: var(--header-height);
+        min-height: var(--header-height);
+    }
+
+    .q-footer {
+        height: var(--footer-height);
+        min-height: var(--footer-height);
+    }
+
+    // 데스크탑에서 Header/Footer가 Drawer 너비를 미리 고려
+    @media (min-width: 769px) {
+        .q-header,
+        .q-footer {
+            left: var(--drawer-width);
+            width: calc(100% - var(--drawer-width));
+            transition: none;
+        }
+    }
+
+    .q-drawer {
+        width: var(--drawer-width);
+    }
+
+    // 데스크탑에서 drawer 초기 애니메이션 비활성화 (CLS 방지)
+    @media (min-width: 769px) {
+        .q-drawer--left {
+            transform: translateX(0) !important;
+        }
+
+        .q-drawer--on-top {
+            box-shadow: none;
+        }
     }
 
     .q-header,

@@ -8,9 +8,24 @@
             <div v-if="quiz?.bonus_points" class="bonus">+{{ quiz.bonus_points }}P 보너스!</div>
         </div>
 
-        <div v-if="isLoading" class="loading-state">
-            <q-spinner-dots color="primary" size="40px" />
-            <p>오늘의 퀴즈를 불러오는 중...</p>
+        <div v-if="isLoading" class="skeleton-content">
+            <q-skeleton
+                type="text"
+                width="70%"
+                height="22px"
+                animation="wave"
+                class="skeleton-title"
+            />
+            <q-skeleton type="text" width="90%" height="14px" animation="wave" />
+            <div class="skeleton-meta">
+                <q-skeleton type="QChip" width="60px" height="24px" animation="wave" />
+                <q-skeleton type="QChip" width="50px" height="24px" animation="wave" />
+                <q-skeleton type="QChip" width="70px" height="24px" animation="wave" />
+            </div>
+            <div class="skeleton-author">
+                <q-skeleton type="circle" size="20px" animation="wave" />
+                <q-skeleton type="text" width="80px" height="14px" animation="wave" />
+            </div>
         </div>
 
         <div v-else-if="quiz" class="quiz-content">
@@ -106,6 +121,8 @@ function getDifficultyLabel(difficulty: string): string {
     border-radius: 20px;
     padding: 20px;
     cursor: pointer;
+    min-height: 180px; // CLS 방지 - 최소 높이 보장
+    contain: layout; // 레이아웃 격리
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease;
@@ -145,16 +162,28 @@ function getDifficultyLabel(difficulty: string): string {
         }
     }
 
-    .loading-state {
+    // 스켈레톤 로딩 UI
+    .skeleton-content {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        padding: 40px 0;
-        color: rgba(0, 0, 0, 0.7);
+        gap: 10px;
+        padding: 8px 0;
 
-        p {
-            margin: 12px 0 0;
-            font-size: 14px;
+        .skeleton-title {
+            margin-bottom: 4px;
+        }
+
+        .skeleton-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .skeleton-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
         }
     }
 

@@ -22,9 +22,12 @@ const isDarkMode = computed(() => commonStore.isDarkMode);
 .app-footer {
     background: linear-gradient(135deg, var(--color-primary) 0%, #e55a5a 100%);
     transition: background-color 0.3s ease;
+    height: 48px; // CLS 방지 - 고정 높이
 
     .footer-toolbar {
+        height: 48px;
         min-height: 48px;
+        max-height: 48px;
         padding: 0 16px;
     }
 

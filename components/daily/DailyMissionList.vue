@@ -8,9 +8,26 @@
             <div class="progress-badge">{{ completedCount }} / {{ totalCount }}</div>
         </div>
 
-        <div v-if="isLoading" class="loading-state">
-            <q-spinner-dots color="primary" size="40px" />
-            <p>미션을 불러오는 중...</p>
+        <!-- 로딩 상태 - q-skeleton 사용 -->
+        <div v-if="isLoading" class="skeleton-list">
+            <div v-for="i in 4" :key="i" class="skeleton-card">
+                <q-skeleton type="circle" size="32px" animation="wave" />
+                <div class="skeleton-content">
+                    <q-skeleton type="text" width="60%" height="16px" animation="wave" />
+                    <q-skeleton type="text" width="80%" height="12px" animation="wave" />
+                    <q-skeleton
+                        type="rect"
+                        width="100%"
+                        height="6px"
+                        animation="wave"
+                        class="skeleton-progress"
+                    />
+                </div>
+                <div class="skeleton-reward">
+                    <q-skeleton type="text" width="40px" height="14px" animation="wave" />
+                    <q-skeleton type="text" width="30px" height="10px" animation="wave" />
+                </div>
+            </div>
         </div>
 
         <div v-else-if="missions.length > 0" class="mission-list">
@@ -114,6 +131,8 @@ async function handleClaimAll() {
     background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
     border-radius: 20px;
     padding: 20px;
+    min-height: 280px; // CLS 방지 - 최소 높이 보장
+    contain: layout; // 레이아웃 격리
     box-shadow: 0 8px 24px rgba(78, 205, 196, 0.3);
     transition:
         transform 0.2s ease,
@@ -152,16 +171,38 @@ async function handleClaimAll() {
         }
     }
 
-    .loading-state {
+    // 스켈레톤 로딩 UI
+    .skeleton-list {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        padding: 40px 0;
-        color: rgba(255, 255, 255, 0.9);
+        gap: 12px;
 
-        p {
-            margin: 12px 0 0;
-            font-size: 14px;
+        .skeleton-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 14px;
+
+            .skeleton-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+
+                .skeleton-progress {
+                    margin-top: 4px;
+                    border-radius: 3px;
+                }
+            }
+
+            .skeleton-reward {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
         }
     }
 

@@ -124,8 +124,16 @@
                 />
             </div>
 
-            <div v-if="isLoading" class="loading-state">
-                <q-spinner-dots color="primary" size="40px" />
+            <!-- 스켈레톤 로딩 UI -->
+            <div v-if="isLoading" class="skeleton-quiz-list">
+                <div v-for="i in 5" :key="i" class="skeleton-quiz-item">
+                    <q-skeleton type="circle" size="28px" animation="wave" />
+                    <div class="skeleton-quiz-info">
+                        <q-skeleton type="text" width="60%" height="15px" animation="wave" />
+                        <q-skeleton type="text" width="40%" height="12px" animation="wave" />
+                    </div>
+                    <q-skeleton type="circle" size="20px" animation="wave" />
+                </div>
             </div>
 
             <div v-else-if="popularQuizzes.length > 0" class="quiz-list">
@@ -316,6 +324,8 @@ function goToQuiz(quizId: string) {
         margin-bottom: 24px;
         color: white;
         box-shadow: 0 8px 32px rgba(255, 130, 0, 0.3);
+        min-height: 450px; // CLS 방지 - 마스코트 + 텍스트 높이 예약
+        contain: layout; // 레이아웃 격리
 
         .admin-badge-section {
             position: absolute;
@@ -461,9 +471,14 @@ function goToQuiz(quizId: string) {
         gap: 20px;
         margin-bottom: 24px;
 
-        .today-quiz-wrapper,
+        .today-quiz-wrapper {
+            width: 100%;
+            min-height: 200px; // CLS 방지
+        }
+
         .daily-mission-wrapper {
             width: 100%;
+            min-height: 300px; // CLS 방지
         }
     }
 
@@ -478,9 +493,11 @@ function goToQuiz(quizId: string) {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
         margin-bottom: 32px;
+        min-height: 140px; // CLS 방지
 
         .action-btn {
             height: auto;
+            min-height: 120px; // CLS 방지
             padding: 24px;
             border-radius: 20px;
             color: white;
@@ -554,10 +571,29 @@ function goToQuiz(quizId: string) {
             }
         }
 
-        .loading-state {
+        // 스켈레톤 로딩 UI
+        .skeleton-quiz-list {
             display: flex;
-            justify-content: center;
-            padding: 40px;
+            flex-direction: column;
+
+            .skeleton-quiz-item {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                padding: 14px 0;
+                border-bottom: 1px solid var(--border-color);
+
+                &:last-child {
+                    border-bottom: none;
+                }
+
+                .skeleton-quiz-info {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                }
+            }
         }
 
         .quiz-list {

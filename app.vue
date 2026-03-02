@@ -20,10 +20,12 @@
 import { useBadgeStore } from '@/store/badge.store';
 import { storeToRefs } from 'pinia';
 
-// Lazy load 레이아웃 컴포넌트들
-const Header = defineAsyncComponent(() => import('@/components/layout/Header.vue'));
-const Footer = defineAsyncComponent(() => import('@/components/layout/Footer.vue'));
-const Navbar = defineAsyncComponent(() => import('@/components/layout/Navbar.vue'));
+// CLS 개선: 레이아웃 컴포넌트는 동기 로딩 (레이아웃 시프트 방지)
+import Header from '@/components/layout/Header.vue';
+import Footer from '@/components/layout/Footer.vue';
+import Navbar from '@/components/layout/Navbar.vue';
+
+// 뱃지 다이얼로그는 비동기 로딩 (초기 렌더링에 불필요)
 const BadgeUnlockDialog = defineAsyncComponent(
     () => import('@/components/badge/BadgeUnlockDialog.vue'),
 );
@@ -75,7 +77,8 @@ useSeoMeta({
 .main-page {
     background-color: var(--bg-primary);
     transition: background-color 0.3s ease;
-    min-height: calc(100vh - 200px); /* CLS 방지 - 최소 높이 보장 */
+    /* CLS 방지 - Header/Footer 높이를 제외한 최소 높이 */
+    min-height: calc(100vh - var(--header-height) - var(--footer-height) - 32px);
     contain: content;
 }
 </style>

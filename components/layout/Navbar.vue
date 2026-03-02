@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { DTO } from '@/models';
 import { useAuthStore } from '@/store/auth.store';
 import { storeToRefs } from 'pinia';
@@ -15,9 +15,16 @@ const { isMenuCollapse } = storeToRefs(commonStore);
 const userInfoHeight = '160px';
 const isDarkMode = computed(() => commonStore.isDarkMode);
 
+// CLS 방지 - 초기 애니메이션 비활성화
+const isInitialized = ref(false);
+
 onMounted(() => {
     commonStore.initTheme();
     commonStore.initMenuState();
+    // 마운트 후 애니메이션 활성화
+    requestAnimationFrame(() => {
+        isInitialized.value = true;
+    });
 });
 
 async function logout() {
@@ -36,8 +43,11 @@ function goProfile() {
         show-if-above
         :width="220"
         :breakpoint="768"
+        :behavior="isInitialized ? 'default' : 'desktop'"
+        :overlay="false"
+        bordered
         class="app-drawer"
-        :class="{ 'drawer-dark': isDarkMode }"
+        :class="{ 'drawer-dark': isDarkMode, 'drawer-no-transition': !isInitialized }"
     >
         <q-scroll-area
             :style="`height: calc(100% - ${userInfoHeight}); margin-top: ${userInfoHeight}`"
@@ -92,6 +102,16 @@ function goProfile() {
 
         <section class="user-info-container absolute-top" :style="`height: ${userInfoHeight}`">
             <client-only>
+                <template #fallback>
+                    <!-- CLS 방지 - q-skeleton 로딩 플레이스홀더 -->
+                    <div class="user-info-placeholder">
+                        <q-skeleton type="circle" size="56px" animation="wave" />
+                        <div class="skeleton-text">
+                            <q-skeleton type="text" width="100px" height="15px" animation="wave" />
+                            <q-skeleton type="text" width="130px" height="12px" animation="wave" />
+                        </div>
+                    </div>
+                </template>
                 <div v-if="!isLogin" class="before-login-area">
                     <div class="login-prompt">
                         <q-icon name="account_circle" size="48px" color="grey-5" />
@@ -158,6 +178,17 @@ function goProfile() {
 .app-drawer {
     background-color: var(--bg-card);
     transition: background-color 0.3s ease;
+    width: 220px; // CLS 방지 - 고정 너비
+    contain: layout style; // 레이아웃 격리
+
+    // 데스크탑에서 초기 로드 시 애니메이션 비활성화
+    &.drawer-no-transition {
+        transition: none !important;
+
+        :deep(.q-drawer__content) {
+            transition: none !important;
+        }
+    }
 }
 
 .drawer-dark {
@@ -234,6 +265,24 @@ function goProfile() {
 }
 
 .user-info-container {
+    // CLS 방지 - q-skeleton 플레이스홀더 스타일
+    .user-info-placeholder {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        height: 100%;
+        padding: 16px;
+        background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-card) 100%);
+        border-bottom: 1px solid var(--border-color);
+
+        .skeleton-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+
     .user-info-area {
         display: flex;
         flex-direction: column;
