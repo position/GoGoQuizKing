@@ -69,10 +69,13 @@ useSeoMeta({
     height: 100%;
     background-color: var(--bg-primary);
     transition: background-color 0.3s ease;
+    contain: layout style;
 }
 
 .main-page {
     background-color: var(--bg-primary);
     transition: background-color 0.3s ease;
+    min-height: calc(100vh - 200px); /* CLS 방지 - 최소 높이 보장 */
+    contain: content;
 }
 </style>

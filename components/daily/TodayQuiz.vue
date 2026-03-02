@@ -32,7 +32,11 @@
             </div>
             <div v-if="quiz.author_name" class="author">
                 <q-avatar size="20px">
-                    <img v-if="quiz.author_avatar" :src="quiz.author_avatar" />
+                    <img
+                        v-if="quiz.author_avatar"
+                        :src="quiz.author_avatar"
+                        :alt="quiz.author_name"
+                    />
                     <q-icon v-else name="person" />
                 </q-avatar>
                 <span>{{ quiz.author_name }}</span>

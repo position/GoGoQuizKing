@@ -82,15 +82,31 @@ export default defineNuxtConfig({
                 { rel: 'apple-touch-icon', sizes: '180x180', href: '/icons/apple-touch-icon.png' },
                 { rel: 'mask-icon', href: '/icons/apple-touch-icon.png', color: '#667eea' },
                 { rel: 'manifest', href: '/manifest.webmanifest' },
+                // DNS Prefetch & Preconnect for faster resource loading
+                {
+                    rel: 'preconnect',
+                    href: 'https://xyjjnbpgkzjjghqgsmgs.supabase.co',
+                    crossorigin: 'anonymous',
+                },
+                {
+                    rel: 'dns-prefetch',
+                    href: 'https://xyjjnbpgkzjjghqgsmgs.supabase.co',
+                },
+                {
+                    rel: 'preconnect',
+                    href: 'https://hangeul.pstatic.net',
+                    crossorigin: 'anonymous',
+                },
+                {
+                    rel: 'dns-prefetch',
+                    href: 'https://hangeul.pstatic.net',
+                },
+                // Font loading optimization - print trick for non-blocking
                 {
                     rel: 'stylesheet',
                     href: 'https://hangeul.pstatic.net/hangeul_static/css/nanum-square.css',
                     media: 'print',
                     onload: "this.media='all'",
-                },
-                {
-                    rel: 'preconnect',
-                    href: 'https://hangeul.pstatic.net',
                 },
             ],
             script: [
@@ -276,18 +292,30 @@ export default defineNuxtConfig({
     vite: {
         build: {
             cssCodeSplit: true,
+            cssMinify: 'lightningcss',
+            minify: 'terser',
+            terserOptions: {
+                compress: {
+                    drop_console: true,
+                    drop_debugger: true,
+                },
+            },
             rollupOptions: {
                 output: {
                     manualChunks: {
                         quasar: ['quasar'],
                         supabase: ['@supabase/supabase-js'],
                         pinia: ['pinia'],
+                        'vue-core': ['vue', 'vue-router'],
                     },
                 },
             },
         },
         css: {
             devSourcemap: false,
+        },
+        optimizeDeps: {
+            include: ['vue', 'vue-router', 'pinia', 'quasar'],
         },
     },
 
@@ -304,6 +332,8 @@ export default defineNuxtConfig({
         payloadExtraction: true,
         renderJsonPayloads: true,
         componentIslands: true,
+        viewTransition: true,
+        asyncContext: true,
     },
 
     build: {

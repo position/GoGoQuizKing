@@ -2,6 +2,7 @@
 @import 'variables';
 
 // Import Google Fonts - Fredoka (headings) & Nunito (body)
+// display=swap으로 FOUT 방지 및 LCP 개선
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap');
 
 // 나눔스퀘어 폰트는 nuxt.config.ts에서 link로 로드됨
@@ -16,6 +17,7 @@
     src: local('NanumSquareLight'), local('NanumSquareAcl');
     font-weight: 300;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -23,6 +25,7 @@
     src: local('NanumSquare'), local('NanumSquareAcr');
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -30,6 +33,7 @@
     src: local('NanumSquare'), local('NanumSquareAcr');
     font-weight: 500;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -37,6 +41,7 @@
     src: local('NanumSquareBold'), local('NanumSquareAcb');
     font-weight: 600;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -44,6 +49,7 @@
     src: local('NanumSquareBold'), local('NanumSquareAcb');
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -51,6 +57,7 @@
     src: local('NanumSquareExtraBold'), local('NanumSquareAceb');
     font-weight: 800;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
@@ -58,8 +65,10 @@
     src: local('NanumSquareExtraBold'), local('NanumSquareAceb');
     font-weight: 900;
     font-style: normal;
+    font-display: swap;
 }
 
+// Core Web Vitals 최적화
 :root {
     font-family: 'NanumSquareCustom', 'NanumSquare', 'Nunito', sans-serif;
     line-height: 1.5;

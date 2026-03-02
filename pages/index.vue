@@ -22,11 +22,14 @@
                     <NuxtImg
                         :src="`${$imgHost}/img/quizking-character.png`"
                         alt="GoGo! Quiz King"
-                        loading="lazy"
                         width="320"
                         height="320"
                         format="webp"
                         quality="80"
+                        loading="eager"
+                        fetchpriority="high"
+                        :placeholder="[32, 32, 10]"
+                        decoding="async"
                     />
                 </div>
                 <h1 class="welcome-title">GOGO! QuizKing</h1>
@@ -290,8 +293,11 @@ function getCategoryLabel(category: QuizCategory): string {
     return CATEGORIES[category]?.label || '기타';
 }
 
+// INP 개선 - requestAnimationFrame으로 UI 업데이트 최적화
 function goToQuiz(quizId: string) {
-    router.push({ path: `/quiz/play/${quizId}` });
+    requestAnimationFrame(() => {
+        router.push({ path: `/quiz/play/${quizId}` });
+    });
 }
 </script>
 
@@ -344,10 +350,15 @@ function goToQuiz(quizId: string) {
             line-height: 0;
             animation: bounce 2s ease-in-out infinite;
             will-change: transform;
+            width: 320px;
+            height: 320px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
 
             img {
-                max-width: 320px;
-                height: auto;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
             }
         }
 
@@ -413,6 +424,7 @@ function goToQuiz(quizId: string) {
             padding: 20px 16px;
             text-align: center;
             box-shadow: 0 4px 12px var(--shadow-color);
+            min-height: 100px; // CLS 방지
             transition:
                 transform 0.2s ease,
                 box-shadow 0.2s ease,
@@ -525,6 +537,8 @@ function goToQuiz(quizId: string) {
         padding: 20px;
         box-shadow: 0 4px 12px var(--shadow-color);
         transition: background-color 0.3s ease;
+        min-height: 300px; // CLS 방지
+        contain: layout; // 레이아웃 격리
 
         .section-header {
             display: flex;
