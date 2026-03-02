@@ -7,7 +7,7 @@
             </div>
             <div class="progress-text">
                 <span v-if="isMaxLevel">최고 레벨 달성! 👑</span>
-                <span v-else>
+                <span v-else class="next-level-info">
                     다음 레벨까지 <strong>{{ pointsToNext.toLocaleString() }}</strong
                     >점
                 </span>
@@ -64,8 +64,9 @@ const targetPoints = computed(() => {
             gap: 5px;
         }
         .progress-text {
+            padding-left: 10px;
             font-size: 14px;
-            color: #666;
+            color: var(--color-text);
 
             strong {
                 color: #ff6b6b;
@@ -83,6 +84,9 @@ const targetPoints = computed(() => {
         justify-content: space-between;
         font-size: 12px;
         color: #999;
+    }
+    @media (max-width: 600px) {
+        padding: 0;
     }
 }
 </style>

@@ -467,6 +467,7 @@ function goToQuiz(quizId: string) {
         margin-bottom: 24px;
 
         .user-status-card {
+            height: 202px;
             background: var(--bg-card);
             border-radius: 20px;
             padding: 20px;
@@ -761,6 +762,11 @@ function goToQuiz(quizId: string) {
     // 반응형
 
     @media (max-width: 600px) {
+        .point-level-section {
+            .user-status-card {
+                height: auto;
+            }
+        }
         .stats-section {
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;

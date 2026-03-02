@@ -125,5 +125,11 @@ const levelInfo = computed(() => {
             color: #ad1457;
         }
     }
+
+    @media (max-width: 600px) {
+        .level-info {
+            white-space: nowrap;
+        }
+    }
 }
 </style>

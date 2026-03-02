@@ -37,5 +37,10 @@ const formattedPoints = computed(() => {
         font-size: 12px;
         color: #795548;
     }
+    @media (max-width: 600px) {
+        .point-label {
+            white-space: nowrap;
+        }
+    }
 }
 </style>
