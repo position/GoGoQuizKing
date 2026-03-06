@@ -277,6 +277,8 @@ export default defineNuxtConfig({
     },
     sourcemap: false,
     nitro: {
+        // Vercel 배포 시 자동 감지되지만, 명시적으로 설정
+        preset: process.env.VERCEL ? 'vercel' : 'node-server',
         minify: true,
         compressPublicAssets: true,
         esbuild: {
