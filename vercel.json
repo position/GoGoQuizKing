@@ -1,0 +1,13 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "functions": {
+        "server/api/quiz/ai-generate.post.ts": {
+            "maxDuration": 60
+        },
+        "server/**/*.ts": {
+            "maxDuration": 30
+        }
+    }
+}
+
+
