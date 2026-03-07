@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useQuizLikes } from '~/composables/use-quiz-likes';
 import type { Database } from '~/models/database.types';
+import { ToastMessage } from '~/helper/message';
 
 interface Props {
     quizId: string;
@@ -27,14 +28,24 @@ onMounted(async () => {
     await fetchLikeStatus();
 });
 
+// 에러 발생 시 토스트 메시지 표시
+watch(error, (newError) => {
+    if (newError) {
+        console.error('좋아요 에러:', newError);
+        ToastMessage.error(newError);
+    }
+});
+
 async function handleClick() {
     if (!isLoggedIn.value) {
-        // 로그인 필요 메시지
-        alert('좋아요를 누르려면 로그인이 필요합니다.');
+        ToastMessage.warning('좋아요를 누르려면 로그인이 필요합니다.');
         return;
     }
 
-    await toggleLike();
+    const success = await toggleLike();
+    if (!success && error.value) {
+        console.error('좋아요 실패:', error.value);
+    }
 }
 
 const iconSize = computed(() => {

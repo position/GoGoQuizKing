@@ -114,29 +114,6 @@
     --hover-overlay: rgba(78, 205, 196, 0.08);
 }
 
-// CLS 방지 - 초기 로드 시에만 레이아웃 트랜지션 비활성화
-// body.layout-initializing 클래스가 있을 때만 적용
-body.layout-initializing {
-    @media (min-width: 769px) {
-        .q-header,
-        .q-footer {
-            left: var(--drawer-width, 220px) !important;
-            width: calc(100% - var(--drawer-width, 220px)) !important;
-            transition: none !important;
-        }
-
-        .q-drawer--left {
-            transform: translateX(0) !important;
-            transition: none !important;
-        }
-
-        .q-page-container {
-            padding-left: var(--drawer-width, 220px) !important;
-            transition: none !important;
-        }
-    }
-}
-
 // Dark Mode Theme
 .dark-mode {
     color-scheme: dark;
@@ -488,6 +465,12 @@ h6 {
     .q-radio {
         .q-radio__label {
             color: var(--text-primary);
+        }
+    }
+
+    .q-select__dialog {
+        > .scroll {
+            background-color: var(--bg-card);
         }
     }
 

@@ -12,7 +12,7 @@ interface CommonStore {
 export const useCommonStore = defineStore('common', {
     state: (): CommonStore => ({
         tempTitle: '',
-        isMenuCollapse: false, // 기본값을 false로 변경 (닫힌 상태)
+        isMenuCollapse: true, // 기본값을 false로 변경 (닫힌 상태)
         serverTime: '',
         themeMode: 'light',
     }),

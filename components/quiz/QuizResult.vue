@@ -91,7 +91,7 @@
         <div class="action-buttons">
             <q-btn
                 @click="$emit('retry')"
-                label="다시 풀어볼래요! 🔄"
+                label="다시 풀어볼래요!"
                 icon="refresh"
                 outline
                 color="primary"
@@ -100,7 +100,7 @@
             />
             <q-btn
                 @click="$emit('home')"
-                label="홈으로 🏠"
+                label="홈으로"
                 icon="home"
                 color="primary"
                 unelevated

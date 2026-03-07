@@ -1,7 +1,6 @@
 // ~/composables/use-quiz-likes.ts
 import { ref, readonly } from 'vue';
 import type { Ref } from 'vue';
-import type { QuizLikeStatus } from '~/models/comment';
 import type { Database } from '~/models/database.types';
 
 interface UseQuizLikesOptions {
@@ -81,6 +80,12 @@ export function useQuizLikes(options: UseQuizLikesOptions): UseQuizLikesReturn {
                 throw new Error('로그인이 필요합니다.');
             }
 
+            console.log('좋아요 토글 시작:', {
+                quizId,
+                userId: userData.user.id,
+                isLiked: isLiked.value,
+            });
+
             if (isLiked.value) {
                 // 좋아요 취소
                 const { error: deleteError } = await supabase
@@ -90,30 +95,36 @@ export function useQuizLikes(options: UseQuizLikesOptions): UseQuizLikesReturn {
                     .eq('user_id', userData.user.id);
 
                 if (deleteError) {
+                    console.error('좋아요 취소 실패:', deleteError);
                     throw deleteError;
                 }
 
+                console.log('좋아요 취소 성공');
                 isLiked.value = false;
                 likeCount.value = Math.max(0, likeCount.value - 1);
             } else {
                 // 좋아요 추가
-                const { error: insertError } = await supabase
+                const { data: insertData, error: insertError } = await supabase
                     .from('quiz_likes')
                     .insert({
                         quiz_id: quizId,
                         user_id: userData.user.id,
-                    });
+                    })
+                    .select();
 
                 if (insertError) {
+                    console.error('좋아요 추가 실패:', insertError);
                     throw insertError;
                 }
 
+                console.log('좋아요 추가 성공:', insertData);
                 isLiked.value = true;
                 likeCount.value = likeCount.value + 1;
             }
 
             return true;
         } catch (e) {
+            console.error('좋아요 처리 에러:', e);
             error.value = e instanceof Error ? e.message : '좋아요 처리에 실패했습니다.';
             return false;
         } finally {
