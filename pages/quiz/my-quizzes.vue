@@ -4,7 +4,12 @@
         <div class="page-header">
             <div class="header-content">
                 <h1 class="page-title">📝 내 퀴즈 관리</h1>
-                <p class="page-subtitle">내가 만든 퀴즈를 관리하세요</p>
+                <p class="page-subtitle">
+                    내가 만든 퀴즈를 관리하세요
+                    <span v-if="quizStore.myQuizzes.length > 0" class="quiz-count">
+                        ({{ quizStore.myQuizzes.length }}개)
+                    </span>
+                </p>
             </div>
             <q-btn
                 :to="{ path: '/quiz/quiz-create' }"
@@ -37,19 +42,27 @@
             />
         </div>
 
-        <!-- 퀴즈 목록 -->
-        <div v-else class="quiz-list">
-            <QuizCard
-                v-for="quiz in quizStore.myQuizzes"
-                :key="quiz.id"
-                :quiz="quiz"
-                :show-actions="true"
-                :show-play-button="false"
-                @edit="handleEdit"
-                @delete="handleDelete"
-                @click="handlePreview"
-            />
-        </div>
+        <!-- 퀴즈 목록 (Virtual Scroll 적용) -->
+        <q-virtual-scroll
+            v-else
+            :items="quizStore.myQuizzes"
+            :virtual-scroll-item-size="ITEM_HEIGHT"
+            :virtual-scroll-sticky-size-start="0"
+            :virtual-scroll-sticky-size-end="0"
+            class="quiz-virtual-list"
+            v-slot="{ item: quiz, index }"
+        >
+            <div :key="quiz.id" class="quiz-item-wrapper">
+                <QuizCard
+                    :quiz="quiz"
+                    :show-actions="true"
+                    :show-play-button="false"
+                    @edit="handleEdit"
+                    @delete="handleDelete"
+                    @click="handlePreview"
+                />
+            </div>
+        </q-virtual-scroll>
 
         <!-- 삭제 확인 다이얼로그 -->
         <q-dialog v-model="showDeleteDialog">
@@ -82,6 +95,9 @@
 import { ref, onMounted } from 'vue';
 import { useQuizStore } from '@/store/quiz.store';
 import QuizCard from '@/components/quiz/QuizCard.vue';
+
+// Virtual Scroll 아이템 높이 (QuizCard 높이 + gap)
+const ITEM_HEIGHT = 180;
 
 definePageMeta({
     title: '내 퀴즈 관리',
@@ -128,6 +144,9 @@ function handlePreview(quizId: string) {
 .my-quizzes-page {
     max-width: 900px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px); // 헤더/푸터 높이 제외
 
     .page-header {
         display: flex;
@@ -136,6 +155,7 @@ function handlePreview(quizId: string) {
         margin-bottom: 24px;
         flex-wrap: wrap;
         gap: 16px;
+        flex-shrink: 0;
 
         .header-content {
             .page-title {
@@ -149,6 +169,11 @@ function handlePreview(quizId: string) {
                 font-size: 16px;
                 color: var(--text-secondary);
                 margin: 0;
+
+                .quiz-count {
+                    font-weight: 600;
+                    color: var(--primary);
+                }
             }
         }
 
@@ -165,6 +190,7 @@ function handlePreview(quizId: string) {
         justify-content: center;
         padding: 60px 20px;
         gap: 16px;
+        flex: 1;
 
         p {
             font-size: 16px;
@@ -179,6 +205,7 @@ function handlePreview(quizId: string) {
         justify-content: center;
         padding: 60px 20px;
         text-align: center;
+        flex: 1;
 
         h3 {
             font-size: 20px;
@@ -194,16 +221,32 @@ function handlePreview(quizId: string) {
         }
     }
 
-    .quiz-list {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
+    .quiz-virtual-list {
+        flex: 1;
+        overflow: auto;
+
+        .quiz-item-wrapper {
+            padding-bottom: 16px;
+        }
     }
 
     .delete-dialog {
         min-width: 320px;
         border-radius: 16px;
         background: var(--bg-card);
+    }
+}
+
+// 모바일 대응
+@media (max-width: 600px) {
+    .my-quizzes-page {
+        height: calc(100vh - 100px);
+
+        .page-header {
+            .page-title {
+                font-size: 24px;
+            }
+        }
     }
 }
 </style>
