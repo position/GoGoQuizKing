@@ -424,6 +424,200 @@ export interface Database {
                     created_at?: string;
                 };
             };
+            battle_rooms: {
+                Row: {
+                    id: string;
+                    room_code: string | null;
+                    host_id: string;
+                    guest_id: string | null;
+                    quiz_id: string | null;
+                    status: string;
+                    battle_type: string;
+                    question_count: number;
+                    current_question_index: number;
+                    host_score: number;
+                    guest_score: number;
+                    host_answers: Json;
+                    guest_answers: Json;
+                    host_streak: number;
+                    guest_streak: number;
+                    winner_id: string | null;
+                    question_started_at: string | null;
+                    started_at: string | null;
+                    finished_at: string | null;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    room_code?: string | null;
+                    host_id: string;
+                    guest_id?: string | null;
+                    quiz_id?: string | null;
+                    status?: string;
+                    battle_type?: string;
+                    question_count?: number;
+                    current_question_index?: number;
+                    host_score?: number;
+                    guest_score?: number;
+                    host_answers?: Json;
+                    guest_answers?: Json;
+                    host_streak?: number;
+                    guest_streak?: number;
+                    winner_id?: string | null;
+                    question_started_at?: string | null;
+                    started_at?: string | null;
+                    finished_at?: string | null;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    room_code?: string | null;
+                    host_id?: string;
+                    guest_id?: string | null;
+                    quiz_id?: string | null;
+                    status?: string;
+                    battle_type?: string;
+                    question_count?: number;
+                    current_question_index?: number;
+                    host_score?: number;
+                    guest_score?: number;
+                    host_answers?: Json;
+                    guest_answers?: Json;
+                    host_streak?: number;
+                    guest_streak?: number;
+                    winner_id?: string | null;
+                    question_started_at?: string | null;
+                    started_at?: string | null;
+                    finished_at?: string | null;
+                    created_at?: string;
+                };
+            };
+            battle_matchmaking: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    user_level: number;
+                    grade_level: number | null;
+                    battle_type: string;
+                    same_grade_only: boolean;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    user_id: string;
+                    user_level: number;
+                    grade_level?: number | null;
+                    battle_type?: string;
+                    same_grade_only?: boolean;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    user_id?: string;
+                    user_level?: number;
+                    grade_level?: number | null;
+                    battle_type?: string;
+                    same_grade_only?: boolean;
+                    created_at?: string;
+                };
+            };
+            battle_history: {
+                Row: {
+                    id: string;
+                    room_id: string;
+                    user_id: string;
+                    opponent_id: string | null;
+                    result: string;
+                    my_score: number;
+                    opponent_score: number;
+                    correct_count: number;
+                    total_questions: number;
+                    avg_response_time: number | null;
+                    points_earned: number;
+                    ranking_points_earned: number;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    room_id: string;
+                    user_id: string;
+                    opponent_id?: string | null;
+                    result: string;
+                    my_score: number;
+                    opponent_score: number;
+                    correct_count?: number;
+                    total_questions?: number;
+                    avg_response_time?: number | null;
+                    points_earned?: number;
+                    ranking_points_earned?: number;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    room_id?: string;
+                    user_id?: string;
+                    opponent_id?: string | null;
+                    result?: string;
+                    my_score?: number;
+                    opponent_score?: number;
+                    correct_count?: number;
+                    total_questions?: number;
+                    avg_response_time?: number | null;
+                    points_earned?: number;
+                    ranking_points_earned?: number;
+                    created_at?: string;
+                };
+            };
+            user_ranking_stats: {
+                Row: {
+                    id: string;
+                    ranking_points: number;
+                    season_wins: number;
+                    season_losses: number;
+                    season_draws: number;
+                    total_wins: number;
+                    total_losses: number;
+                    total_draws: number;
+                    win_streak: number;
+                    best_win_streak: number;
+                    total_battles: number;
+                    perfect_wins: number;
+                    season_id: number;
+                    updated_at: string;
+                };
+                Insert: {
+                    id: string;
+                    ranking_points?: number;
+                    season_wins?: number;
+                    season_losses?: number;
+                    season_draws?: number;
+                    total_wins?: number;
+                    total_losses?: number;
+                    total_draws?: number;
+                    win_streak?: number;
+                    best_win_streak?: number;
+                    total_battles?: number;
+                    perfect_wins?: number;
+                    season_id?: number;
+                    updated_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    ranking_points?: number;
+                    season_wins?: number;
+                    season_losses?: number;
+                    season_draws?: number;
+                    total_wins?: number;
+                    total_losses?: number;
+                    total_draws?: number;
+                    win_streak?: number;
+                    best_win_streak?: number;
+                    total_battles?: number;
+                    perfect_wins?: number;
+                    season_id?: number;
+                    updated_at?: string;
+                };
+            };
         };
         Views: {
             level_info: {
@@ -698,6 +892,130 @@ export interface Database {
                     bonus_awarded: boolean;
                     bonus_points: number;
                 }[];
+            };
+            // Battle System Functions
+            create_battle_room: {
+                Args: {
+                    p_host_id: string;
+                    p_battle_type?: string;
+                    p_quiz_id?: string;
+                };
+                Returns: {
+                    room_id: string;
+                    room_code: string;
+                }[];
+            };
+            join_battle_room: {
+                Args: {
+                    p_room_code: string;
+                    p_user_id: string;
+                };
+                Returns: {
+                    success: boolean;
+                    room_id: string | null;
+                    message: string;
+                }[];
+            };
+            join_matchmaking: {
+                Args: {
+                    p_user_id: string;
+                    p_battle_type?: string;
+                    p_same_grade_only?: boolean;
+                };
+                Returns: {
+                    success: boolean;
+                    matched_room_id: string | null;
+                    message: string;
+                }[];
+            };
+            leave_matchmaking: {
+                Args: {
+                    p_user_id: string;
+                };
+                Returns: boolean;
+            };
+            submit_battle_answer: {
+                Args: {
+                    p_room_id: string;
+                    p_user_id: string;
+                    p_question_index: number;
+                    p_answer: string;
+                    p_response_time: number;
+                };
+                Returns: {
+                    success: boolean;
+                    is_correct: boolean;
+                    score_earned: number;
+                    new_total_score: number;
+                    new_streak: number;
+                }[];
+            };
+            finish_battle: {
+                Args: {
+                    p_room_id: string;
+                };
+                Returns: {
+                    success: boolean;
+                    winner_id: string | null;
+                    host_final_score: number;
+                    guest_final_score: number;
+                    host_points_earned: number;
+                    guest_points_earned: number;
+                    host_rp_earned: number;
+                    guest_rp_earned: number;
+                }[];
+            };
+            get_battle_history: {
+                Args: {
+                    p_user_id: string;
+                    p_limit?: number;
+                    p_offset?: number;
+                };
+                Returns: {
+                    id: string;
+                    room_id: string;
+                    result: string;
+                    my_score: number;
+                    opponent_score: number;
+                    correct_count: number;
+                    total_questions: number;
+                    points_earned: number;
+                    ranking_points_earned: number;
+                    opponent_id: string;
+                    opponent_name: string;
+                    opponent_avatar: string | null;
+                    created_at: string;
+                }[];
+            };
+            get_battle_rankings: {
+                Args: {
+                    p_limit?: number;
+                };
+                Returns: {
+                    rank: number;
+                    user_id: string;
+                    full_name: string | null;
+                    preferred_username: string | null;
+                    avatar_url: string | null;
+                    ranking_points: number;
+                    total_wins: number;
+                    total_battles: number;
+                    win_rate: number;
+                }[];
+            };
+            get_random_quiz_for_battle: {
+                Args: {
+                    p_question_count?: number;
+                };
+                Returns: string;
+            };
+            calculate_battle_score: {
+                Args: {
+                    p_is_correct: boolean;
+                    p_response_time: number;
+                    p_streak: number;
+                };
+                Returns: number;
             };
         };
     };
