@@ -180,6 +180,8 @@ export function useMatchmakingRealtime(
 
         try {
             // 매칭된 방 감지를 위해 battle_rooms 구독
+            // 1. INSERT: 게스트로 직접 방이 생성되는 경우 (join_matchmaking 성공)
+            // 2. UPDATE: 기존 방에 게스트로 추가되는 경우
             channel = supabase
                 .channel(`matchmaking:${userId}`)
                 .on(
@@ -191,6 +193,7 @@ export function useMatchmakingRealtime(
                         filter: `guest_id=eq.${userId}`,
                     },
                     (payload) => {
+                        console.log('매칭 INSERT 감지:', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         if (room && options.onMatchFound) {
                             options.onMatchFound(room.id);
@@ -198,6 +201,26 @@ export function useMatchmakingRealtime(
                             battleStore.matchmaking.room_id = room.id;
                         }
                     },
+                )
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'battle_rooms',
+                        filter: `guest_id=eq.${userId}`,
+                    },
+                    (payload) => {
+                        console.log('매칭 UPDATE 감지:', payload);
+                        const room = payload.new as IBattleRoomWithPlayers;
+                        // status가 ready이고 guest_id가 현재 사용자인 경우
+                        if (room && room.status === 'ready' && options.onMatchFound) {
+                            options.onMatchFound(room.id);
+                            battleStore.matchmaking.status = 'found';
+                            battleStore.matchmaking.room_id = room.id;
+                        }
+                    },
+                )
                 )
                 .on(
                     'postgres_changes',

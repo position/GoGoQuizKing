@@ -38,6 +38,8 @@ async function startSearching() {
     isSearching.value = true;
     elapsedTime.value = 0;
 
+    console.log('매칭 시작:', battleType.value);
+
     // 타이머 시작
     timerInterval = setInterval(() => {
         elapsedTime.value += 1;
@@ -48,24 +50,31 @@ async function startSearching() {
         }
     }, 1000);
 
+    // Realtime 구독 먼저 시작 (매칭 결과를 놓치지 않기 위해)
+    const { data: userData } = await supabase.auth.getUser();
+    if (userData.user) {
+        console.log('Realtime 구독 시작:', userData.user.id);
+        await subscribe(userData.user.id);
+    }
+
     // 매칭 대기열 등록
+    console.log('매칭 대기열 등록 요청...');
     await battleStore.startMatchmaking({
         battle_type: battleType.value,
         same_grade_only: false,
     });
 
+    console.log('매칭 상태:', battleStore.matchmaking.status, battleStore.matchmaking.room_id);
+
     // 매칭 성공 시 즉시 이동
     if (battleStore.matchmaking.status === 'found' && battleStore.matchmaking.room_id) {
+        console.log('즉시 매칭 성공! 방 이동:', battleStore.matchmaking.room_id);
         stopSearching();
         await router.push(`/battle/room/${battleStore.matchmaking.room_id}`);
         return;
     }
 
-    // Realtime 구독 시작
-    const { data: userData } = await supabase.auth.getUser();
-    if (userData.user) {
-        await subscribe(userData.user.id);
-    }
+    console.log('매칭 대기 중...');
 }
 
 // 매칭 중지
