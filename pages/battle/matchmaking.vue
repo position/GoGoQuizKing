@@ -5,16 +5,17 @@ import { BATTLE_TYPES, MATCHMAKING_CONFIG } from '~/models/battle';
 import { useBattleStore } from '~/store/battle.store';
 import { useMatchmakingRealtime } from '~/composables/use-battle-realtime';
 import { useSupabase } from '~/composables/use-supabase';
+import { useQuasar } from 'quasar';
 
 definePageMeta({
     layout: 'default',
-    middleware: ['auth-guard'],
 });
 
 const route = useRoute();
 const router = useRouter();
 const supabase = useSupabase();
 const battleStore = useBattleStore();
+const $q = useQuasar();
 
 const battleType = computed(() => (route.query.type as BattleType) || 'quick');
 const battleTypeInfo = computed(() => BATTLE_TYPES[battleType.value]);
@@ -81,27 +82,37 @@ function stopSearching() {
 async function cancelMatchmaking() {
     stopSearching();
     await battleStore.cancelMatchmaking();
-    router.push('/battle/lobby');
+    await router.push('/battle/lobby');
 }
 
 // 타임아웃 처리
 async function handleTimeout() {
     stopSearching();
 
-    // 봇 매칭 또는 취소 선택
-    const result = await new Promise<boolean>((resolve) => {
-        // TODO: 실제로는 Quasar Dialog 사용
-        const confirmed = confirm('매칭 상대를 찾지 못했어요. 계속 찾으시겠어요?');
-        resolve(confirmed);
-    });
-
-    if (result) {
-        // 다시 검색
-        await startSearching();
-    } else {
-        await battleStore.cancelMatchmaking();
-        router.push('/battle/lobby');
-    }
+    // Quasar Dialog로 확인
+    $q.dialog({
+        title: '😢 매칭 실패',
+        message: '매칭 상대를 찾지 못했어요. 계속 찾으시겠어요?',
+        cancel: {
+            label: '로비로 돌아가기',
+            color: 'grey',
+            flat: true,
+        },
+        ok: {
+            label: '계속 찾기',
+            color: 'primary',
+            unelevated: true,
+        },
+        persistent: true,
+    })
+        .onOk(async () => {
+            // 다시 검색
+            await startSearching();
+        })
+        .onCancel(async () => {
+            await battleStore.cancelMatchmaking();
+            await router.push('/battle/lobby');
+        });
 }
 
 // 페이지 마운트 시 매칭 시작

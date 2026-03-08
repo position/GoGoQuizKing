@@ -31,7 +31,9 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
     const connectionError = ref<string | null>(null);
     let channel: RealtimeChannel | null = null;
 
-    const handleRoomChange = async (payload: RealtimePostgresChangesPayload<IBattleRoomWithPlayers>) => {
+    const handleRoomChange = async (
+        payload: RealtimePostgresChangesPayload<IBattleRoomWithPlayers>,
+    ) => {
         if (payload.eventType === 'UPDATE') {
             const newRoom = payload.new as IBattleRoomWithPlayers;
             const oldRoom = payload.old as Partial<IBattleRoomWithPlayers>;
@@ -48,7 +50,11 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
             }
 
             // 대결 시작 감지
-            if (oldRoom.status !== 'playing' && newRoom.status === 'playing' && options.onBattleStart) {
+            if (
+                oldRoom.status !== 'playing' &&
+                newRoom.status === 'playing' &&
+                options.onBattleStart
+            ) {
                 options.onBattleStart();
             }
 
@@ -75,12 +81,20 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
             }
 
             // 대결 종료 감지
-            if (oldRoom.status !== 'finished' && newRoom.status === 'finished' && options.onBattleEnd) {
+            if (
+                oldRoom.status !== 'finished' &&
+                newRoom.status === 'finished' &&
+                options.onBattleEnd
+            ) {
                 options.onBattleEnd(newRoom.winner_id ?? null);
             }
 
             // 방 취소 감지
-            if (oldRoom.status !== 'cancelled' && newRoom.status === 'cancelled' && options.onRoomCancelled) {
+            if (
+                oldRoom.status !== 'cancelled' &&
+                newRoom.status === 'cancelled' &&
+                options.onRoomCancelled
+            ) {
                 options.onRoomCancelled();
             }
         }
@@ -102,7 +116,7 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
                         table: 'battle_rooms',
                         filter: `id=eq.${options.roomId}`,
                     },
-                    handleRoomChange
+                    handleRoomChange,
                 )
                 .subscribe((status) => {
                     if (status === 'SUBSCRIBED') {
@@ -150,7 +164,9 @@ interface UseMatchmakingRealtimeReturn {
     unsubscribe: () => void;
 }
 
-export function useMatchmakingRealtime(options: UseMatchmakingRealtimeOptions): UseMatchmakingRealtimeReturn {
+export function useMatchmakingRealtime(
+    options: UseMatchmakingRealtimeOptions,
+): UseMatchmakingRealtimeReturn {
     const supabase = useSupabase();
     const battleStore = useBattleStore();
 
@@ -181,7 +197,7 @@ export function useMatchmakingRealtime(options: UseMatchmakingRealtimeOptions): 
                             battleStore.matchmaking.status = 'found';
                             battleStore.matchmaking.room_id = room.id;
                         }
-                    }
+                    },
                 )
                 .on(
                     'postgres_changes',
@@ -199,7 +215,7 @@ export function useMatchmakingRealtime(options: UseMatchmakingRealtimeOptions): 
                             battleStore.matchmaking.status = 'found';
                             battleStore.matchmaking.room_id = room.id;
                         }
-                    }
+                    },
                 )
                 .subscribe((status) => {
                     isConnected.value = status === 'SUBSCRIBED';

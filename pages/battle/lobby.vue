@@ -1,18 +1,16 @@
 <script setup lang="ts">
 // 대결 로비 페이지
 import type { BattleType } from '~/models/battle';
-import { BATTLE_TYPES, DEFAULT_MATCHMAKING_OPTIONS } from '~/models/battle';
+import { BATTLE_TYPES } from '~/models/battle';
 import { useBattleStore } from '~/store/battle.store';
-import { useAuthStore } from '~/store/auth.store';
+import { ToastMessage } from '~/helper/message';
 
 definePageMeta({
     layout: 'default',
-    middleware: ['auth-guard'],
 });
 
 const router = useRouter();
 const battleStore = useBattleStore();
-const authStore = useAuthStore();
 
 const selectedBattleType = ref<BattleType>('quick');
 const showJoinDialog = ref(false);
@@ -51,8 +49,7 @@ async function joinByCode() {
             showJoinDialog.value = false;
             await router.push(`/battle/room/${result.roomId}`);
         } else {
-            // 에러 메시지 표시
-            alert(result.message);
+            ToastMessage.error(result.message || '방 참가에 실패했습니다.');
         }
     } finally {
         isJoining.value = false;
@@ -77,20 +74,14 @@ function goToHistory() {
     <q-page padding class="battle-lobby">
         <!-- 헤더 -->
         <div class="text-center q-mb-xl">
-            <div class="text-h4 text-weight-bold q-mb-sm">
-                ⚔️ 퀴즈 대결
-            </div>
-            <div class="text-subtitle1 text-grey-7">
-                다른 친구와 실시간으로 대결해보세요!
-            </div>
+            <h1 class="text-weight-bold q-mb-sm">⚔️ 퀴즈 대결</h1>
+            <div class="text-subtitle1 text-grey-7">다른 친구와 실시간으로 대결해보세요!</div>
         </div>
 
         <!-- 대결 유형 선택 -->
         <div class="q-mb-xl">
-            <div class="text-subtitle1 text-weight-bold q-mb-md">
-                대결 유형 선택
-            </div>
-            <div class="row q-gutter-md justify-center">
+            <h2 class="text-weight-bold q-mb-md">대결 유형 선택</h2>
+            <div class="row justify-around">
                 <BattleTypeCard
                     v-for="bt in battleTypes"
                     :key="bt.type"
@@ -105,9 +96,9 @@ function goToHistory() {
         <div class="q-mb-xl">
             <q-card flat class="action-card">
                 <q-card-section>
-                    <div class="row q-gutter-md">
+                    <div class="row justify-around">
                         <!-- 랜덤 매칭 -->
-                        <div class="col-12 col-sm-4">
+                        <div class="col-12 col-sm-3">
                             <q-btn
                                 label="🎲 랜덤 매칭"
                                 color="primary"
@@ -116,9 +107,7 @@ function goToHistory() {
                                 :loading="isCreating"
                                 @click="startMatchmaking"
                             >
-                                <q-tooltip>
-                                    비슷한 레벨의 상대와 자동 매칭
-                                </q-tooltip>
+                                <q-tooltip> 비슷한 레벨의 상대와 자동 매칭 </q-tooltip>
                             </q-btn>
                             <div class="text-caption text-grey-7 text-center q-mt-sm">
                                 비슷한 레벨 상대와 자동 매칭
@@ -126,7 +115,7 @@ function goToHistory() {
                         </div>
 
                         <!-- 친구 초대 -->
-                        <div class="col-12 col-sm-4">
+                        <div class="col-12 col-sm-3">
                             <q-btn
                                 label="🔗 방 만들기"
                                 color="secondary"
@@ -135,9 +124,7 @@ function goToHistory() {
                                 :loading="isCreating"
                                 @click="createRoom"
                             >
-                                <q-tooltip>
-                                    초대 링크로 친구 초대
-                                </q-tooltip>
+                                <q-tooltip> 초대 링크로 친구 초대 </q-tooltip>
                             </q-btn>
                             <div class="text-caption text-grey-7 text-center q-mt-sm">
                                 초대 코드를 친구에게 공유
@@ -145,17 +132,15 @@ function goToHistory() {
                         </div>
 
                         <!-- 코드로 참가 -->
-                        <div class="col-12 col-sm-4">
+                        <div class="col-12 col-sm-3">
                             <q-btn
                                 label="👥 코드 입력"
-                                color="accent"
+                                color="black"
                                 class="full-width"
                                 size="lg"
                                 @click="showJoinDialog = true"
                             >
-                                <q-tooltip>
-                                    초대 코드 입력하여 참가
-                                </q-tooltip>
+                                <q-tooltip> 초대 코드 입력하여 참가 </q-tooltip>
                             </q-btn>
                             <div class="text-caption text-grey-7 text-center q-mt-sm">
                                 친구의 초대 코드로 참가
@@ -167,13 +152,8 @@ function goToHistory() {
         </div>
 
         <!-- 대결 기록 버튼 -->
-        <div class="text-center">
-            <q-btn
-                label="📜 대결 기록"
-                flat
-                color="grey-7"
-                @click="goToHistory"
-            />
+        <div class="row justify-center">
+            <q-btn label="📜 대결 기록" flat color="grey-7" @click="goToHistory" size="large" />
         </div>
 
         <!-- 초대 코드 입력 다이얼로그 -->
@@ -201,12 +181,7 @@ function goToHistory() {
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn
-                        flat
-                        label="취소"
-                        color="grey-7"
-                        v-close-popup
-                    />
+                    <q-btn flat label="취소" color="grey-7" v-close-popup />
                     <q-btn
                         label="참가하기"
                         color="primary"
@@ -224,17 +199,62 @@ function goToHistory() {
 .battle-lobby {
     max-width: 800px;
     margin: 0 auto;
+
+    h1 {
+        font-size: 2rem;
+        color: var(--text-primary);
+    }
+
+    .text-subtitle1 {
+        color: var(--text-secondary);
+    }
+
+    .action-card {
+        background: var(--bg-card);
+        border-radius: 16px;
+        box-shadow: 0 2px 12px var(--shadow-color);
+
+        .q-btn {
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .text-caption {
+            color: var(--text-light);
+        }
+    }
+
+    .room-code-input {
+        :deep(input) {
+            text-transform: uppercase;
+            font-size: 20px;
+            letter-spacing: 4px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        :deep(.q-field__control) {
+            background: var(--bg-input);
+            border-radius: 8px;
+        }
+    }
 }
 
-.action-card {
-    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-    border-radius: 16px;
+// 다크모드 대응
+.body--dark {
+    .battle-lobby {
+        .action-card {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+        }
+    }
 }
 
-.room-code-input :deep(input) {
-    text-transform: uppercase;
-    font-size: 20px;
-    letter-spacing: 4px;
-    text-align: center;
+// 라이트모드
+.body--light {
+    .battle-lobby {
+        .action-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+        }
+    }
 }
 </style>

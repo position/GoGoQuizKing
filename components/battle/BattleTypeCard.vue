@@ -38,17 +38,11 @@ function handleClick() {
         bordered
         @click="handleClick"
     >
-        <q-card-section class="text-center">
+        <q-card-section class="battle-type-area text-center">
             <div class="text-h3 q-mb-sm">{{ typeInfo.icon }}</div>
-            <div class="text-h6 text-weight-bold">{{ typeInfo.label }}</div>
-            <div class="text-caption text-grey-7">
-                {{ typeInfo.questionCount }}문제
-            </div>
-            <q-badge
-                v-if="type === 'ranked'"
-                color="red"
-                class="q-mt-sm"
-            >
+            <div class="text-h4 text-weight-bold">{{ typeInfo.label }}</div>
+            <div class="text-caption">{{ typeInfo.questionCount }}문제</div>
+            <q-badge v-if="type === 'ranked'" color="red" class="q-mt-sm">
                 랭킹 포인트 획득
             </q-badge>
         </q-card-section>
@@ -67,28 +61,43 @@ function handleClick() {
 .battle-type-card {
     position: relative;
     transition: all 0.2s ease;
-    min-width: 140px;
+    min-width: 170px;
+    background: var(--bg-card);
+    border-color: var(--border-color);
 
-    &:hover:not(.battle-type-card--disabled) {
+    &:hover:not(&--disabled) {
         transform: translateY(-4px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 12px var(--shadow-color);
     }
 
     &--selected {
         border-color: var(--q-primary);
         border-width: 2px;
-        background: rgba(78, 205, 196, 0.1);
+        background: rgba(var(--color-primary-rgb), 0.1);
     }
 
     &--disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
+
+    .selected-icon {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
 }
 
-.selected-icon {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+// 다크모드 대응
+.body--dark {
+    .battle-type-card {
+        &--selected {
+            background: rgba(78, 205, 196, 0.15);
+        }
+
+        &:hover:not(.battle-type-card--disabled) {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+    }
 }
 </style>

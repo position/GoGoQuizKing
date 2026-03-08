@@ -47,7 +47,7 @@ const formatTime = (seconds: number): string => {
         </div>
 
         <!-- 상태 텍스트 -->
-        <div class="text-h5 q-mb-sm">상대를 찾고 있어요</div>
+        <div class="text-h5 q-mb-sm q-mt-md">상대를 찾고 있어요</div>
         <div class="text-subtitle1 text-grey-7 q-mb-lg">
             {{ statusText }}
         </div>
@@ -80,6 +80,8 @@ const formatTime = (seconds: number): string => {
             color="grey-6"
             outline
             @click="emit('cancel')"
+            size="large"
+            class="q-mt-xl"
         />
 
         <!-- 팁 -->
@@ -97,33 +99,53 @@ const formatTime = (seconds: number): string => {
     padding: 40px 20px;
     max-width: 400px;
     margin: 0 auto;
-}
 
-.search-animation {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto;
-}
+    .search-animation {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
 
-.pulse-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100px;
-    height: 100px;
-    border: 3px solid var(--q-primary);
-    border-radius: 50%;
-    animation: pulse 2s ease-out infinite;
-    opacity: 0;
+        .pulse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            border: 3px solid var(--q-primary);
+            border-radius: 50%;
+            animation: pulse 2s ease-out infinite;
+            opacity: 0;
 
-    &.delay-1 {
-        animation-delay: 0.5s;
+            &.delay-1 {
+                animation-delay: 0.5s;
+            }
+
+            &.delay-2 {
+                animation-delay: 1s;
+            }
+        }
+
+        .avatar-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-card);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
     }
 
-    &.delay-2 {
-        animation-delay: 1s;
+    .progress-bar {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .tips {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 
@@ -132,29 +154,10 @@ const formatTime = (seconds: number): string => {
         transform: translate(-50%, -50%) scale(1);
         opacity: 0.8;
     }
+
     100% {
         transform: translate(-50%, -50%) scale(2);
         opacity: 0;
     }
-}
-
-.avatar-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-.progress-bar {
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.tips {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 </style>

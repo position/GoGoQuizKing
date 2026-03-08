@@ -5,7 +5,6 @@ import { useAuthStore } from '~/store/auth.store';
 
 definePageMeta({
     layout: 'default',
-    middleware: ['auth-guard'],
 });
 
 const battleStore = useBattleStore();
@@ -30,7 +29,7 @@ async function loadMoreHistory() {
     historyOffset.value += 20;
     const prevLength = battleStore.history.length;
     await battleStore.fetchHistory(20, historyOffset.value);
-    
+
     if (battleStore.history.length === prevLength) {
         hasMoreHistory.value = false;
     }
@@ -44,9 +43,7 @@ const currentUserId = computed(() => authStore.user?.id);
     <q-page padding class="battle-history-page">
         <!-- 헤더 -->
         <div class="text-center q-mb-lg">
-            <div class="text-h4 text-weight-bold q-mb-sm">
-                ⚔️ 대결 기록
-            </div>
+            <h1 class="text-weight-bold q-mb-sm">⚔️ 대결 기록</h1>
         </div>
 
         <!-- 내 통계 -->
@@ -72,9 +69,7 @@ const currentUserId = computed(() => authStore.user?.id);
                         <div class="text-caption text-grey-7">패배</div>
                     </div>
                     <div class="col">
-                        <div class="text-h4 text-weight-bold">
-                            {{ battleStore.winRate }}%
-                        </div>
+                        <div class="text-h4 text-weight-bold">{{ battleStore.winRate }}%</div>
                         <div class="text-caption text-grey-7">승률</div>
                     </div>
                 </div>
@@ -97,21 +92,23 @@ const currentUserId = computed(() => authStore.user?.id);
         <q-tab-panels v-model="activeTab" animated>
             <q-tab-panel name="history" class="q-pa-none">
                 <!-- 로딩 -->
-                <div v-if="battleStore.historyLoading && battleStore.history.length === 0" class="text-center q-pa-xl">
+                <div
+                    v-if="battleStore.historyLoading && battleStore.history.length === 0"
+                    class="text-center q-pa-xl"
+                >
                     <q-spinner-dots size="40px" color="primary" />
                 </div>
 
                 <!-- 기록 없음 -->
                 <div v-else-if="battleStore.history.length === 0" class="text-center q-pa-xl">
                     <q-icon name="sports_esports" size="60px" color="grey-5" class="q-mb-md" />
-                    <div class="text-subtitle1 text-grey-7">
-                        아직 대결 기록이 없어요
-                    </div>
+                    <div class="text-subtitle1 text-grey-7">아직 대결 기록이 없어요</div>
                     <q-btn
                         label="대결 시작하기"
                         color="primary"
                         class="q-mt-md"
                         to="/battle/lobby"
+                        size="large"
                     />
                 </div>
 
@@ -146,9 +143,7 @@ const currentUserId = computed(() => authStore.user?.id);
                 <!-- 랭킹 없음 -->
                 <div v-else-if="battleStore.rankings.length === 0" class="text-center q-pa-xl">
                     <q-icon name="leaderboard" size="60px" color="grey-5" class="q-mb-md" />
-                    <div class="text-subtitle1 text-grey-7">
-                        아직 랭킹 데이터가 없어요
-                    </div>
+                    <div class="text-subtitle1 text-grey-7">아직 랭킹 데이터가 없어요</div>
                 </div>
 
                 <!-- 랭킹 목록 -->

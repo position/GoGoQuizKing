@@ -6,7 +6,6 @@ import { useSupabase } from '~/composables/use-supabase';
 
 definePageMeta({
     layout: 'default',
-    middleware: ['auth-guard'],
 });
 
 const route = useRoute();
@@ -40,8 +39,8 @@ async function loadResult() {
         const isHost = room.host_id === userData.user.id;
 
         // 정답 수 계산
-        const hostCorrect = room.host_answers.filter(a => a.is_correct).length;
-        const guestCorrect = room.guest_answers.filter(a => a.is_correct).length;
+        const hostCorrect = room.host_answers.filter((a) => a.is_correct).length;
+        const guestCorrect = room.guest_answers.filter((a) => a.is_correct).length;
 
         // 결과 데이터 구성
         result.value = {
@@ -59,12 +58,14 @@ async function loadResult() {
                 ranking_points_earned: result.value?.reward.ranking_points_earned ?? 0,
             },
             opponent: {
-                id: isHost ? room.guest?.id ?? '' : room.host?.id ?? '',
+                id: isHost ? (room.guest?.id ?? '') : (room.host?.id ?? ''),
                 name: isHost
                     ? (room.guest?.preferred_username ?? room.guest?.full_name ?? 'Unknown')
                     : (room.host?.preferred_username ?? room.host?.full_name ?? 'Unknown'),
-                avatar_url: isHost ? room.guest?.avatar_url ?? null : room.host?.avatar_url ?? null,
-                level: isHost ? room.guest?.level ?? 1 : room.host?.level ?? 1,
+                avatar_url: isHost
+                    ? (room.guest?.avatar_url ?? null)
+                    : (room.host?.avatar_url ?? null),
+                level: isHost ? (room.guest?.level ?? 1) : (room.host?.level ?? 1),
             },
         };
 
@@ -118,7 +119,7 @@ onMounted(() => {
 <template>
     <q-page class="battle-result-page">
         <!-- 로딩 -->
-        <div v-if="isLoading" class="flex flex-center" style="min-height: 400px;">
+        <div v-if="isLoading" class="flex flex-center" style="min-height: 400px">
             <q-spinner-gears size="60px" color="primary" />
         </div>
 

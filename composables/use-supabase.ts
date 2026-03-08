@@ -1,9 +1,8 @@
 // ~/composables/useSupabase.ts
-import { useNuxtApp } from '#app'
-import type { SupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '~/models/database.types';
 
-export function useSupabase(): SupabaseClient {
-    const nuxtApp = useNuxtApp()
-    // defineNuxtPlugin 에서 provide('supabase', client) 해 둔 객체
-    return nuxtApp.$supabase as SupabaseClient;
+export function useSupabase(): SupabaseClient<Database> {
+    // @nuxtjs/supabase 모듈의 useSupabaseClient 사용
+    return useSupabaseClient<Database>();
 }

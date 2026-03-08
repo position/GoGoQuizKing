@@ -78,14 +78,30 @@ function goProfile() {
                     <q-item-section>내 퀴즈</q-item-section>
                 </q-item>
 
+                <q-separator class="nav-separator" />
+
+                <q-item :to="{ path: '/battle/lobby' }" clickable v-ripple class="nav-item">
+                    <q-item-section avatar>
+                        <q-icon name="sports_esports" color="red" />
+                    </q-item-section>
+                    <q-item-section> 실시간 대결 </q-item-section>
+                </q-item>
+
+                <q-item :to="{ path: '/battle/history' }" clickable v-ripple class="nav-item">
+                    <q-item-section avatar>
+                        <q-icon name="history" color="blue-grey" />
+                    </q-item-section>
+                    <q-item-section>대결 기록</q-item-section>
+                </q-item>
+
+                <q-separator class="nav-separator" />
+
                 <q-item :to="{ path: '/profile/badges' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
                         <q-icon name="emoji_events" color="amber" />
                     </q-item-section>
                     <q-item-section>내 뱃지</q-item-section>
                 </q-item>
-
-                <q-separator class="nav-separator" />
 
                 <q-item :to="{ path: '/ranking' }" clickable v-ripple class="nav-item">
                     <q-item-section avatar>
@@ -212,7 +228,7 @@ function goProfile() {
     &.q-router-link--active,
     &.q-item--active {
         background: linear-gradient(135deg, var(--color-primary) 0%, #e55a5a 100%);
-        color: white;
+        color: white !important;
 
         .q-icon {
             color: white !important;
@@ -223,6 +239,57 @@ function goProfile() {
 .nav-separator {
     margin: 12px 0;
     background-color: var(--border-color);
+}
+
+.battle-item {
+    position: relative;
+    background: linear-gradient(
+        135deg,
+        rgba(255, 107, 107, 0.08) 0%,
+        rgba(255, 230, 109, 0.08) 100%
+    );
+    border-left: 3px solid var(--color-primary);
+    margin: 4px 8px;
+    border-radius: 8px;
+
+    .battle-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-top: 2px;
+        animation: pulse-badge 2s infinite;
+    }
+
+    &:hover {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 107, 107, 0.15) 0%,
+            rgba(255, 230, 109, 0.15) 100%
+        );
+    }
+
+    &.q-router-link--active,
+    &.q-item--active {
+        background: linear-gradient(135deg, var(--color-primary) 0%, #ff8e53 100%);
+
+        .battle-badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    }
+}
+
+@keyframes pulse-badge {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
 }
 
 .before-login-area {

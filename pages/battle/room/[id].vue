@@ -9,7 +9,6 @@ import { useBattleRealtime, useCountdown } from '~/composables/use-battle-realti
 
 definePageMeta({
     layout: 'default',
-    middleware: ['auth-guard'],
 });
 
 const route = useRoute();
@@ -35,13 +34,21 @@ const currentQuestion = computed(() => {
 });
 
 // 게임 상태
-const gamePhase = ref<'waiting' | 'ready' | 'countdown' | 'playing' | 'roundResult' | 'finished'>('waiting');
+const gamePhase = ref<'waiting' | 'ready' | 'countdown' | 'playing' | 'roundResult' | 'finished'>(
+    'waiting',
+);
 const selectedAnswer = ref<string | null>(null);
 const hasAnswered = ref(false);
 const roundStartTime = ref(0);
 
 // 카운트다운
-const { timeRemaining, isRunning, start: startCountdown, stop: stopCountdown, reset: resetCountdown } = useCountdown(() => {
+const {
+    timeRemaining,
+    isRunning,
+    start: startCountdown,
+    stop: stopCountdown,
+    reset: resetCountdown,
+} = useCountdown(() => {
     // 시간 초과 시 자동 제출 (빈 답변)
     if (!hasAnswered.value && gamePhase.value === 'playing') {
         submitAnswer('');
@@ -76,7 +83,7 @@ const { isConnected, subscribe, unsubscribe } = useBattleRealtime({
         // 대결 종료
         gamePhase.value = 'finished';
         stopCountdown();
-        
+
         // 결과 페이지로 이동
         setTimeout(() => {
             router.push(`/battle/result/${roomId.value}`);
@@ -154,10 +161,10 @@ async function startGame() {
     if (questions.value.length === 0) {
         await loadQuestions();
     }
-    
+
     // 카운트다운 시작
     gamePhase.value = 'countdown';
-    
+
     // 3초 카운트다운 후 게임 시작
     setTimeout(() => {
         startNewRound();
@@ -170,13 +177,13 @@ function startNewRound() {
     selectedAnswer.value = null;
     hasAnswered.value = false;
     roundStartTime.value = Date.now();
-    battleStore.updatePlayState({ 
-        hasAnswered: false, 
-        myAnswer: null, 
+    battleStore.updatePlayState({
+        hasAnswered: false,
+        myAnswer: null,
         opponentAnswered: false,
         roundResult: null,
     });
-    
+
     // 타이머 시작
     startCountdown(BATTLE_SCORING.TIME_LIMIT);
 }
@@ -197,7 +204,7 @@ async function submitAnswer(answer: string) {
         roomId.value,
         room.value.current_question_index,
         answer,
-        responseTime
+        responseTime,
     );
 
     battleStore.updatePlayState({
@@ -217,8 +224,9 @@ function checkRoundComplete() {
 
         setTimeout(() => {
             if (room.value) {
-                const isLastQuestion = room.value.current_question_index >= (room.value.question_count - 1);
-                
+                const isLastQuestion =
+                    room.value.current_question_index >= room.value.question_count - 1;
+
                 if (isLastQuestion) {
                     // 마지막 문제 - 대결 종료
                     if (isHost.value) {
@@ -298,7 +306,7 @@ onUnmounted(() => {
 <template>
     <q-page class="battle-room-page">
         <!-- 로딩 -->
-        <div v-if="isLoading" class="flex flex-center" style="min-height: 400px;">
+        <div v-if="isLoading" class="flex flex-center" style="min-height: 400px">
             <q-spinner-gears size="60px" color="primary" />
         </div>
 
@@ -338,7 +346,7 @@ onUnmounted(() => {
                     :is-current-user="isHost"
                     :show-score="false"
                     class="q-mx-auto q-mb-lg"
-                    style="max-width: 200px;"
+                    style="max-width: 200px"
                 />
 
                 <div class="text-subtitle1 text-grey-6 q-mb-lg">
@@ -346,12 +354,7 @@ onUnmounted(() => {
                     상대방을 기다리는 중...
                 </div>
 
-                <q-btn
-                    label="나가기"
-                    color="grey-6"
-                    outline
-                    @click="leaveRoom"
-                />
+                <q-btn label="나가기" color="grey-6" outline @click="leaveRoom" />
             </div>
         </div>
 
@@ -402,21 +405,24 @@ onUnmounted(() => {
         <!-- 카운트다운 -->
         <div v-else-if="gamePhase === 'countdown'" class="countdown-phase flex flex-center">
             <div class="text-center">
-                <div class="countdown-number text-h1 text-weight-bold text-primary">
-                    3
-                </div>
+                <div class="countdown-number text-h1 text-weight-bold text-primary">3</div>
                 <div class="text-h5 q-mt-md">대결 시작!</div>
             </div>
         </div>
 
         <!-- 게임 진행 중 -->
-        <div v-else-if="gamePhase === 'playing' || gamePhase === 'roundResult'" class="playing-phase q-pa-md">
+        <div
+            v-else-if="gamePhase === 'playing' || gamePhase === 'roundResult'"
+            class="playing-phase q-pa-md"
+        >
             <!-- 상단: 플레이어 점수 -->
             <div class="row q-gutter-md justify-between q-mb-lg">
                 <BattlePlayerCard
                     v-if="room?.host"
                     :user-id="room.host.id"
-                    :name="isHost ? '나' : (room.host.preferred_username || room.host.full_name || '')"
+                    :name="
+                        isHost ? '나' : room.host.preferred_username || room.host.full_name || ''
+                    "
                     :avatar-url="room.host.avatar_url"
                     :level="room.host.level"
                     :score="room.host_score"
@@ -428,7 +434,9 @@ onUnmounted(() => {
                 <BattlePlayerCard
                     v-if="room?.guest"
                     :user-id="room.guest.id"
-                    :name="!isHost ? '나' : (room.guest.preferred_username || room.guest.full_name || '')"
+                    :name="
+                        !isHost ? '나' : room.guest.preferred_username || room.guest.full_name || ''
+                    "
                     :avatar-url="room.guest.avatar_url"
                     :level="room.guest.level"
                     :score="room.guest_score"
@@ -457,12 +465,8 @@ onUnmounted(() => {
             <!-- 라운드 결과 -->
             <div v-if="gamePhase === 'roundResult'" class="round-result-overlay">
                 <div class="text-center">
-                    <div class="text-h5 q-mb-sm">
-                        정답: {{ currentQuestion?.correct_answer }}
-                    </div>
-                    <div class="text-subtitle1">
-                        다음 문제로 넘어갑니다...
-                    </div>
+                    <div class="text-h5 q-mb-sm">정답: {{ currentQuestion?.correct_answer }}</div>
+                    <div class="text-subtitle1">다음 문제로 넘어갑니다...</div>
                 </div>
             </div>
         </div>
@@ -505,7 +509,8 @@ onUnmounted(() => {
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
     }
     50% {
