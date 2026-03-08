@@ -1,9 +1,9 @@
 // ~/composables/use-battle-realtime.ts
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onUnmounted } from 'vue';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { useSupabase } from '~/composables/use-supabase';
 import { useBattleStore } from '~/store/battle.store';
-import type { IBattleRoomWithPlayers, BattleStatus } from '~/models/battle';
+import type { IBattleRoomWithPlayers } from '~/models/battle';
 
 interface UseBattleRealtimeOptions {
     roomId: string;
@@ -211,7 +211,7 @@ export function useMatchmakingRealtime(
                         filter: `guest_id=eq.${userId}`,
                     },
                     (payload) => {
-                        console.log('매칭 UPDATE 감지:', payload);
+                        console.log('매칭 UPDATE 감지 (게스트):', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         // status가 ready이고 guest_id가 현재 사용자인 경우
                         if (room && room.status === 'ready' && options.onMatchFound) {
@@ -220,7 +220,6 @@ export function useMatchmakingRealtime(
                             battleStore.matchmaking.room_id = room.id;
                         }
                     },
-                )
                 )
                 .on(
                     'postgres_changes',
@@ -231,6 +230,7 @@ export function useMatchmakingRealtime(
                         filter: `host_id=eq.${userId}`,
                     },
                     (payload) => {
+                        console.log('매칭 UPDATE 감지 (호스트):', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         // 게스트가 참가하면 매칭 완료
                         if (room.guest_id && room.status === 'ready' && options.onMatchFound) {
