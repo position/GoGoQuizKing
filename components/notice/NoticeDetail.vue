@@ -57,15 +57,21 @@ async function getNoticeDetail() {
             .select('*')
             .eq('id', noticeId)
             .single();
+
+        if (error) {
+            throw error;
+        }
+
         Object.assign(noticeDetail.value, data);
-        noticeDetail.value.body = noticeDetail.value.body.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        noticeDetail.value.body = noticeDetail.value.body.replace(/\r\n|\r|\n/g, '<br>');
         if (props.isEdit) {
             noticeForm.title = noticeDetail.value.title;
             noticeForm.body = noticeDetail.value.body;
         }
     } catch (e) {
         console.error(e);
-        ToastMessage.error(e);
+        const errorMessage = e instanceof Error ? e.message : '데이터를 불러오는데 실패했습니다.';
+        ToastMessage.error(errorMessage);
     } finally {
         isLoadingPage.value = false;
     }
@@ -76,18 +82,15 @@ async function editNotice() {
         const payload = {
             title: noticeForm.title,
             body: noticeForm.body,
-        } as never;
-        const { data, error } = await supabase
-            .from('notice')
-            .update(payload)
-            .eq('id', Number(noticeId))
-            .throwOnError();
-        console.log(data, error);
-        ToastMessage.success('Success');
+        };
+        await supabase.from('notice').update(payload).eq('id', Number(noticeId)).throwOnError();
+
+        ToastMessage.success('수정이 완료되었습니다!');
         await router.push({ path: '../notice-list' });
     } catch (e) {
         console.error(e);
-        ToastMessage.error(e);
+        const errorMessage = e instanceof Error ? e.message : '수정에 실패했습니다.';
+        ToastMessage.error(errorMessage);
     }
 }
 </script>
@@ -179,24 +182,165 @@ async function editNotice() {
     </q-card>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .notice-detail-area {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+    border-radius: 16px;
+
     .title-area {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
         flex-wrap: wrap;
-        .text-h6 {
-            font-weight: 900 !important;
+        gap: 12px;
+
+        .text-h3 {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            flex: 1;
+            min-width: 200px;
         }
+
         .text-caption {
-            flex: 1 0;
+            flex-shrink: 0;
             text-align: right;
+            color: var(--text-light);
+        }
+
+        :deep(.q-field) {
+            .q-field__control {
+                background: var(--bg-input);
+                border-radius: 8px;
+            }
+
+            .q-field__native {
+                color: var(--text-primary);
+            }
+
+            .q-field__label {
+                color: var(--text-light);
+            }
         }
     }
+
     .description-area {
         min-height: 250px;
         font-size: 14px;
+        line-height: 1.8;
+        color: var(--text-primary);
+
+        :deep(a) {
+            color: var(--color-primary);
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        :deep(blockquote) {
+            border-left: 4px solid var(--color-primary);
+            padding-left: 16px;
+            margin: 16px 0;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+        }
+    }
+
+    :deep(.q-editor) {
+        background: var(--bg-input);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+
+        .q-editor__toolbar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .q-editor__content {
+            color: var(--text-primary);
+            min-height: 200px;
+        }
+
+        .q-btn {
+            color: var(--text-secondary);
+        }
+    }
+
+    :deep(.q-separator) {
+        background: var(--border-color);
+    }
+
+    .q-card-actions {
+        border-top: 1px solid var(--border-color);
+        flex-wrap: wrap;
+        gap: 8px;
+
+        .q-btn {
+            border-radius: 8px;
+            font-weight: 600;
+        }
+    }
+}
+
+// 댓글 영역
+.q-card.q-mt-md {
+    background: var(--bg-card);
+    border-color: var(--border-color);
+    border-radius: 16px;
+}
+
+// 다크모드 대응
+.body--dark {
+    .notice-detail-area {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+        :deep(.q-editor) {
+            .q-editor__toolbar {
+                .q-btn {
+                    color: var(--text-primary);
+
+                    &:hover {
+                        background: rgba(255, 255, 255, 0.1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 라이트모드 대응
+.body--light {
+    .notice-detail-area {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+}
+
+// 모바일 대응
+@media (max-width: 600px) {
+    .notice-detail-area {
+        .title-area {
+            flex-direction: column;
+            align-items: flex-start;
+
+            .text-h3 {
+                font-size: 1.5rem;
+            }
+
+            .text-caption {
+                text-align: left;
+            }
+        }
+
+        .q-card-actions {
+            .q-btn {
+                flex: 1;
+                min-width: 80px;
+            }
+        }
     }
 }
 </style>
