@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { DTO } from '@/models';
 import { useAuthStore } from '@/store/auth.store';
 import { storeToRefs } from 'pinia';
@@ -18,9 +18,42 @@ const isDarkMode = computed(() => commonStore.isDarkMode);
 // CLS 방지 - 초기 애니메이션 비활성화
 const isInitialized = ref(false);
 
+// 모바일 감지 (반응형)
+const windowWidth = ref(768);
+const isMobile = computed(() => windowWidth.value < 768);
+const drawerBehavior = computed(() => {
+    if (!isInitialized.value) {
+        return 'desktop';
+    }
+    return isMobile.value ? 'mobile' : 'desktop';
+});
+
+function handleResize() {
+    if (typeof window !== 'undefined') {
+        windowWidth.value = window.innerWidth;
+    }
+}
+
 onMounted(() => {
     commonStore.initTheme();
     commonStore.initMenuState();
+
+    // 윈도우 크기 감지
+    if (typeof window !== 'undefined') {
+        windowWidth.value = window.innerWidth;
+        window.addEventListener('resize', handleResize);
+    }
+
+    // 초기화 완료
+    requestAnimationFrame(() => {
+        isInitialized.value = true;
+    });
+});
+
+onUnmounted(() => {
+    if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', handleResize);
+    }
 });
 
 async function logout() {
@@ -39,8 +72,8 @@ function goProfile() {
         show-if-above
         :width="220"
         :breakpoint="768"
-        :behavior="isInitialized ? 'default' : 'desktop'"
-        :overlay="false"
+        :behavior="drawerBehavior"
+        :overlay="isMobile"
         bordered
         class="app-drawer"
         :class="{ 'drawer-dark': isDarkMode, 'drawer-no-transition': !isInitialized }"
