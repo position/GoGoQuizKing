@@ -215,10 +215,10 @@ function goToHistory() {
     }
 
     &__section-title {
-        font-size: $font-size-lg;
         font-weight: 600;
         color: var(--text-primary);
         margin: 0 0 $spacing-md;
+        text-align: center;
     }
 
     // 대결 유형 그리드

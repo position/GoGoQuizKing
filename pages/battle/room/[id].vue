@@ -42,6 +42,7 @@ const gamePhase = ref<'waiting' | 'ready' | 'countdown' | 'playing' | 'roundResu
 const selectedAnswer = ref<string | null>(null);
 const hasAnswered = ref(false);
 const roundStartTime = ref(0);
+const countdownNumber = ref(3);
 
 // 카운트다운
 const {
@@ -184,17 +185,38 @@ async function handleStartBattle() {
 
 // 게임 시작
 async function startGame() {
-    if (questions.value.length === 0) {
+    // 방 정보 다시 fetch (quiz_id 포함)
+    const updatedRoom = await battleStore.fetchRoom(roomId.value);
+    if (updatedRoom) {
+        room.value = updatedRoom;
+    }
+
+    // 문제 로드
+    if (room.value?.quiz_id && questions.value.length === 0) {
         await loadQuestions();
+    }
+
+    // 문제가 없으면 에러 처리
+    if (questions.value.length === 0) {
+        $q.notify({
+            type: 'negative',
+            message: '문제를 불러오지 못했습니다.',
+        });
+        return;
     }
 
     // 카운트다운 시작
     gamePhase.value = 'countdown';
+    countdownNumber.value = 3;
 
-    // 3초 카운트다운 후 게임 시작
-    setTimeout(() => {
-        startNewRound();
-    }, 3000);
+    // 3, 2, 1 카운트다운
+    const countdownInterval = setInterval(() => {
+        countdownNumber.value -= 1;
+        if (countdownNumber.value <= 0) {
+            clearInterval(countdownInterval);
+            startNewRound();
+        }
+    }, 1000);
 }
 
 // 새 라운드 시작
@@ -398,7 +420,7 @@ onUnmounted(() => {
 
         <!-- 카운트다운 -->
         <div v-else-if="gamePhase === 'countdown'" class="battle-room__countdown">
-            <span class="battle-room__countdown-number">3</span>
+            <span class="battle-room__countdown-number">{{ countdownNumber }}</span>
             <span class="battle-room__countdown-text">대결 시작!</span>
         </div>
 
