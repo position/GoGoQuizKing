@@ -37,6 +37,14 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
         if (payload.eventType === 'UPDATE') {
             const newRoom = payload.new as IBattleRoomWithPlayers;
             const oldRoom = payload.old as Partial<IBattleRoomWithPlayers>;
+            
+            // 현재 저장된 방 상태 (oldRoom이 불완전할 수 있으므로 fallback)
+            const currentRoom = battleStore.currentRoom;
+            const prevStatus = oldRoom.status || currentRoom?.status;
+            const prevGuestId = oldRoom.guest_id ?? currentRoom?.guest_id;
+            const prevQuestionIndex = oldRoom.current_question_index ?? currentRoom?.current_question_index ?? 0;
+            const prevHostAnswersCount = oldRoom.host_answers?.length ?? currentRoom?.host_answers?.length ?? 0;
+            const prevGuestAnswersCount = oldRoom.guest_answers?.length ?? currentRoom?.guest_answers?.length ?? 0;
 
             // 방 정보 업데이트
             if (options.onRoomUpdate) {
@@ -45,13 +53,13 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
             battleStore.updateCurrentRoom(newRoom);
 
             // 게스트 참가 감지
-            if (!oldRoom.guest_id && newRoom.guest_id && options.onGuestJoined) {
+            if (!prevGuestId && newRoom.guest_id && options.onGuestJoined) {
                 options.onGuestJoined(newRoom.guest_id);
             }
 
             // 대결 시작 감지
             if (
-                oldRoom.status !== 'playing' &&
+                prevStatus !== 'playing' &&
                 newRoom.status === 'playing' &&
                 options.onBattleStart
             ) {
@@ -60,7 +68,7 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
 
             // 문제 인덱스 변경 감지
             if (
-                oldRoom.current_question_index !== newRoom.current_question_index &&
+                prevQuestionIndex !== newRoom.current_question_index &&
                 options.onQuestionChange
             ) {
                 options.onQuestionChange(newRoom.current_question_index);
@@ -68,21 +76,19 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
 
             // 상대방 답변 감지
             const isHost = battleStore.playState.isHost;
-            const oldAnswerCount = isHost
-                ? (oldRoom.guest_answers?.length ?? 0)
-                : (oldRoom.host_answers?.length ?? 0);
+            const prevAnswerCount = isHost ? prevGuestAnswersCount : prevHostAnswersCount;
             const newAnswerCount = isHost
                 ? (newRoom.guest_answers?.length ?? 0)
                 : (newRoom.host_answers?.length ?? 0);
 
-            if (newAnswerCount > oldAnswerCount && options.onOpponentAnswer) {
+            if (newAnswerCount > prevAnswerCount && options.onOpponentAnswer) {
                 options.onOpponentAnswer();
                 battleStore.updatePlayState({ opponentAnswered: true });
             }
 
             // 대결 종료 감지
             if (
-                oldRoom.status !== 'finished' &&
+                prevStatus !== 'finished' &&
                 newRoom.status === 'finished' &&
                 options.onBattleEnd
             ) {
@@ -91,7 +97,7 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
 
             // 방 취소 감지
             if (
-                oldRoom.status !== 'cancelled' &&
+                prevStatus !== 'cancelled' &&
                 newRoom.status === 'cancelled' &&
                 options.onRoomCancelled
             ) {

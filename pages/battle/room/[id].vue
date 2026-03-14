@@ -130,6 +130,9 @@ async function loadRoom() {
         room.value = loadedRoom;
         isHost.value = loadedRoom.host_id === currentUserId.value;
 
+        // battleStore에도 isHost 설정 (realtime 콜백에서 사용)
+        battleStore.updatePlayState({ isHost: isHost.value });
+
         // 게임 상태 결정
         if (loadedRoom.status === 'waiting') {
             gamePhase.value = 'waiting';
