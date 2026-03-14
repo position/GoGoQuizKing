@@ -12,6 +12,7 @@ import type {
     IBattleResult,
     IMatchmakingState,
     IMatchmakingOptions,
+    IBattleAnswer,
     BattleType,
     BattleStatus,
 } from '~/models/battle';
@@ -262,21 +263,48 @@ export const useBattleStore = defineStore('battle', {
             this.loading = true;
 
             try {
-                const { data, error } = await supabase
+                // 먼저 방 정보 조회
+                const { data: roomData, error: roomError } = await supabase
                     .from('battle_rooms')
-                    .select(`
-                        *,
-                        host:profiles!battle_rooms_host_id_fkey(id, full_name, preferred_username, avatar_url, level),
-                        guest:profiles!battle_rooms_guest_id_fkey(id, full_name, preferred_username, avatar_url, level)
-                    `)
+                    .select('*')
                     .eq('id', roomId)
                     .single();
 
-                if (error) {
-                    throw error;
+                if (roomError) {
+                    throw roomError;
                 }
 
-                this.currentRoom = data as IBattleRoomWithPlayers;
+                if (!roomData) {
+                    return null;
+                }
+
+                // 호스트 프로필 조회
+                const { data: hostProfile } = await supabase
+                    .from('profiles')
+                    .select('id, full_name, preferred_username, avatar_url, level')
+                    .eq('id', roomData.host_id)
+                    .single();
+
+                // 게스트 프로필 조회 (있는 경우)
+                let guestProfile = null;
+                if (roomData.guest_id) {
+                    const { data: guestData } = await supabase
+                        .from('profiles')
+                        .select('id, full_name, preferred_username, avatar_url, level')
+                        .eq('id', roomData.guest_id)
+                        .single();
+                    guestProfile = guestData;
+                }
+
+                const result: IBattleRoomWithPlayers = {
+                    ...roomData,
+                    host_answers: roomData.host_answers as IBattleAnswer[] ?? [],
+                    guest_answers: roomData.guest_answers as IBattleAnswer[] ?? [],
+                    host: hostProfile ?? undefined,
+                    guest: guestProfile ?? undefined,
+                };
+
+                this.currentRoom = result;
                 return this.currentRoom;
             } catch (err) {
                 this.error = err instanceof Error ? err.message : '방 정보 조회 실패';
