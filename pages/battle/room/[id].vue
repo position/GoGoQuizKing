@@ -58,12 +58,23 @@ const {
 // Realtime 구독
 const { subscribe, unsubscribe } = useBattleRealtime({
     roomId: roomId.value,
-    onRoomUpdate: (updatedRoom) => {
-        room.value = updatedRoom;
+    onRoomUpdate: async (updatedRoom) => {
+        // Realtime payload는 관계 데이터(host, guest 프로필)를 포함하지 않으므로
+        // 필요 시 전체 방 정보를 다시 fetch
+        if (updatedRoom.guest_id && !updatedRoom.guest) {
+            const fullRoom = await battleStore.fetchRoom(roomId.value);
+            if (fullRoom) {
+                room.value = fullRoom;
+            }
+        } else {
+            room.value = updatedRoom;
+        }
     },
-    onGuestJoined: () => {
-        // 게스트 참가 - 대기 상태에서 준비 상태로
-        if (room.value) {
+    onGuestJoined: async () => {
+        // 게스트 참가 - 방 정보를 다시 fetch하여 guest 프로필 포함
+        const fullRoom = await battleStore.fetchRoom(roomId.value);
+        if (fullRoom) {
+            room.value = fullRoom;
             gamePhase.value = 'ready';
         }
     },
