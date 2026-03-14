@@ -90,6 +90,8 @@ const { subscribe, unsubscribe } = useBattleRealtime({
     onOpponentAnswer: () => {
         // 상대방 답변 완료
         battleStore.updatePlayState({ opponentAnswered: true });
+        // 양쪽 다 응답 완료 체크
+        checkRoundComplete();
     },
     onBattleEnd: () => {
         // 대결 종료

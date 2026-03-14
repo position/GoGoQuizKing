@@ -83,7 +83,6 @@ export function useBattleRealtime(options: UseBattleRealtimeOptions): UseBattleR
 
             if (newAnswerCount > prevAnswerCount && options.onOpponentAnswer) {
                 options.onOpponentAnswer();
-                battleStore.updatePlayState({ opponentAnswered: true });
             }
 
             // 대결 종료 감지
