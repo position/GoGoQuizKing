@@ -21,10 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const displayName = computed(() => props.name || 'Unknown');
-
-const correctCount = computed(() => 
-    props.answers.filter(a => a.is_correct).length
-);
 </script>
 
 <template>
@@ -36,45 +32,43 @@ const correctCount = computed(() =>
         ]"
         flat
     >
-        <q-card-section class="text-center q-py-md">
+        <q-card-section class="player-card__content">
             <!-- 승자 왕관 -->
-            <div v-if="isWinner" class="winner-crown text-h4 q-mb-xs">👑</div>
+            <div v-if="isWinner" class="player-card__crown">👑</div>
 
             <!-- 아바타 -->
-            <q-avatar size="64px" class="q-mb-sm">
-                <q-img
-                    v-if="avatarUrl"
-                    :src="avatarUrl"
-                    spinner-color="primary"
-                />
+            <q-avatar size="64px" class="player-card__avatar">
+                <q-img v-if="avatarUrl" :src="avatarUrl" spinner-color="primary" />
                 <q-icon v-else name="person" size="32px" color="grey-5" />
             </q-avatar>
 
             <!-- 이름 -->
-            <div class="text-subtitle1 text-weight-bold ellipsis">
+            <div class="player-card__name">
                 {{ isCurrentUser ? '나' : displayName }}
             </div>
 
             <!-- 레벨 -->
-            <q-badge
-                :color="isCurrentUser ? 'primary' : 'grey-6'"
-                class="q-mt-xs"
-            >
+            <q-badge :color="isCurrentUser ? 'primary' : 'grey-6'" class="player-card__level">
                 Lv.{{ level }}
             </q-badge>
 
             <!-- 점수 -->
-            <div v-if="showScore" class="text-h5 text-weight-bold q-mt-md" :class="isWinner ? 'text-positive' : ''">
+            <div
+                v-if="showScore"
+                :class="['player-card__score', { 'player-card__score--winner': isWinner }]"
+            >
                 {{ score }}점
             </div>
 
             <!-- 정답 표시 -->
-            <div v-if="answers.length > 0" class="answer-indicators q-mt-sm">
+            <div v-if="answers.length > 0" class="player-card__answers">
                 <span
                     v-for="(answer, index) in answers"
                     :key="index"
-                    :class="answer.is_correct ? 'text-positive' : 'text-negative'"
-                    class="q-mx-xs"
+                    :class="[
+                        'player-card__answer-icon',
+                        answer.is_correct ? 'player-card__answer-icon--correct' : 'player-card__answer-icon--wrong',
+                    ]"
                 >
                     {{ answer.is_correct ? '⭕' : '❌' }}
                 </span>
@@ -85,24 +79,106 @@ const correctCount = computed(() =>
 
 <style scoped lang="scss">
 .player-card {
-    background: white;
-    border-radius: 12px;
+    border-radius: $radius-md;
     min-width: 140px;
-    transition: all 0.3s ease;
+    transition: all $transition-normal;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
 
+    // 현재 사용자 카드
     &--current {
-        background: linear-gradient(135deg, #e8f4f8 0%, #fff 100%);
-        border: 2px solid var(--q-primary);
+        border: 2px solid $primary;
+
+        .body--light & {
+            background: linear-gradient(135deg, rgba($primary, 0.08) 0%, var(--bg-card) 100%);
+        }
+
+        .body--dark & {
+            background: linear-gradient(135deg, rgba($primary, 0.15) 0%, var(--bg-card) 100%);
+        }
     }
 
+    // 승자 카드
     &--winner {
-        background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
-        border: 2px solid #f7b32b;
-    }
-}
+        border: 2px solid $warning;
 
-.winner-crown {
-    animation: bounce 0.5s ease infinite alternate;
+        .body--light & {
+            background: linear-gradient(135deg, rgba($warning, 0.1) 0%, var(--bg-card) 100%);
+        }
+
+        .body--dark & {
+            background: linear-gradient(135deg, rgba($warning, 0.15) 0%, var(--bg-card) 100%);
+        }
+    }
+
+    // 내부 컨텐츠
+    &__content {
+        text-align: center;
+        padding: $spacing-md;
+    }
+
+    // 승자 왕관
+    &__crown {
+        font-size: $font-size-3xl;
+        margin-bottom: $spacing-xs;
+        animation: bounce 0.5s ease infinite alternate;
+    }
+
+    // 아바타
+    &__avatar {
+        margin-bottom: $spacing-sm;
+
+        .body--dark & {
+            background: $dark-bg-surface;
+        }
+    }
+
+    // 이름
+    &__name {
+        font-size: $font-size-base;
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    // 레벨 배지
+    &__level {
+        margin-top: $spacing-xs;
+    }
+
+    // 점수
+    &__score {
+        font-size: $font-size-xl;
+        font-weight: 700;
+        margin-top: $spacing-md;
+        color: var(--text-primary);
+
+        &--winner {
+            color: $success;
+        }
+    }
+
+    // 정답 표시
+    &__answers {
+        margin-top: $spacing-sm;
+        display: flex;
+        justify-content: center;
+        gap: $spacing-xs;
+    }
+
+    &__answer-icon {
+        font-size: $font-size-base;
+
+        &--correct {
+            color: $success;
+        }
+
+        &--wrong {
+            color: $negative;
+        }
+    }
 }
 
 @keyframes bounce {
@@ -112,10 +188,5 @@ const correctCount = computed(() =>
     to {
         transform: translateY(-4px);
     }
-}
-
-.answer-indicators {
-    font-size: 16px;
-    letter-spacing: 2px;
 }
 </style>

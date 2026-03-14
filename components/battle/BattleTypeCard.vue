@@ -28,76 +28,102 @@ function handleClick() {
 </script>
 
 <template>
-    <q-card
+    <button
         :class="[
-            'battle-type-card cursor-pointer',
+            'battle-type-card',
             { 'battle-type-card--selected': selected },
             { 'battle-type-card--disabled': disabled },
         ]"
-        flat
-        bordered
+        :disabled="disabled"
         @click="handleClick"
     >
-        <q-card-section class="battle-type-area text-center">
-            <div class="text-h3 q-mb-sm">{{ typeInfo.icon }}</div>
-            <div class="text-h4 text-weight-bold">{{ typeInfo.label }}</div>
-            <div class="text-caption">{{ typeInfo.questionCount }}문제</div>
-            <q-badge v-if="type === 'ranked'" color="red" class="q-mt-sm">
-                랭킹 포인트 획득
-            </q-badge>
-        </q-card-section>
+        <span class="battle-type-card__icon">{{ typeInfo.icon }}</span>
+        <span class="battle-type-card__label">{{ typeInfo.label }}</span>
+        <span class="battle-type-card__count">{{ typeInfo.questionCount }}문제</span>
+        <q-badge v-if="type === 'ranked'" color="red" class="battle-type-card__badge">
+            랭킹 포인트 획득
+        </q-badge>
 
         <q-icon
             v-if="selected"
             name="check_circle"
             color="primary"
             size="24px"
-            class="selected-icon"
+            class="battle-type-card__check"
         />
-    </q-card>
+    </button>
 </template>
 
 <style scoped lang="scss">
 .battle-type-card {
     position: relative;
-    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     min-width: 170px;
+    padding: $spacing-lg;
+    border-radius: $radius-md;
+    border: 2px solid var(--border-color);
     background: var(--bg-card);
-    border-color: var(--border-color);
+    cursor: pointer;
+    transition: all $transition-fast;
+    text-align: center;
 
     &:hover:not(&--disabled) {
         transform: translateY(-4px);
-        box-shadow: 0 4px 12px var(--shadow-color);
+        box-shadow: $shadow-md;
     }
 
+    // 선택 상태
     &--selected {
-        border-color: var(--q-primary);
-        border-width: 2px;
-        background: rgba(var(--color-primary-rgb), 0.1);
+        border-color: $primary;
+
+        .body--light & {
+            background: rgba($primary, 0.08);
+        }
+
+        .body--dark & {
+            background: rgba($primary, 0.15);
+        }
     }
 
+    // 비활성화
     &--disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
 
-    .selected-icon {
-        position: absolute;
-        top: 8px;
-        right: 8px;
+    // 아이콘
+    &__icon {
+        font-size: $font-size-4xl;
+        margin-bottom: $spacing-sm;
     }
-}
 
-// 다크모드 대응
-.body--dark {
-    .battle-type-card {
-        &--selected {
-            background: rgba(78, 205, 196, 0.15);
-        }
+    // 라벨
+    &__label {
+        font-size: $font-size-lg;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: $spacing-xs;
+    }
 
-        &:hover:not(.battle-type-card--disabled) {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-        }
+    // 문제 수
+    &__count {
+        font-size: $font-size-xs;
+        color: var(--text-light);
+    }
+
+    // 뱃지
+    &__badge {
+        margin-top: $spacing-sm;
+    }
+
+    // 체크 아이콘
+    &__check {
+        position: absolute;
+        top: $spacing-sm;
+        right: $spacing-sm;
     }
 }
 </style>

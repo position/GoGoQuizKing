@@ -24,95 +24,148 @@ const rankIcon = computed(() => {
     }
 });
 
-const displayName = computed(() => 
-    props.entry.preferred_username || props.entry.full_name || 'Unknown'
+const displayName = computed(
+    () => props.entry.preferred_username || props.entry.full_name || 'Unknown',
 );
 </script>
 
 <template>
-    <q-item :class="['ranking-item', { 'ranking-item--current': isCurrentUser }]">
+    <div :class="['ranking-item', { 'ranking-item--current': isCurrentUser }]">
         <!-- 순위 -->
-        <q-item-section avatar class="rank-section">
-            <div v-if="rankIcon" class="rank-medal">
-                {{ rankIcon }}
-            </div>
-            <div v-else class="rank-number">
-                {{ entry.rank }}
-            </div>
-        </q-item-section>
+        <div class="ranking-item__rank">
+            <span v-if="rankIcon" class="ranking-item__medal">{{ rankIcon }}</span>
+            <span v-else class="ranking-item__number">{{ entry.rank }}</span>
+        </div>
 
         <!-- 아바타 -->
-        <q-item-section avatar>
-            <q-avatar size="40px">
-                <q-img
-                    v-if="entry.avatar_url"
-                    :src="entry.avatar_url"
-                />
-                <q-icon v-else name="person" size="20px" color="grey-5" />
-            </q-avatar>
-        </q-item-section>
+        <q-avatar size="40px" class="ranking-item__avatar">
+            <q-img v-if="entry.avatar_url" :src="entry.avatar_url" />
+            <q-icon v-else name="person" size="20px" color="grey-5" />
+        </q-avatar>
 
         <!-- 유저 정보 -->
-        <q-item-section>
-            <q-item-label class="text-weight-bold">
+        <div class="ranking-item__info">
+            <span class="ranking-item__name">
                 {{ displayName }}
-                <q-badge v-if="isCurrentUser" color="primary" class="q-ml-xs">
+                <q-badge v-if="isCurrentUser" color="primary" class="ranking-item__me-badge">
                     나
                 </q-badge>
-            </q-item-label>
-            <q-item-label caption>
+            </span>
+            <span class="ranking-item__record">
                 {{ entry.total_wins }}승 {{ entry.total_battles - entry.total_wins }}패
-                <span class="text-grey-6">
-                    ({{ entry.win_rate }}%)
-                </span>
-            </q-item-label>
-        </q-item-section>
+                <span class="ranking-item__winrate">({{ entry.win_rate }}%)</span>
+            </span>
+        </div>
 
         <!-- 랭킹 포인트 -->
-        <q-item-section side>
-            <q-item-label class="text-weight-bold text-primary">
-                {{ entry.ranking_points }} RP
-            </q-item-label>
-        </q-item-section>
-    </q-item>
+        <div class="ranking-item__points">{{ entry.ranking_points }} RP</div>
+    </div>
 </template>
 
 <style scoped lang="scss">
 .ranking-item {
-    background: white;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    border-radius: $radius-md;
+    margin-bottom: $spacing-sm;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    transition: all $transition-fast;
 
     &:hover {
         transform: translateX(4px);
     }
 
+    // 현재 사용자 강조
     &--current {
-        background: linear-gradient(135deg, #e8f4f8 0%, #fff 100%);
-        border: 2px solid var(--q-primary);
+        border: 2px solid $primary;
+
+        .body--light & {
+            background: linear-gradient(135deg, rgba($primary, 0.08) 0%, var(--bg-card) 100%);
+        }
+
+        .body--dark & {
+            background: linear-gradient(135deg, rgba($primary, 0.15) 0%, var(--bg-card) 100%);
+        }
     }
-}
 
-.rank-section {
-    min-width: 48px;
-    justify-content: center;
-}
+    // 순위
+    &__rank {
+        min-width: 48px;
+        display: flex;
+        justify-content: center;
+    }
 
-.rank-medal {
-    font-size: 28px;
-}
+    &__medal {
+        font-size: $font-size-3xl;
+    }
 
-.rank-number {
-    font-size: 18px;
-    font-weight: bold;
-    color: #666;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f0f0f0;
-    border-radius: 50%;
+    &__number {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: $font-size-lg;
+        font-weight: 700;
+        border-radius: 50%;
+        color: var(--text-secondary);
+
+        .body--light & {
+            background: #f0f0f0;
+        }
+
+        .body--dark & {
+            background: $dark-bg-surface;
+        }
+    }
+
+    // 아바타
+    &__avatar {
+        flex-shrink: 0;
+
+        .body--dark & {
+            background: $dark-bg-surface;
+        }
+    }
+
+    // 정보
+    &__info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+        min-width: 0;
+    }
+
+    &__name {
+        display: flex;
+        align-items: center;
+        gap: $spacing-xs;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    &__me-badge {
+        font-size: $font-size-xs;
+    }
+
+    &__record {
+        font-size: $font-size-sm;
+        color: var(--text-secondary);
+    }
+
+    &__winrate {
+        color: var(--text-light);
+    }
+
+    // 포인트
+    &__points {
+        font-weight: 700;
+        color: $primary;
+        flex-shrink: 0;
+    }
 }
 </style>

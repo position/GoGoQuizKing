@@ -28,69 +28,115 @@ const accuracy = computed(() => {
 </script>
 
 <template>
-    <q-item class="history-item">
+    <div class="history-item">
         <!-- 결과 아이콘 -->
-        <q-item-section avatar>
-            <div
-                :class="['result-badge', `result-badge--${history.result}`]"
-            >
-                {{ resultInfo.icon }}
-            </div>
-        </q-item-section>
+        <div :class="['history-item__badge', `history-item__badge--${history.result}`]">
+            {{ resultInfo.icon }}
+        </div>
 
         <!-- 상대 정보 -->
-        <q-item-section>
-            <q-item-label class="text-weight-bold">
-                vs {{ history.opponent_name }}
-            </q-item-label>
-            <q-item-label caption>
+        <div class="history-item__info">
+            <span class="history-item__opponent">vs {{ history.opponent_name }}</span>
+            <span class="history-item__score">
                 {{ history.my_score }}점 : {{ history.opponent_score }}점
-                <span class="text-grey-6 q-ml-sm">
+                <span class="history-item__correct">
                     ({{ history.correct_count }}/{{ history.total_questions }} 정답)
                 </span>
-            </q-item-label>
-        </q-item-section>
+            </span>
+        </div>
 
         <!-- 보상 정보 -->
-        <q-item-section side>
-            <q-item-label class="text-right">
-                <span class="text-positive text-weight-bold">
-                    +{{ history.points_earned }}P
-                </span>
-            </q-item-label>
-            <q-item-label caption>
-                {{ timeAgo }}
-            </q-item-label>
-        </q-item-section>
-    </q-item>
+        <div class="history-item__reward">
+            <span class="history-item__points">+{{ history.points_earned }}P</span>
+            <span class="history-item__time">{{ timeAgo }}</span>
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">
 .history-item {
-    background: white;
-    border-radius: 12px;
-    margin-bottom: 8px;
-}
-
-.result-badge {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 24px;
+    gap: $spacing-md;
+    padding: $spacing-md;
+    border-radius: $radius-md;
+    margin-bottom: $spacing-sm;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    transition: all $transition-fast;
 
-    &--win {
-        background: linear-gradient(135deg, #95e77e 0%, #4ecdc4 100%);
+    &:hover {
+        transform: translateX(4px);
     }
 
-    &--lose {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+    // 결과 배지
+    &__badge {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: $font-size-2xl;
+        flex-shrink: 0;
+
+        &--win {
+            background: linear-gradient(135deg, $success 0%, #4ecdc4 100%);
+        }
+
+        &--lose {
+            background: linear-gradient(135deg, $negative 0%, #ff8e8e 100%);
+        }
+
+        &--draw {
+            background: linear-gradient(135deg, $info 0%, #74d4e8 100%);
+        }
     }
 
-    &--draw {
-        background: linear-gradient(135deg, #45b7d1 0%, #74d4e8 100%);
+    // 정보 영역
+    &__info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xs;
+        min-width: 0;
+    }
+
+    &__opponent {
+        font-weight: 600;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__score {
+        font-size: $font-size-sm;
+        color: var(--text-secondary);
+    }
+
+    &__correct {
+        color: var(--text-light);
+        margin-left: $spacing-sm;
+    }
+
+    // 보상 영역
+    &__reward {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: $spacing-xs;
+        flex-shrink: 0;
+    }
+
+    &__points {
+        font-weight: 700;
+        color: $success;
+    }
+
+    &__time {
+        font-size: $font-size-xs;
+        color: var(--text-light);
     }
 }
 </style>

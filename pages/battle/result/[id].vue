@@ -82,7 +82,7 @@ async function loadResult() {
 
 // 보상 정보 로드
 async function loadRewardInfo(userId: string) {
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('battle_history')
         .select('points_earned, ranking_points_earned')
         .eq('room_id', roomId.value)
@@ -119,7 +119,7 @@ onMounted(() => {
 <template>
     <q-page class="battle-result-page">
         <!-- 로딩 -->
-        <div v-if="isLoading" class="flex flex-center" style="min-height: 400px">
+        <div v-if="isLoading" class="battle-result-page__loading">
             <q-spinner-gears size="60px" color="primary" />
         </div>
 
@@ -135,6 +135,19 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .battle-result-page {
-    background: #f5f5f5;
+    .body--light & {
+        background: $bg-secondary;
+    }
+
+    .body--dark & {
+        background: $dark-bg-primary;
+    }
+
+    &__loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+    }
 }
 </style>

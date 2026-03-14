@@ -138,7 +138,7 @@ onUnmounted(() => {
 
 <template>
     <q-page padding class="matchmaking-page">
-        <div class="matchmaking-container">
+        <div class="matchmaking-page__container">
             <MatchmakingWaiting
                 :elapsed-time="elapsedTime"
                 :max-time="MATCHMAKING_CONFIG.TIMEOUT_SECONDS"
@@ -155,10 +155,10 @@ onUnmounted(() => {
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 100px);
-}
 
-.matchmaking-container {
-    width: 100%;
-    max-width: 500px;
+    &__container {
+        width: 100%;
+        max-width: 500px;
+    }
 }
 </style>

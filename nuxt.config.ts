@@ -315,6 +315,11 @@ export default defineNuxtConfig({
         },
         css: {
             devSourcemap: false,
+            preprocessorOptions: {
+                scss: {
+                    additionalData: '@use "~/assets/scss/_variables.scss" as *;',
+                },
+            },
         },
         optimizeDeps: {
             include: ['vue', 'vue-router', 'pinia', 'quasar'],
