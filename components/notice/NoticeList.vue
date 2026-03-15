@@ -365,6 +365,7 @@ function goToNoticeDetail(id: number) {
         }
 
         .no-data {
+            width: 100%;
             padding: $spacing-xxl;
             text-align: center;
             color: var(--text-light);

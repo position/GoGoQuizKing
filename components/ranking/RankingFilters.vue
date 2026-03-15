@@ -22,11 +22,7 @@
                 map-options
                 class="type-select"
                 @update:model-value="onTypeChange"
-            >
-                <template #prepend>
-                    <span>{{ selectedTypeIcon }}</span>
-                </template>
-            </q-select>
+            />
         </div>
 
         <div v-if="showCategoryFilter" class="filter-group category-filter">
@@ -105,8 +101,6 @@ const categoryOptions = computed(() =>
         label: `${icon} ${label}`,
     })),
 );
-
-const selectedTypeIcon = computed(() => RANKING_TYPE_LABELS[selectedType.value]?.icon || '⭐');
 
 const showCategoryFilter = computed(() => selectedType.value === 'category');
 
