@@ -239,9 +239,16 @@ async function editNotice() {
             }
         }
 
+        :deep(ul) {
+            padding-left: 20px;
+        }
+
+        :deep(ul > li > ul) {
+            padding-left: 40px;
+        }
+
         :deep(blockquote) {
             border-left: 4px solid var(--color-primary);
-            padding-left: 16px;
             margin: 16px 0;
             color: var(--text-secondary);
             background: var(--bg-secondary);

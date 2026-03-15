@@ -126,7 +126,7 @@ function goToNoticeDetail(id: number) {
                     <th class="text-center">번호</th>
                     <th class="text-left">제목</th>
                     <th class="text-center">작성일</th>
-                    <th class="text-center">관리</th>
+                    <th v-if="authStore.isAdmin" class="text-center">관리</th>
                 </tr>
             </template>
             <template v-slot:body="notice">
@@ -138,9 +138,8 @@ function goToNoticeDetail(id: number) {
                             dayjs.utc(notice.row.created_at).local().format('YYYY-MM-DD hh:mm:ss A')
                         }}
                     </td>
-                    <td>
+                    <td v-if="authStore.isAdmin" class="text-center">
                         <q-btn
-                            v-if="authStore.isAdmin"
                             @click.stop="confirmDeleteNotice(notice.row.id)"
                             label="삭제"
                             size="md"

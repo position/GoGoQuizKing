@@ -74,7 +74,10 @@ function goToHistory() {
     <q-page padding class="battle-lobby">
         <!-- 헤더 -->
         <header class="battle-lobby__header">
-            <h1 class="battle-lobby__title">⚔️ 퀴즈 대결</h1>
+            <h1 class="battle-lobby__title">
+                <q-icon name="sports_esports" class="battle-lobby__title-icon" />
+                퀴즈 대결
+            </h1>
             <p class="battle-lobby__subtitle">다른 친구와 실시간으로 대결해보세요!</p>
         </header>
 
@@ -98,13 +101,14 @@ function goToHistory() {
                 <!-- 랜덤 매칭 -->
                 <div class="battle-lobby__action">
                     <q-btn
-                        label="🎲 랜덤 매칭"
                         color="primary"
                         class="battle-lobby__btn"
                         size="lg"
                         :loading="isCreating"
                         @click="startMatchmaking"
                     >
+                        <q-icon name="casino" class="q-mr-sm" />
+                        <span>랜덤 매칭</span>
                         <q-tooltip>비슷한 레벨의 상대와 자동 매칭</q-tooltip>
                     </q-btn>
                     <span class="battle-lobby__action-desc">비슷한 레벨 상대와 자동 매칭</span>
@@ -113,13 +117,14 @@ function goToHistory() {
                 <!-- 친구 초대 -->
                 <div class="battle-lobby__action">
                     <q-btn
-                        label="🔗 방 만들기"
                         color="secondary"
                         class="battle-lobby__btn"
                         size="lg"
                         :loading="isCreating"
                         @click="createRoom"
                     >
+                        <q-icon name="link" class="q-mr-sm" />
+                        <span>방 만들기</span>
                         <q-tooltip>초대 링크로 친구 초대</q-tooltip>
                     </q-btn>
                     <span class="battle-lobby__action-desc">초대 코드를 친구에게 공유</span>
@@ -128,12 +133,13 @@ function goToHistory() {
                 <!-- 코드로 참가 -->
                 <div class="battle-lobby__action">
                     <q-btn
-                        label="👥 코드 입력"
                         color="dark"
                         class="battle-lobby__btn"
                         size="lg"
                         @click="showJoinDialog = true"
                     >
+                        <q-icon name="group" class="q-mr-sm" />
+                        <span>코드 입력</span>
                         <q-tooltip>초대 코드 입력하여 참가</q-tooltip>
                     </q-btn>
                     <span class="battle-lobby__action-desc">친구의 초대 코드로 참가</span>
@@ -143,7 +149,17 @@ function goToHistory() {
 
         <!-- 대결 기록 버튼 -->
         <div class="battle-lobby__history">
-            <q-btn label="📜 대결 기록" flat color="grey-7" size="large" @click="goToHistory" />
+            <q-btn
+                flat
+                outline
+                unelevated
+                color="grey-7"
+                size="large"
+                @click="goToHistory"
+            >
+                <q-icon name="history" class="q-mr-sm" />
+                <span>대결 기록</span>
+            </q-btn>
         </div>
 
         <!-- 초대 코드 입력 다이얼로그 -->
@@ -197,10 +213,18 @@ function goToHistory() {
     }
 
     &__title {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-sm;
         font-size: $font-size-3xl;
         font-weight: 700;
         color: var(--text-primary);
         margin: 0 0 $spacing-sm;
+    }
+
+    &__title-icon {
+        font-size: 1.6em;
     }
 
     &__subtitle {

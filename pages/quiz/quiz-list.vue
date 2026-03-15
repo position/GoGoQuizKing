@@ -23,7 +23,7 @@
                 <!-- 검색 -->
                 <q-input
                     v-model="searchQuery"
-                    placeholder="어떤 퀴즈를 찾고 있나요? 🔍"
+                    placeholder="어떤 퀴즈를 찾고 있나요?"
                     outlined
                     dense
                     clearable
@@ -222,45 +222,8 @@ const sortOptions = [
     { label: '인기순', value: 'play_count' },
 ];
 
-// 필터링된 퀴즈 (클라이언트 사이드 필터링)
-const filteredQuizzes = computed(() => {
-    let result = [...quizStore.quizzes];
-
-    // 카테고리 필터
-    if (selectedCategory.value) {
-        result = result.filter((q) => q.category === selectedCategory.value);
-    }
-
-    // 난이도 필터
-    if (selectedDifficulty.value) {
-        result = result.filter((q) => q.difficulty === selectedDifficulty.value);
-    }
-
-    // 학년 필터
-    if (selectedGrade.value) {
-        result = result.filter((q) => q.grade_level === selectedGrade.value);
-    }
-
-    // 검색 필터
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase();
-        result = result.filter(
-            (q) =>
-                q.title.toLowerCase().includes(query) ||
-                q.description?.toLowerCase().includes(query),
-        );
-    }
-
-    // 정렬
-    result.sort((a, b) => {
-        if (sortBy.value === 'play_count') {
-            return b.play_count - a.play_count;
-        }
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
-
-    return result;
-});
+// 필터링된 퀴즈 (서버에서 필터링 되므로 quizStore.quizzes 직접 사용)
+const filteredQuizzes = computed(() => quizStore.quizzes);
 
 // 무한 스크롤 로드 핸들러
 async function onLoadMore(index: number, done: (stop?: boolean) => void) {

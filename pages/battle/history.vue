@@ -181,7 +181,6 @@ async function loadMoreHistory() {
     }
 
     &__title {
-        font-size: $font-size-2xl;
         font-weight: 700;
         color: var(--text-primary);
         margin: 0;
@@ -239,6 +238,11 @@ async function loadMoreHistory() {
     // 탭
     &__tabs {
         margin-bottom: $spacing-md;
+
+        :deep(.q-tab__content .q-tab__label) {
+            font-size: $font-size-lg;
+            font-weight: 600;
+        }
     }
 
     &__panels {

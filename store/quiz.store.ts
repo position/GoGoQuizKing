@@ -131,7 +131,7 @@ export const useQuizStore = defineStore('quiz', {
     },
 
     actions: {
-        // 퀴즈 목록 불러오기 (페이지네이션)
+        // 퀴즈 목록 불러오기 (페이지네이션 + 필터)
         async fetchQuizzesPaginated() {
             if (this.isLoading || !this.pagination.hasMore) return;
 
@@ -143,7 +143,7 @@ export const useQuizStore = defineStore('quiz', {
                 const from = this.pagination.page * this.pagination.pageSize;
                 const to = from + this.pagination.pageSize - 1;
 
-                const { data, error } = await supabase
+                let query = supabase
                     .from('quizzes')
                     .select(
                         `
@@ -154,9 +154,35 @@ export const useQuizStore = defineStore('quiz', {
                         )
                     `
                     )
-                    .eq('is_public', true)
-                    .order('created_at', { ascending: false })
-                    .range(from, to);
+                    .eq('is_public', true);
+
+                // 필터 적용
+                if (this.filter.category) {
+                    query = query.eq('category', this.filter.category);
+                }
+
+                if (this.filter.difficulty) {
+                    query = query.eq('difficulty', this.filter.difficulty);
+                }
+
+                if (this.filter.gradeLevel) {
+                    query = query.eq('grade_level', this.filter.gradeLevel);
+                }
+
+                // 검색 필터 (제목 또는 설명에서 검색)
+                if (this.filter.searchQuery) {
+                    const searchTerm = `%${this.filter.searchQuery}%`;
+                    query = query.or(
+                        `title.ilike.${searchTerm},description.ilike.${searchTerm}`
+                    );
+                }
+
+                // 정렬
+                const ascending = this.filter.sortOrder === 'asc';
+                query = query.order(this.filter.sortBy, { ascending });
+
+                // 페이지네이션
+                const { data, error } = await query.range(from, to);
 
                 if (error) throw error;
 
