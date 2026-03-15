@@ -3,7 +3,6 @@ import type {
     Quiz,
     Question,
     QuizFormData,
-    QuizAttempt,
     QuizListFilter,
     QuizWithAuthor,
     QuizPlayState,
@@ -47,6 +46,41 @@ const initialPlayState: QuizPlayState = {
     isCompleted: false,
 };
 
+// 공통 정렬 헬퍼: null/undefined, 문자열, 숫자/Date를 안전하게 비교
+function compareValues<T>(
+    a: T | null | undefined,
+    b: T | null | undefined,
+    order: 'asc' | 'desc' = 'asc',
+): number {
+    if (a == null && b == null) {
+        return 0;
+    }
+    if (a == null) {
+        return order === 'asc' ? 1 : -1;
+    }
+    if (b == null) {
+        return order === 'asc' ? -1 : 1;
+    }
+
+    if (typeof a === 'string' && typeof b === 'string') {
+        return order === 'asc' ? a.localeCompare(b) : b.localeCompare(a);
+    }
+
+    // number, Date 등은 <, > 비교 사용
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const aVal = a as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bVal = b as any;
+
+    if (aVal < bVal) {
+        return order === 'asc' ? -1 : 1;
+    }
+    if (aVal > bVal) {
+        return order === 'asc' ? 1 : -1;
+    }
+    return 0;
+}
+
 export const useQuizStore = defineStore('quiz', {
     state: (): QuizStoreState => ({
         quizzes: [],
@@ -89,25 +123,29 @@ export const useQuizStore = defineStore('quiz', {
                 result = result.filter(
                     (q) =>
                         q.title.toLowerCase().includes(query) ||
-                        q.description?.toLowerCase().includes(query)
+                        q.description?.toLowerCase().includes(query),
                 );
             }
 
             // 정렬
             result.sort((a, b) => {
-                const aVal = a[state.filter.sortBy];
-                const bVal = b[state.filter.sortBy];
+                const { sortBy, sortOrder } = state.filter;
 
-                if (state.filter.sortBy === 'title') {
-                    return state.filter.sortOrder === 'asc'
-                        ? (aVal as string).localeCompare(bVal as string)
-                        : (bVal as string).localeCompare(aVal as string);
+                // 필드별 타입에 맞는 비교 수행
+                if (sortBy === 'title') {
+                    return compareValues<string>(a.title, b.title, sortOrder);
                 }
 
-                if (state.filter.sortOrder === 'asc') {
-                    return aVal < bVal ? -1 : 1;
+                if (sortBy === 'play_count') {
+                    return compareValues<number>(a.play_count, b.play_count, sortOrder);
                 }
-                return aVal > bVal ? -1 : 1;
+
+                if (sortBy === 'created_at') {
+                    return compareValues<string | Date>(a.created_at, b.created_at, sortOrder);
+                }
+
+                // 알 수 없는 sortBy가 들어온 경우 created_at 기준으로 정렬
+                return compareValues<string | Date>(a.created_at, b.created_at, sortOrder);
             });
 
             return result;
@@ -121,7 +159,7 @@ export const useQuizStore = defineStore('quiz', {
         progress(state): number {
             if (state.playState.questions.length === 0) return 0;
             return Math.round(
-                (state.playState.currentIndex / state.playState.questions.length) * 100
+                (state.playState.currentIndex / state.playState.questions.length) * 100,
             );
         },
 
@@ -152,7 +190,7 @@ export const useQuizStore = defineStore('quiz', {
                             full_name,
                             avatar_url
                         )
-                    `
+                    `,
                     )
                     .eq('is_public', true);
 
@@ -172,9 +210,7 @@ export const useQuizStore = defineStore('quiz', {
                 // 검색 필터 (제목 또는 설명에서 검색)
                 if (this.filter.searchQuery) {
                     const searchTerm = `%${this.filter.searchQuery}%`;
-                    query = query.or(
-                        `title.ilike.${searchTerm},description.ilike.${searchTerm}`
-                    );
+                    query = query.or(`title.ilike.${searchTerm},description.ilike.${searchTerm}`);
                 }
 
                 // 정렬
@@ -184,7 +220,13 @@ export const useQuizStore = defineStore('quiz', {
                 // 페이지네이션
                 const { data, error } = await query.range(from, to);
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase error while fetching quizzes (paginated):', error);
+                    this.error = '퀴즈 목록을 불러오는데 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    this.pagination.hasMore = false;
+                    return;
+                }
 
                 const newQuizzes = (data as QuizWithAuthor[]) || [];
                 this.quizzes = [...this.quizzes, ...newQuizzes];
@@ -223,24 +265,35 @@ export const useQuizStore = defineStore('quiz', {
                     .select(
                         `
                         id,
+                        created_by,
                         title,
                         description,
                         category,
+                        grade_level,
                         difficulty,
+                        is_public,
                         play_count,
                         created_at,
+                        updated_at,
                         profiles:created_by (
                             full_name,
                             avatar_url
                         )
-                    `
+                    `,
                     )
                     .eq('is_public', true)
                     .order('created_at', { ascending: false })
                     .limit(50); // 초기 로드 제한
 
-                if (error) throw error;
-                this.quizzes = (data as QuizWithAuthor[]) || [];
+                if (error) {
+                    console.error('Supabase error while fetching quizzes:', error);
+                    this.error = '퀴즈 목록을 불러오는데 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    this.quizzes = [];
+                    return;
+                }
+
+                this.quizzes = (data || []) as unknown as QuizWithAuthor[];
             } catch (e) {
                 console.error('Failed to fetch quizzes:', e);
                 this.error = '퀴즈 목록을 불러오는데 실패했습니다.';
@@ -262,7 +315,10 @@ export const useQuizStore = defineStore('quiz', {
                 } = await supabase.auth.getUser();
 
                 if (!user) {
-                    throw new Error('로그인이 필요합니다.');
+                    this.error = '로그인이 필요합니다.';
+                    ToastMessage.error(this.error);
+                    this.myQuizzes = [];
+                    return;
                 }
 
                 const { data, error } = await supabase
@@ -271,7 +327,13 @@ export const useQuizStore = defineStore('quiz', {
                     .eq('created_by', user.id)
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase error while fetching my quizzes:', error);
+                    this.error = '내 퀴즈 목록을 불러오는데 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    this.myQuizzes = [];
+                    return;
+                }
                 this.myQuizzes = (data as Quiz[]) || [];
             } catch (e) {
                 console.error('Failed to fetch my quizzes:', e);
@@ -297,7 +359,14 @@ export const useQuizStore = defineStore('quiz', {
                     .eq('id', quizId)
                     .single();
 
-                if (quizError) throw quizError;
+                if (quizError) {
+                    console.error('Supabase error while fetching quiz:', quizError);
+                    this.error = '퀴즈를 불러오는데 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    this.currentQuiz = null;
+                    this.currentQuestions = [];
+                    return;
+                }
 
                 // 문제 목록
                 const { data: questions, error: questionsError } = await supabase
@@ -306,7 +375,14 @@ export const useQuizStore = defineStore('quiz', {
                     .eq('quiz_id', quizId)
                     .order('order_index', { ascending: true });
 
-                if (questionsError) throw questionsError;
+                if (questionsError) {
+                    console.error('Supabase error while fetching quiz questions:', questionsError);
+                    this.error = '퀴즈를 불러오는데 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    this.currentQuiz = null;
+                    this.currentQuestions = [];
+                    return;
+                }
 
                 this.currentQuiz = quiz as Quiz;
                 this.currentQuestions = (questions as Question[]) || [];
@@ -331,7 +407,9 @@ export const useQuizStore = defineStore('quiz', {
                 } = await supabase.auth.getUser();
 
                 if (!user) {
-                    throw new Error('로그인이 필요합니다.');
+                    this.error = '로그인이 필요합니다.';
+                    ToastMessage.error(this.error);
+                    return null;
                 }
 
                 // 퀴즈 생성
@@ -349,7 +427,12 @@ export const useQuizStore = defineStore('quiz', {
                     .select()
                     .single();
 
-                if (quizError) throw quizError;
+                if (quizError) {
+                    console.error('Supabase error while creating quiz:', quizError);
+                    this.error = '퀴즈 생성에 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    return null;
+                }
 
                 // 문제 생성
                 const questions = formData.questions.map((q, index) => ({
@@ -367,7 +450,12 @@ export const useQuizStore = defineStore('quiz', {
                     .from('quiz_questions')
                     .insert(questions);
 
-                if (questionsError) throw questionsError;
+                if (questionsError) {
+                    console.error('Supabase error while creating quiz questions:', questionsError);
+                    this.error = '퀴즈 생성에 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    return null;
+                }
 
                 // 퀴즈 생성 포인트 지급
                 try {
@@ -389,7 +477,7 @@ export const useQuizStore = defineStore('quiz', {
                     console.error('Failed to award quiz create points:', pointError);
                     ToastMessage.success('퀴즈가 생성되었습니다! 🎉');
                 }
-                
+
                 return quiz.id;
             } catch (e) {
                 console.error('Failed to create quiz:', e);
@@ -422,7 +510,12 @@ export const useQuizStore = defineStore('quiz', {
                     })
                     .eq('id', quizId);
 
-                if (quizError) throw quizError;
+                if (quizError) {
+                    console.error('Supabase error while updating quiz:', quizError);
+                    this.error = '퀴즈 수정에 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    return false;
+                }
 
                 // 기존 문제 삭제
                 const { error: deleteError } = await supabase
@@ -430,7 +523,12 @@ export const useQuizStore = defineStore('quiz', {
                     .delete()
                     .eq('quiz_id', quizId);
 
-                if (deleteError) throw deleteError;
+                if (deleteError) {
+                    console.error('Supabase error while deleting quiz questions:', deleteError);
+                    this.error = '퀴즈 수정에 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    return false;
+                }
 
                 // 새 문제 생성
                 const questions = formData.questions.map((q, index) => ({
@@ -448,7 +546,15 @@ export const useQuizStore = defineStore('quiz', {
                     .from('quiz_questions')
                     .insert(questions);
 
-                if (questionsError) throw questionsError;
+                if (questionsError) {
+                    console.error(
+                        'Supabase error while inserting updated quiz questions:',
+                        questionsError,
+                    );
+                    this.error = '퀴즈 수정에 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    return false;
+                }
 
                 ToastMessage.success('퀴즈가 수정되었습니다! ✏️');
                 return true;
@@ -471,7 +577,12 @@ export const useQuizStore = defineStore('quiz', {
                 const supabase = useSupabaseClient<Database>();
                 const { error } = await supabase.from('quizzes').delete().eq('id', quizId);
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase error while deleting quiz:', error);
+                    this.error = '퀴즈 삭제에 실패했습니다.';
+                    ToastMessage.error(this.error);
+                    return false;
+                }
 
                 // 로컬 상태에서도 제거
                 this.myQuizzes = this.myQuizzes.filter((q) => q.id !== quizId);
@@ -581,15 +692,20 @@ export const useQuizStore = defineStore('quiz', {
 
                     // 포인트 지급
                     if (score > 0) {
-                        const { data: pointResult } = await supabase.rpc('award_quiz_points', {
-                            p_user_id: user.id,
-                            p_quiz_id: this.playState.quiz.id,
-                            p_correct_count: score,
-                            p_total_questions: this.playState.questions.length,
-                            p_consecutive_correct: maxConsecutive,
-                        });
+                        const { data: pointResult, error } = await supabase.rpc(
+                            'award_quiz_points',
+                            {
+                                p_user_id: user.id,
+                                p_quiz_id: this.playState.quiz.id,
+                                p_correct_count: score,
+                                p_total_questions: this.playState.questions.length,
+                                p_consecutive_correct: maxConsecutive,
+                            },
+                        );
 
-                        if (pointResult && pointResult.length > 0) {
+                        if (error) {
+                            console.error('Supabase error while awarding quiz points:', error);
+                        } else if (pointResult && pointResult.length > 0) {
                             const result = pointResult[0];
                             earnedPoints = result.base_points || 0;
                             bonusPoints = result.bonus_points || 0;
