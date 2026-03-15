@@ -58,10 +58,10 @@ async function loadMoreHistory() {
 </script>
 
 <template>
-    <q-page padding class="battle-history">
+    <q-page class="battle-history">
         <!-- 헤더 -->
         <header class="battle-history__header">
-            <h1 class="battle-history__title">⚔️ 대결 기록</h1>
+            <h1 class="battle-history__title page-title">⚔️ 대결 기록</h1>
         </header>
 
         <!-- 내 통계 -->

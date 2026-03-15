@@ -71,10 +71,10 @@ function goToHistory() {
 </script>
 
 <template>
-    <q-page padding class="battle-lobby">
+    <q-page class="battle-lobby">
         <!-- 헤더 -->
         <header class="battle-lobby__header">
-            <h1 class="battle-lobby__title">
+            <h1 class="battle-lobby__title page-title">
                 <q-icon name="sports_esports" class="battle-lobby__title-icon" />
                 퀴즈 대결
             </h1>
@@ -149,14 +149,7 @@ function goToHistory() {
 
         <!-- 대결 기록 버튼 -->
         <div class="battle-lobby__history">
-            <q-btn
-                flat
-                outline
-                unelevated
-                color="grey-7"
-                size="large"
-                @click="goToHistory"
-            >
+            <q-btn flat outline unelevated color="grey-7" size="large" @click="goToHistory">
                 <q-icon name="history" class="q-mr-sm" />
                 <span>대결 기록</span>
             </q-btn>

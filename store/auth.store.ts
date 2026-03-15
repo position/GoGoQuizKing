@@ -91,30 +91,76 @@ export const useAuthStore = defineStore('auth', {
         async signOut() {
             const router = useRouter();
             const supabase = useSupabaseClient();
+
             try {
                 await supabase.auth.signOut();
             } catch (e) {
                 console.error(e);
                 ToastMessage.error('Sign Out Error');
             } finally {
-                await router.push('/login');
-                // localStorage는 클라이언트 사이드에서만 사용 가능
-                if (process.client) {
-                    localStorage.removeItem('auth');
-                }
+                // 스토어 상태 및 persisted state 초기화 (단일 진실 소스 정리)
                 this.userInfo = { ...defaultUserInfo };
                 this.isLogin = false;
                 this.token = '';
+
+                // localStorage는 클라이언트 사이드에서만 사용 가능
+                if (process.client) {
+                    try {
+                        localStorage.removeItem('auth');
+                    } catch (storageError) {
+                        console.error('Failed to clear auth storage:', storageError);
+                    }
+                }
+
+                // 라우팅은 호출 측에서 책임지도록 하고, 여기서는 중복 네비게이션을 피한다.
+                // 기존 동작 유지가 필요한 곳에서는 signOut() 호출 후 직접 router.push('/login') 수행.
+                try {
+                    if (router.currentRoute.value.path !== '/login') {
+                        await router.push('/login');
+                    }
+                } catch (navigationError) {
+                    console.error('Failed to navigate after sign out:', navigationError);
+                }
             }
         },
         async checkSession() {
             const supabase = useSupabaseClient();
-            const res = await supabase.auth.getSession();
-            if (!res) {
+
+            try {
+                const { data, error } = await supabase.auth.getSession();
+
+                if (error) {
+                    console.error('checkSession error:', error);
+                    // 세션 에러가 난 경우에도 안전하게 로그아웃 상태로 동기화
+                    this.isLogin = false;
+                    this.userInfo = { ...defaultUserInfo };
+                    this.token = '';
+                    return null;
+                }
+
+                const session = data.session;
+
+                if (!session) {
+                    // 세션이 없으면 스토어 상태를 명시적으로 초기화하여
+                    // Navbar 등에서 로그인 상태처럼 보이지 않도록 맞춘다.
+                    this.isLogin = false;
+                    this.userInfo = { ...defaultUserInfo };
+                    this.token = '';
+                    return null;
+                }
+
+                // 세션이 있으면 토큰과 로그인 상태를 동기화한다.
+                this.token = session.access_token || '';
+                this.isLogin = true;
+
+                return session;
+            } catch (e) {
+                console.error('checkSession exception:', e);
+                this.isLogin = false;
+                this.userInfo = { ...defaultUserInfo };
+                this.token = '';
                 return null;
             }
-            this.token = res.data.session?.access_token || '';
-            return res.data.session;
         },
     },
     persist: {
