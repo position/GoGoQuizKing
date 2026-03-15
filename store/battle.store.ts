@@ -372,7 +372,8 @@ export const useBattleStore = defineStore('battle', {
             try {
                 const { data: userData } = await supabase.auth.getUser();
                 if (!userData.user) {
-                    throw new Error('로그인이 필요합니다.');
+                    ToastMessage.error('로그인이 필요합니다.');
+                    return { success: false, isCorrect: false, scoreEarned: 0 };
                 }
 
                 const { data, error } = await supabase.rpc('submit_battle_answer', {
@@ -384,23 +385,30 @@ export const useBattleStore = defineStore('battle', {
                 });
 
                 if (error) {
-                    throw error;
+                    console.error('submit_battle_answer error:', error);
+                    ToastMessage.error('답변 전송에 실패했습니다. 다시 시도해주세요.');
+                    return { success: false, isCorrect: false, scoreEarned: 0 };
                 }
 
                 if (data && data.length > 0) {
-                    this.playState.hasAnswered = true;
-                    this.playState.myAnswer = answer;
+                    const result = data[0];
+                    if (result.success) {
+                        this.playState.hasAnswered = true;
+                        this.playState.myAnswer = answer;
 
-                    return {
-                        success: data[0].success,
-                        isCorrect: data[0].is_correct,
-                        scoreEarned: data[0].score_earned,
-                    };
+                        return {
+                            success: true,
+                            isCorrect: result.is_correct,
+                            scoreEarned: result.score_earned,
+                        };
+                    }
                 }
 
+                ToastMessage.error('답변을 제출하지 못했습니다. 다시 시도해주세요.');
                 return { success: false, isCorrect: false, scoreEarned: 0 };
             } catch (err) {
                 console.error('submitAnswer error:', err);
+                ToastMessage.error('답변 전송 중 오류가 발생했습니다. 다시 시도해주세요.');
                 return { success: false, isCorrect: false, scoreEarned: 0 };
             }
         },

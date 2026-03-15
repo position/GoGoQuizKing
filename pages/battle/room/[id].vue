@@ -246,16 +246,34 @@ async function submitAnswer(answer: string) {
 
     selectedAnswer.value = answer;
     hasAnswered.value = true;
+    const timeLeft = timeRemaining.value;
     stopCountdown();
 
     const responseTime = (Date.now() - roundStartTime.value) / 1000;
 
-    await battleStore.submitAnswer(
+    const result = await battleStore.submitAnswer(
         roomId.value,
         room.value.current_question_index,
         answer,
         responseTime,
     );
+
+    if (!result.success) {
+        // 전송 실패: 다시 답변할 수 있도록 상태 복원
+        hasAnswered.value = false;
+        selectedAnswer.value = null;
+        battleStore.updatePlayState({
+            hasAnswered: false,
+            myAnswer: null,
+        });
+        if (timeLeft > 0) {
+            startCountdown(timeLeft);
+        } else {
+            // 남은 시간이 없다면 즉시 시간초과 처리
+            submitAnswer('');
+        }
+        return;
+    }
 
     battleStore.updatePlayState({
         hasAnswered: true,
