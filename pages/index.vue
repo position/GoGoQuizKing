@@ -287,7 +287,7 @@ async function initUserSession() {
     }
 
     const userInfo = { ...user.user_metadata } as DTO.Auth.LoginResponse;
-    authStore.registerInfo(userInfo, user.app_metadata.provider);
+    authStore.registerInfo(user.id, userInfo, user.app_metadata.provider);
     await authStore.fetchUserRole(user.id);
 }
 

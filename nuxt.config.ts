@@ -182,6 +182,11 @@ export default defineNuxtConfig({
             callback: '/confirm',
         },
     },
+    dayjs: {
+        locales: ['ko'],
+        defaultLocale: 'ko',
+        plugins: ['relativeTime'],
+    },
     quasar: {
         plugins: ['Notify', 'Dialog'],
         sassVariables: '~/assets/scss/quasar-variables.scss',

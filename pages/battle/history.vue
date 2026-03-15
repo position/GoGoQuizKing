@@ -2,41 +2,59 @@
 // 대결 기록 페이지
 import { useBattleStore } from '~/store/battle.store';
 import { useAuthStore } from '~/store/auth.store';
+import { storeToRefs } from 'pinia';
 
 definePageMeta({
     layout: 'default',
 });
 
+const route = useRoute();
+const router = useRouter();
 const battleStore = useBattleStore();
 const authStore = useAuthStore();
+const { userId } = storeToRefs(authStore);
 
-const activeTab = ref<'history' | 'ranking'>('history');
-
-// 초기 데이터 로드
-onMounted(async () => {
-    await Promise.all([
-        battleStore.fetchHistory(),
-        battleStore.fetchRankings(),
-        battleStore.fetchMyRankingStats(),
-    ]);
+// URL query에서 탭 상태 초기화
+const activeTab = computed({
+    get: () => {
+        const tab = route.query.tab as string;
+        return tab === 'ranking' ? 'ranking' : 'history';
+    },
+    set: (value: 'history' | 'ranking') => {
+        router.replace({
+            query: { ...route.query, tab: value },
+        });
+    },
 });
 
 // 더 보기
 const historyOffset = ref(0);
-const hasMoreHistory = ref(true);
+const hasMoreHistory = ref(false);
+const HISTORY_PAGE_SIZE = 20;
+
+// 초기 데이터 로드
+onMounted(async () => {
+    await Promise.all([
+        battleStore.fetchHistory(HISTORY_PAGE_SIZE, 0),
+        battleStore.fetchRankings(),
+        battleStore.fetchMyRankingStats(),
+    ]);
+
+    // 초기 로드된 데이터가 페이지 크기와 같으면 더 있을 수 있음
+    hasMoreHistory.value = battleStore.history.length >= HISTORY_PAGE_SIZE;
+});
 
 async function loadMoreHistory() {
-    historyOffset.value += 20;
+    historyOffset.value += HISTORY_PAGE_SIZE;
     const prevLength = battleStore.history.length;
-    await battleStore.fetchHistory(20, historyOffset.value);
+    await battleStore.fetchHistory(HISTORY_PAGE_SIZE, historyOffset.value);
 
-    if (battleStore.history.length === prevLength) {
+    // 새로 로드된 데이터가 없거나 페이지 크기보다 적으면 더 이상 없음
+    const newItems = battleStore.history.length - prevLength;
+    if (newItems < HISTORY_PAGE_SIZE) {
         hasMoreHistory.value = false;
     }
 }
-
-// 현재 사용자 ID
-const currentUserId = computed(() => authStore.user?.id);
 </script>
 
 <template>
@@ -100,12 +118,7 @@ const currentUserId = computed(() => authStore.user?.id);
                 <div v-else-if="!battleStore.history.length" class="battle-history__empty">
                     <q-icon name="sports_esports" size="60px" color="grey-5" />
                     <p class="battle-history__empty-text">아직 대결 기록이 없어요</p>
-                    <q-btn
-                        label="대결 시작하기"
-                        color="primary"
-                        to="/battle/lobby"
-                        size="large"
-                    />
+                    <q-btn label="대결 시작하기" color="primary" to="/battle/lobby" size="large" />
                 </div>
 
                 <!-- 기록 목록 -->
@@ -148,7 +161,7 @@ const currentUserId = computed(() => authStore.user?.id);
                         v-for="entry in battleStore.rankings"
                         :key="entry.user_id"
                         :entry="entry"
-                        :is-current-user="entry.user_id === currentUserId"
+                        :is-current-user="entry.user_id === userId"
                     />
                 </div>
             </q-tab-panel>

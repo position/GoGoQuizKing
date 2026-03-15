@@ -2,18 +2,14 @@
 // 대결 기록 아이템 컴포넌트
 import type { IBattleHistoryWithOpponent } from '~/models/battle';
 import { BATTLE_RESULTS } from '~/models/battle';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import 'dayjs/locale/ko';
-
-dayjs.extend(relativeTime);
-dayjs.locale('ko');
 
 interface Props {
     history: IBattleHistoryWithOpponent;
 }
 
 const props = defineProps<Props>();
+
+const dayjs = useDayjs();
 
 const resultInfo = computed(() => BATTLE_RESULTS[props.history.result]);
 

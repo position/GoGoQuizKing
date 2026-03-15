@@ -65,7 +65,8 @@ onMounted(async () => {
             // 프로필 테이블에 사용자 정보 저장/업데이트
             await upsertProfile(user.id, user.user_metadata as Record<string, unknown>, provider);
 
-            authStore.registerInfo(userMeta, provider);
+            // user.id를 함께 전달
+            authStore.registerInfo(user.id, userMeta, provider);
             authStore.token = data.session.access_token;
 
             ToastMessage.success('로그인 성공! 🎉');

@@ -1,6 +1,7 @@
 export type UserRole = 'user' | 'admin' | 'moderator';
 
 export interface LoginResponse {
+    id: string | null;  // Supabase user ID
     avatar_url: string | null;
     email: string | null;
     email_verified: boolean;

@@ -11,6 +11,7 @@ interface AuthStore {
 }
 
 const defaultUserInfo = {
+    id: null,
     avatar_url: null,
     email: null,
     email_verified: false,
@@ -33,15 +34,23 @@ export const useAuthStore = defineStore('auth', {
         token: '',
     }),
     getters: {
+        userId: (state): string | null => state.userInfo.id ?? null,
         isAdmin: (state) => state.userInfo.role === 'admin',
         isModerator: (state) => state.userInfo.role === 'moderator',
-        hasAdminAccess: (state) => state.userInfo.role === 'admin' || state.userInfo.role === 'moderator',
+        hasAdminAccess: (state) =>
+            state.userInfo.role === 'admin' || state.userInfo.role === 'moderator',
     },
     actions: {
-        registerInfo(loginResponse: DTO.Auth.LoginResponse, provider: string | undefined, role?: UserRole) {
+        registerInfo(
+            userId: string,
+            loginResponse: DTO.Auth.LoginResponse,
+            provider: string | undefined,
+            role?: UserRole,
+        ) {
             this.isLogin = true;
 
             this.userInfo = {
+                id: userId,
                 avatar_url: loginResponse.avatar_url,
                 email: loginResponse.email,
                 email_verified: loginResponse.email_verified,
@@ -66,10 +75,14 @@ export const useAuthStore = defineStore('auth', {
                     .eq('id', userId)
                     .single();
 
-                if (error) throw error;
-                
-                if (data && data.role) {
-                    this.userInfo.role = data.role as UserRole;
+                if (error) {
+                    console.error('Failed to fetch user role:', error);
+                    return;
+                }
+
+                const profileData = data as { role?: string } | null;
+                if (profileData?.role) {
+                    this.userInfo.role = profileData.role as UserRole;
                 }
             } catch (e) {
                 console.error('Failed to fetch user role:', e);
