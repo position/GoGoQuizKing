@@ -149,6 +149,7 @@ export default defineNuxtConfig({
             triviaApi: '',
             supabaseStorage: '',
             cdnBase: '',
+            gtmId: process.env.NUXT_PUBLIC_GTM_ID || '',
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
         },
     },
