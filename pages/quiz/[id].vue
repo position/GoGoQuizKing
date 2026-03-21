@@ -192,7 +192,7 @@ const formattedDate = computed(() => {
                             :quiz-id="quizId"
                             :title="quiz.title"
                             :description="quiz.description || ''"
-                            size="lg"
+                            size="md"
                         />
 
                         <q-btn
@@ -324,9 +324,6 @@ const formattedDate = computed(() => {
             }
 
             .action-row {
-                flex-direction: column;
-                align-items: stretch;
-
                 .play-btn {
                     max-width: none;
                 }
