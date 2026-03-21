@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // 대결 결과 표시 컴포넌트
 import type { IBattleResult } from '~/models/battle';
+import { useQuizShare } from '~/composables/use-quiz-share';
 
 interface Props {
     result: IBattleResult;
@@ -12,6 +13,9 @@ const emit = defineEmits<{
     (e: 'rematch'): void;
     (e: 'goHome'): void;
 }>();
+
+const { isNativeShareSupported } = useQuizShare();
+const showShareDialog = ref(false);
 
 const resultType = computed(() => {
     if (props.result.is_draw) {
@@ -33,6 +37,21 @@ const accuracy = computed(() => {
     }
     return Math.round((props.result.my_correct_count / props.result.total_questions) * 100);
 });
+
+async function handleShare() {
+    const { shareResult } = useQuizShare();
+
+    if (isNativeShareSupported.value) {
+        await shareResult({
+            title: `퀴즈 대결 ${resultType.value === 'win' ? '승리' : resultType.value === 'draw' ? '무승부' : '결과'}`,
+            score: props.result.my_correct_count,
+            totalQuestions: props.result.total_questions,
+            quizId: props.result.room_id || '',
+        });
+    } else {
+        showShareDialog.value = true;
+    }
+}
 </script>
 
 <template>
@@ -143,6 +162,15 @@ const accuracy = computed(() => {
                 @click="emit('rematch')"
             />
             <q-btn
+                label="결과 공유"
+                icon="share"
+                color="secondary"
+                outline
+                size="lg"
+                class="battle-result__btn"
+                @click="handleShare"
+            />
+            <q-btn
                 label="홈으로"
                 color="grey-6"
                 outline
@@ -151,6 +179,13 @@ const accuracy = computed(() => {
                 @click="emit('goHome')"
             />
         </div>
+
+        <!-- 공유 다이얼로그 (데스크탑 폴백) -->
+        <QuizShareDialog
+            v-model="showShareDialog"
+            :quiz-id="result.room_id || ''"
+            :title="`퀴즈 대결 결과 - ${result.my_score}점`"
+        />
     </div>
 </template>
 

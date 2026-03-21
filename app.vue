@@ -34,9 +34,19 @@ const badgeStore = useBadgeStore();
 const { showUnlockDialog: showBadgeDialog } = storeToRefs(badgeStore);
 
 const route = useRoute();
+const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl || 'https://gogoquizking.com';
 const imgHost = runtimeConfig.public.supabaseStorage as string;
+
+router.afterEach(() => {
+    nextTick(() => {
+        const scrollTarget = document.querySelector('.scroll');
+        if (scrollTarget) {
+            scrollTarget.scrollTop = 0;
+        }
+    });
+});
 
 // Canonical URL 설정
 useHead({
@@ -50,10 +60,10 @@ useHead({
 
 // SEO 설정
 useSeoMeta({
-    title: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
+    title: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈, 퀴즈 사이트',
     description:
         '고고퀴즈킹에서 친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈, 넌센스 퀴즈 등 다양한 퀴즈를 무료로 즐기세요. 퀴즈 만들기, 퀴즈 풀기, 퀴즈 게임 모두 가능!',
-    ogTitle: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
+    ogTitle: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈, 퀴즈 사이트',
     ogDescription:
         '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
     ogUrl: computed(() => `${siteUrl}${route.path}`),

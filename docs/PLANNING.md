@@ -173,6 +173,72 @@ Lv.7  퀴즈 킹       (5001점~)
 - 친구 퀴즈 도전
 - 친구에게 퀴즈 추천
 
+#### 4.4 퀴즈 공유 기능
+
+퀴즈 상세 페이지 및 결과 화면에서 친구에게 퀴즈를 공유할 수 있습니다.
+
+##### 공유 방식
+
+| 환경 | 방식 | 설명 |
+|------|------|------|
+| **모바일** (iOS/Android) | Web Share API (`navigator.share`) | OS 네이티브 공유 시트 호출 (카카오톡, 메시지, 메일 등) |
+| **데스크탑** (미지원 브라우저) | 클립보드 복사 + SNS 직접 링크 | URL 복사 버튼 + 카카오톡/X(Twitter) 공유 링크 |
+
+##### 공유 데이터
+
+```typescript
+interface QuizShareData {
+    title: string;       // "[퀴즈 제목] - 고고퀴즈킹"
+    text: string;        // "이 퀴즈에 도전해보세요! 🎯"
+    url: string;         // "https://gogoquizking.com/quiz/{id}"
+}
+```
+
+##### 공유 위치
+
+```
+[공유 버튼 노출 위치]
+├── 퀴즈 상세 페이지 - 상단 액션 버튼
+├── 퀴즈 결과 화면 - 결과 공유 ("나는 10문제 중 8문제 맞췄어!")
+├── 퀴즈 목록 - 카드 더보기 메뉴
+└── 대결 결과 화면 - 대결 결과 공유
+```
+
+##### 구현 흐름
+
+```mermaid
+flowchart TD
+    A[공유 버튼 클릭] --> B{navigator.share 지원?}
+    B -->|Yes| C[OS 네이티브 공유 시트]
+    B -->|No| D[공유 팝업 표시]
+    D --> E[URL 클립보드 복사]
+    D --> F[카카오톡 공유]
+    D --> G[X Twitter 공유]
+    C --> H[공유 완료]
+    E --> H
+    F --> H
+    G --> H
+    H --> I[포인트 +10점 지급]
+```
+
+##### 공유 보상
+
+| 활동 | 포인트 | 조건 |
+|------|--------|------|
+| 퀴즈 공유 | +10점 | 1일 최대 3회 |
+| 공유 링크로 유입 | +5점 | 공유자에게 추가 보상 |
+
+##### Composable 설계
+
+```typescript
+// composables/use-quiz-share.ts
+interface UseQuizShareReturn {
+    shareQuiz: (quiz: QuizShareData) => Promise<boolean>;
+    shareResult: (result: QuizResultShareData) => Promise<boolean>;
+    isNativeShareSupported: ComputedRef<boolean>;
+}
+```
+
 ### 5. ⚔️ 실시간 1:1 퀴즈 대결
 
 #### 5.1 개요
@@ -635,6 +701,13 @@ CREATE TABLE user_ranking_stats (
 - [ ] 댓글 시스템
 - [ ] 좋아요 기능
 - [ ] 공유 기능
+  - [ ] `use-quiz-share.ts` Composable 구현
+  - [ ] 모바일 Web Share API (`navigator.share`) 연동
+  - [ ] 데스크탑 클립보드 복사 폴백
+  - [ ] 카카오톡/X(Twitter) SNS 공유 링크
+  - [ ] 퀴즈 상세/결과/목록 카드에 공유 버튼 배치
+  - [ ] 대결 결과 공유
+  - [ ] 공유 포인트 지급 (1일 3회 제한)
 - [ ] 알림 시스템
 
 ### 실시간 대결
@@ -667,4 +740,4 @@ CREATE TABLE user_ranking_stats (
 
 ---
 
-*마지막 업데이트: 2026년 3월 1일*
+*마지막 업데이트: 2026년 3월 21일*

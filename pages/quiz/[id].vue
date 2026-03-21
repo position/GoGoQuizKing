@@ -185,9 +185,15 @@ const formattedDate = computed(() => {
                         </div>
                     </div>
 
-                    <!-- 좋아요 버튼 & 플레이 버튼 -->
+                    <!-- 좋아요 & 공유 & 플레이 버튼 -->
                     <div class="action-row">
                         <QuizLikeButton :quiz-id="quizId" size="lg" />
+                        <QuizShareButton
+                            :quiz-id="quizId"
+                            :title="quiz.title"
+                            :description="quiz.description || ''"
+                            size="lg"
+                        />
 
                         <q-btn
                             unelevated

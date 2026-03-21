@@ -677,6 +677,10 @@ export interface Database {
                 Args: { p_user_id: string; p_quiz_id: string };
                 Returns: number;
             };
+            award_share_points: {
+                Args: { p_user_id: string; p_quiz_id?: string };
+                Returns: { success: boolean; points_earned: number; message: string }[];
+            };
             calculate_level: {
                 Args: { total_points: number };
                 Returns: number;

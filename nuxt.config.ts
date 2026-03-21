@@ -7,7 +7,7 @@ export default defineNuxtConfig({
         url: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
         name: '고고퀴즈킹 - GoGoQuizKing',
         description:
-            '고고퀴즈킹 - 실시간 퀴즈 게임, 상식 퀴즈, OX 퀴즈, 객관식 퀴즈를 친구들과 함께 즐겨보세요! 무료 온라인 퀴즈 플랫폼',
+            '고고퀴즈킹 - 실시간 퀴즈 게임, 상식 퀴즈, OX 퀴즈, 객관식 퀴즈를 친구들과 함께 즐겨보세요! 무료 온라인 퀴즈 플랫폼, 퀴즈 사이트',
         defaultLocale: 'ko',
     },
 
@@ -19,7 +19,7 @@ export default defineNuxtConfig({
             charset: 'utf-8',
             viewport:
                 'width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no',
-            title: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
+            title: '고고퀴즈킹 | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈, 퀴즈 사이트',
             meta: [
                 {
                     name: 'description',

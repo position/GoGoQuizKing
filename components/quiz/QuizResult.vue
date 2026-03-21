@@ -90,29 +90,46 @@
         <!-- 버튼 -->
         <div class="action-buttons">
             <q-btn
-                @click="$emit('retry')"
-                label="다시 풀어볼래요!"
-                icon="refresh"
                 outline
                 color="primary"
                 class="action-btn"
                 size="lg"
+                icon="refresh"
+                label="다시 풀어볼래요!"
+                @click="$emit('retry')"
             />
             <q-btn
-                @click="$emit('home')"
-                label="홈으로"
-                icon="home"
-                color="primary"
-                unelevated
+                outline
+                color="secondary"
                 class="action-btn"
                 size="lg"
+                icon="share"
+                label="결과 공유하기"
+                @click="handleShare"
+            />
+            <q-btn
+                unelevated
+                color="primary"
+                class="action-btn"
+                size="lg"
+                icon="home"
+                label="홈으로"
+                @click="$emit('home')"
             />
         </div>
+
+        <!-- 공유 다이얼로그 (데스크탑 폴백) -->
+        <QuizShareDialog
+            v-model="showShareDialog"
+            :quiz-id="result.quiz.id"
+            :title="result.quiz.title"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useQuizShare } from '~/composables/use-quiz-share';
 import type { QuizResultData } from '@/models/quiz';
 
 const props = defineProps<{
@@ -123,6 +140,22 @@ defineEmits<{
     (e: 'retry'): void;
     (e: 'home'): void;
 }>();
+
+const { isNativeShareSupported, shareResult } = useQuizShare();
+const showShareDialog = ref(false);
+
+async function handleShare() {
+    if (isNativeShareSupported.value) {
+        await shareResult({
+            title: props.result.quiz.title,
+            score: props.result.score,
+            totalQuestions: props.result.totalQuestions,
+            quizId: props.result.quiz.id,
+        });
+    } else {
+        showShareDialog.value = true;
+    }
+}
 
 const accuracy = computed(() => {
     return Math.round((props.result.score / props.result.totalQuestions) * 100);

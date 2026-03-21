@@ -224,6 +224,49 @@ export const usePointStore = defineStore('point', {
         },
 
         /**
+         * 퀴즈 공유 시 포인트 지급 (1일 3회 제한)
+         */
+        async awardSharePoints(quizId: string): Promise<{ success: boolean; points: number; message: string }> {
+            const supabase = useSupabaseClient<Database>();
+            const user = useSupabaseUser();
+
+            if (!user.value?.id) {
+                return { success: false, points: 0, message: '로그인이 필요합니다.' };
+            }
+
+            try {
+                const { data, error } = await supabase.rpc('award_share_points', {
+                    p_user_id: user.value.id,
+                    p_quiz_id: quizId,
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                const results = data as Array<{ success: boolean; points_earned: number; message: string }> | null;
+                if (results && results.length > 0) {
+                    const result = results[0];
+                    if (result.success) {
+                        const oldLevel = this.level;
+                        this.points += result.points_earned;
+                        this.level = calculateLevel(this.points);
+                        this.lastLevelUp = this.level > oldLevel;
+                    }
+                    return {
+                        success: result.success,
+                        points: result.points_earned,
+                        message: result.message,
+                    };
+                }
+                return { success: false, points: 0, message: '포인트 지급에 실패했습니다.' };
+            } catch (e) {
+                const errorMessage = e instanceof Error ? e.message : '포인트 지급에 실패했습니다.';
+                return { success: false, points: 0, message: errorMessage };
+            }
+        },
+
+        /**
          * 레벨업 알림 확인 (UI에서 표시 후 호출)
          */
         clearLevelUpNotification() {
