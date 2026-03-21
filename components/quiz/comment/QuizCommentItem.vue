@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import type { QuizComment } from '~/models/comment';
 
 interface Props {
@@ -13,9 +14,15 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
     (e: 'reply', commentId: string): void;
-    (e: 'edit', comment: QuizComment): void;
+    (e: 'update', commentId: string, content: string): void;
     (e: 'delete', commentId: string): void;
 }>();
+
+const $q = useQuasar();
+
+// 인라인 수정 상태
+const isEditing = ref(false);
+const editContent = ref('');
 
 const isOwner = computed(() => {
     return props.currentUserId === props.comment.user_id;
@@ -27,6 +34,13 @@ const displayName = computed(() => {
 
 const avatarUrl = computed(() => {
     return props.comment.profiles?.avatar_url || '';
+});
+
+const isEdited = computed(() => {
+    if (!props.comment.updated_at || !props.comment.created_at) {
+        return false;
+    }
+    return props.comment.updated_at !== props.comment.created_at;
 });
 
 const formattedDate = computed(() => {
@@ -59,11 +73,43 @@ function handleReply() {
 }
 
 function handleEdit() {
-    emit('edit', props.comment);
+    editContent.value = props.comment.content;
+    isEditing.value = true;
+}
+
+function handleCancelEdit() {
+    isEditing.value = false;
+    editContent.value = '';
+}
+
+function handleSubmitEdit() {
+    const trimmed = editContent.value.trim();
+    if (!trimmed) {
+        return;
+    }
+    emit('update', props.comment.id, trimmed);
+    isEditing.value = false;
+    editContent.value = '';
 }
 
 function handleDelete() {
-    emit('delete', props.comment.id);
+    $q.dialog({
+        title: '댓글 삭제',
+        message: '이 댓글을 삭제하시겠습니까?',
+        cancel: {
+            label: '취소',
+            flat: true,
+            color: 'grey-7',
+        },
+        ok: {
+            label: '삭제',
+            color: 'negative',
+            unelevated: true,
+        },
+        persistent: false,
+    }).onOk(() => {
+        emit('delete', props.comment.id);
+    });
 }
 </script>
 
@@ -85,12 +131,15 @@ function handleDelete() {
 
                     <div class="header-info">
                         <span class="author-name">{{ displayName }}</span>
-                        <span class="comment-date">{{ formattedDate }}</span>
+                        <span class="comment-date">
+                            {{ formattedDate }}
+                            <span v-if="isEdited" class="edited-badge">(수정됨)</span>
+                        </span>
                     </div>
 
                     <!-- 소유자 메뉴 -->
                     <q-btn
-                        v-if="isOwner"
+                        v-if="isOwner && !isEditing"
                         flat
                         round
                         dense
@@ -99,14 +148,14 @@ function handleDelete() {
                         color="grey-6"
                     >
                         <q-menu>
-                            <q-list style="min-width: 100px">
-                                <q-item clickable v-close-popup @click="handleEdit">
+                            <q-list style="min-width: 120px">
+                                <q-item v-close-popup clickable @click="handleEdit">
                                     <q-item-section avatar>
                                         <q-icon name="edit" size="18px" />
                                     </q-item-section>
                                     <q-item-section>수정</q-item-section>
                                 </q-item>
-                                <q-item clickable v-close-popup @click="handleDelete">
+                                <q-item v-close-popup clickable @click="handleDelete">
                                     <q-item-section avatar>
                                         <q-icon name="delete" size="18px" color="negative" />
                                     </q-item-section>
@@ -117,13 +166,49 @@ function handleDelete() {
                     </q-btn>
                 </div>
 
+                <!-- 인라인 수정 폼 -->
+                <div v-if="isEditing" class="edit-form">
+                    <q-input
+                        v-model="editContent"
+                        type="textarea"
+                        outlined
+                        autogrow
+                        :max-height="150"
+                        placeholder="댓글을 수정하세요..."
+                        class="edit-input"
+                        @keydown.ctrl.enter="handleSubmitEdit"
+                        @keydown.meta.enter="handleSubmitEdit"
+                    />
+                    <div class="edit-actions">
+                        <q-btn
+                            flat
+                            no-caps
+                            color="grey-7"
+                            label="취소"
+                            size="md"
+                            @click="handleCancelEdit"
+                            class="text-no-wrap"
+                        />
+                        <q-btn
+                            unelevated
+                            no-caps
+                            color="primary"
+                            label="수정"
+                            size="md"
+                            :disable="!editContent.trim()"
+                            @click="handleSubmitEdit"
+                            class="text-no-wrap"
+                        />
+                    </div>
+                </div>
+
                 <!-- 댓글 본문 -->
-                <div class="comment-body">
+                <div v-else class="comment-body">
                     {{ comment.content }}
                 </div>
 
                 <!-- 액션 버튼 -->
-                <div class="comment-actions">
+                <div v-if="!isEditing" class="comment-actions">
                     <q-btn
                         flat
                         dense
@@ -147,7 +232,7 @@ function handleDelete() {
                 :current-user-id="currentUserId"
                 :depth="depth + 1"
                 @reply="$emit('reply', $event)"
-                @edit="$emit('edit', $event)"
+                @update="(id: string, content: string) => $emit('update', id, content)"
                 @delete="$emit('delete', $event)"
             />
         </template>
@@ -172,7 +257,7 @@ function handleDelete() {
 
 .comment-content {
     flex: 1;
-    background: #f8f9fa;
+    background: var(--bg-card, #f8f9fa);
     border-radius: 12px;
     padding: 12px;
 }
@@ -185,7 +270,7 @@ function handleDelete() {
 }
 
 .avatar {
-    background: #e0e0e0;
+    background: var(--bg-avatar, #e0e0e0);
 }
 
 .header-info {
@@ -197,23 +282,45 @@ function handleDelete() {
 .author-name {
     font-weight: 600;
     font-size: 14px;
-    color: #333;
+    color: var(--text-primary, #333);
 }
 
 .comment-date {
     font-size: 12px;
-    color: #888;
+    color: var(--text-light, #888);
+
+    .edited-badge {
+        color: var(--text-light, #999);
+        font-style: italic;
+    }
 }
 
 .comment-body {
     font-size: 14px;
     line-height: 1.5;
-    color: #333;
+    color: var(--text-primary, #333);
     white-space: pre-wrap;
     word-break: break-word;
 }
 
 .comment-actions {
     margin-top: 8px;
+}
+
+.edit-form {
+    margin-top: 4px;
+
+    .edit-input {
+        :deep(.q-field__control) {
+            border-radius: 8px;
+        }
+    }
+
+    .edit-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 8px;
+    }
 }
 </style>

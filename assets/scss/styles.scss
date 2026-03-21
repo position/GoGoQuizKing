@@ -399,6 +399,12 @@ h6 {
         }
     }
 
+    .q-btn {
+        &:hover {
+            color: var(--text-white) !important;
+        }
+    }
+
     .q-btn-toggle {
         background-color: var(--bg-surface);
     }

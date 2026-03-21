@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { useQuasar } from 'quasar';
 import { useQuizStore } from '@/store/quiz.store';
 import type { QuizResultData } from '@/models/quiz';
 import QuizPlayer from '@/components/quiz/QuizPlayer.vue';
@@ -42,6 +43,7 @@ import QuizResult from '@/components/quiz/QuizResult.vue';
 const route = useRoute();
 const router = useRouter();
 const quizStore = useQuizStore();
+const $q = useQuasar();
 
 const isLoading = ref(true);
 const error = ref<string | null>(null);
@@ -100,9 +102,23 @@ async function handleComplete() {
 }
 
 function handleExit() {
-    if (confirm('정말 나가시겠습니까? 진행 상황이 저장되지 않습니다.')) {
+    $q.dialog({
+        title: '퀴즈 나가기',
+        message: '정말 나가시겠습니까? 진행 상황이 저장되지 않습니다.',
+        cancel: {
+            label: '취소',
+            flat: true,
+            color: 'grey-7',
+        },
+        ok: {
+            label: '나가기',
+            color: 'negative',
+            unelevated: true,
+        },
+        persistent: false,
+    }).onOk(() => {
         router.push('/quiz/quiz-list');
-    }
+    });
 }
 
 async function handleRetry() {

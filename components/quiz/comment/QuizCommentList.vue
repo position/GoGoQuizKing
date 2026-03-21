@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useQuizComments } from '~/composables/use-quiz-comments';
-import type { QuizComment } from '~/models/comment';
 import type { Database } from '~/models/database.types';
 
 interface Props {
@@ -27,9 +26,6 @@ const currentUserId = ref<string | undefined>();
 // 대댓글 작성 상태
 const replyingTo = ref<string | null>(null);
 
-// 수정 상태
-const editingComment = ref<QuizComment | null>(null);
-
 onMounted(async () => {
     await fetchComments();
 
@@ -38,14 +34,10 @@ onMounted(async () => {
 });
 
 async function handleCreateComment(content: string) {
-    const result = await createComment({
+    await createComment({
         quiz_id: props.quizId,
         content,
     });
-
-    if (result) {
-        // 성공 시 처리 (이미 fetchComments 호출됨)
-    }
 }
 
 async function handleCreateReply(content: string) {
@@ -64,40 +56,20 @@ async function handleCreateReply(content: string) {
     }
 }
 
-async function handleUpdateComment(content: string) {
-    if (!editingComment.value) {
-        return;
-    }
-
-    const success = await updateComment(editingComment.value.id, content);
-    if (success) {
-        editingComment.value = null;
-    }
+async function handleUpdateComment(commentId: string, content: string) {
+    await updateComment(commentId, content);
 }
 
 async function handleDeleteComment(commentId: string) {
-    const confirmed = confirm('댓글을 삭제하시겠습니까?');
-    if (confirmed) {
-        await deleteComment(commentId);
-    }
+    await deleteComment(commentId);
 }
 
 function handleReply(commentId: string) {
     replyingTo.value = commentId;
-    editingComment.value = null;
-}
-
-function handleEdit(comment: QuizComment) {
-    editingComment.value = comment;
-    replyingTo.value = null;
 }
 
 function handleCancelReply() {
     replyingTo.value = null;
-}
-
-function handleCancelEdit() {
-    editingComment.value = null;
 }
 </script>
 
@@ -125,25 +97,12 @@ function handleCancelEdit() {
             </template>
         </q-banner>
 
-        <!-- 댓글 작성 폼 (기본) -->
-        <div v-if="!editingComment" class="comment-form-container q-mb-md">
+        <!-- 댓글 작성 폼 -->
+        <div class="comment-form-container q-mb-md">
             <QuizCommentForm
                 :quiz-id="quizId"
                 placeholder="퀴즈에 대한 의견을 남겨주세요!"
                 @submit="handleCreateComment"
-            />
-        </div>
-
-        <!-- 수정 폼 -->
-        <div v-else class="edit-form-container q-mb-md">
-            <div class="edit-label">댓글 수정</div>
-            <QuizCommentForm
-                :quiz-id="quizId"
-                :initial-content="editingComment.content"
-                submit-label="수정"
-                is-edit
-                @submit="handleUpdateComment"
-                @cancel="handleCancelEdit"
             />
         </div>
 
@@ -154,7 +113,7 @@ function handleCancelEdit() {
                     :comment="comment"
                     :current-user-id="currentUserId"
                     @reply="handleReply"
-                    @edit="handleEdit"
+                    @update="handleUpdateComment"
                     @delete="handleDeleteComment"
                 />
 
@@ -211,7 +170,6 @@ function handleCancelEdit() {
     }
 
     .comment-form-container,
-    .edit-form-container,
     .reply-form-container {
         margin-bottom: 16px;
     }
@@ -221,12 +179,6 @@ function handleCancelEdit() {
         margin-top: 8px;
     }
 
-    .edit-label {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--text-secondary);
-        margin-bottom: 8px;
-    }
 
     .comments-container {
         display: flex;

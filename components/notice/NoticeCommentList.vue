@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
+import { useQuasar } from 'quasar';
 import { ToastMessage } from '~/helper/message';
 import dayjs from 'dayjs';
 import type { CommentInfo } from '~/models/comment';
@@ -14,13 +15,14 @@ const editingContent = ref<string>('');
 
 const supabase = useSupabaseClient();
 const authStore = useAuthStore();
+const $q = useQuasar();
 
 const props = defineProps<{
     postId?: number;
 }>();
 
 const isLoggedIn = computed(() => authStore.isLogin);
-const currentUserId = computed(() => authStore.userInfo?.sub);
+const currentUserId = computed(() => authStore.userId);
 
 onMounted(async () => {
     await getCommentList();
@@ -28,29 +30,27 @@ onMounted(async () => {
 
 async function getCommentList() {
     if (!props.postId) {
-        console.error('Notice ID is required to fetch comments.');
         return;
     }
     isLoading.value = true;
     try {
-        // 댓글 목록 조회
         const { data: comments, error: commentsError } = await supabase
             .from('comments')
             .select('*')
             .eq('post_id', props.postId)
             .order('created_at', { ascending: true });
 
-        if (commentsError) throw commentsError;
+        if (commentsError) {
+            throw commentsError;
+        }
 
-        if (!comments || comments.length === 0) {
+        if (!comments || !comments.length) {
             commentList.value = [];
             return;
         }
 
-        // 유저 ID 목록 추출
         const userIds = [...new Set(comments.map((c) => c.user_id))];
 
-        // 프로필 정보 별도 조회
         const { data: profiles, error: profilesError } = await supabase
             .from('profiles')
             .select('id, full_name, avatar_url')
@@ -60,17 +60,15 @@ async function getCommentList() {
             console.warn('프로필 조회 실패:', profilesError);
         }
 
-        // 프로필 정보 매핑
         const profileMap = new Map((profiles || []).map((p) => [p.id, p]));
 
-        // 댓글에 프로필 정보 병합
         commentList.value = comments.map((comment) => ({
             ...comment,
             profiles: profileMap.get(comment.user_id) || null,
         }));
     } catch (e) {
-        console.error(e);
-        ToastMessage.error('댓글을 불러오는데 실패했습니다.');
+        const errorMessage = e instanceof Error ? e.message : '댓글을 불러오는데 실패했습니다.';
+        ToastMessage.error(errorMessage);
     } finally {
         isLoading.value = false;
     }
@@ -92,7 +90,9 @@ async function submitComment() {
         const {
             data: { user },
         } = await supabase.auth.getUser();
-        if (!user) throw new Error('로그인이 필요합니다.');
+        if (!user) {
+            throw new Error('로그인이 필요합니다.');
+        }
 
         const { error } = await supabase.from('comments').insert({
             post_id: props.postId,
@@ -100,14 +100,16 @@ async function submitComment() {
             content: newComment.value.trim(),
         });
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         newComment.value = '';
         ToastMessage.success('댓글이 작성되었습니다.');
         await getCommentList();
-    } catch (e: any) {
-        console.error(e);
-        ToastMessage.error(e.message || '댓글 작성에 실패했습니다.');
+    } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : '댓글 작성에 실패했습니다.';
+        ToastMessage.error(errorMessage);
     } finally {
         isSubmitting.value = false;
     }
@@ -139,47 +141,65 @@ async function saveEdit(commentId: string) {
             })
             .eq('id', commentId);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         ToastMessage.success('댓글이 수정되었습니다.');
         cancelEdit();
         await getCommentList();
-    } catch (e: any) {
-        console.error(e);
-        ToastMessage.error(e.message || '댓글 수정에 실패했습니다.');
+    } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : '댓글 수정에 실패했습니다.';
+        ToastMessage.error(errorMessage);
     } finally {
         isSubmitting.value = false;
     }
 }
 
-async function deleteComment(commentId: string) {
-    if (!confirm('댓글을 삭제하시겠습니까?')) return;
+function deleteComment(commentId: string) {
+    $q.dialog({
+        title: '댓글 삭제',
+        message: '이 댓글을 삭제하시겠습니까?',
+        cancel: {
+            label: '취소',
+            flat: true,
+            color: 'grey-7',
+        },
+        ok: {
+            label: '삭제',
+            color: 'negative',
+            unelevated: true,
+        },
+        persistent: false,
+    }).onOk(async () => {
+        isSubmitting.value = true;
+        try {
+            const { error } = await supabase.from('comments').delete().eq('id', commentId);
 
-    isSubmitting.value = true;
-    try {
-        const { error } = await supabase.from('comments').delete().eq('id', commentId);
+            if (error) {
+                throw error;
+            }
 
-        if (error) throw error;
-
-        ToastMessage.success('댓글이 삭제되었습니다.');
-        await getCommentList();
-    } catch (e: any) {
-        console.error(e);
-        ToastMessage.error(e.message || '댓글 삭제에 실패했습니다.');
-    } finally {
-        isSubmitting.value = false;
-    }
+            ToastMessage.success('댓글이 삭제되었습니다.');
+            await getCommentList();
+        } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : '댓글 삭제에 실패했습니다.';
+            ToastMessage.error(errorMessage);
+        } finally {
+            isSubmitting.value = false;
+        }
+    });
 }
 
 function isOwner(comment: CommentInfo): boolean {
     return currentUserId.value === comment.user_id;
 }
 
-function getAuthorName(comment: any): string {
+function getAuthorName(comment: CommentInfo): string {
     return comment.profiles?.full_name || '익명';
 }
 
-function getAuthorAvatar(comment: any): string {
+function getAuthorAvatar(comment: CommentInfo): string {
     return comment.profiles?.avatar_url || '';
 }
 </script>
@@ -187,7 +207,13 @@ function getAuthorAvatar(comment: any): string {
 <template>
     <div class="notice-comment-list">
         <div class="comment-header">
-            <h3>💬 댓글 {{ commentList.length > 0 ? `(${commentList.length})` : '' }}</h3>
+            <h3>
+                <q-icon name="chat_bubble_outline" class="q-mr-sm" />
+                댓글
+                <span v-if="commentList.length" class="comment-count"
+                    >({{ commentList.length }})</span
+                >
+            </h3>
         </div>
 
         <!-- 댓글 작성 영역 -->
@@ -201,16 +227,18 @@ function getAuthorAvatar(comment: any): string {
                     autogrow
                     :maxlength="500"
                     class="comment-input"
+                    @keydown.ctrl.enter="submitComment"
+                    @keydown.meta.enter="submitComment"
                 >
                     <template #append>
                         <q-btn
-                            @click="submitComment"
                             :loading="isSubmitting"
                             :disable="!newComment.trim()"
                             icon="send"
                             color="primary"
                             flat
                             round
+                            @click="submitComment"
                         />
                     </template>
                 </q-input>
@@ -232,7 +260,7 @@ function getAuthorAvatar(comment: any): string {
             <q-spinner-dots color="primary" size="40px" />
         </div>
 
-        <div v-else-if="commentList.length === 0" class="empty-comments">
+        <div v-else-if="!commentList.length" class="empty-comments">
             <q-icon name="chat_bubble_outline" size="48px" color="grey-5" />
             <p>아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요! 🎉</p>
         </div>
@@ -256,9 +284,12 @@ function getAuthorAvatar(comment: any): string {
                         <span class="author-name">{{ getAuthorName(comment) }}</span>
                         <span class="comment-date">
                             {{ dayjs(comment.created_at).format('YYYY-MM-DD HH:mm') }}
-                            <template v-if="comment.updated_at !== comment.created_at">
+                            <span
+                                v-if="comment.updated_at !== comment.created_at"
+                                class="edited-badge"
+                            >
                                 (수정됨)
-                            </template>
+                            </span>
                         </span>
                     </div>
 
@@ -271,16 +302,28 @@ function getAuthorAvatar(comment: any): string {
                             autogrow
                             dense
                             class="edit-input"
+                            @keydown.ctrl.enter="saveEdit(comment.id)"
+                            @keydown.meta.enter="saveEdit(comment.id)"
                         />
                         <div class="edit-actions">
                             <q-btn
-                                @click="saveEdit(comment.id)"
-                                label="저장"
-                                color="primary"
-                                size="sm"
-                                :loading="isSubmitting"
+                                label="취소"
+                                color="grey-7"
+                                flat
+                                no-caps
+                                size="md"
+                                @click="cancelEdit"
                             />
-                            <q-btn @click="cancelEdit" label="취소" color="grey" flat size="sm" />
+                            <q-btn
+                                label="수정"
+                                color="primary"
+                                unelevated
+                                no-caps
+                                size="md"
+                                :loading="isSubmitting"
+                                :disable="!editingContent.trim()"
+                                @click="saveEdit(comment.id)"
+                            />
                         </div>
                     </template>
 
@@ -289,22 +332,22 @@ function getAuthorAvatar(comment: any): string {
                         <p class="comment-text">{{ comment.content }}</p>
                         <div v-if="isOwner(comment)" class="comment-actions">
                             <q-btn
-                                @click="startEdit(comment)"
                                 icon="edit"
                                 size="xs"
                                 flat
                                 round
                                 color="grey"
+                                @click="startEdit(comment)"
                             >
                                 <q-tooltip>수정</q-tooltip>
                             </q-btn>
                             <q-btn
-                                @click="deleteComment(comment.id)"
                                 icon="delete"
                                 size="xs"
                                 flat
                                 round
                                 color="negative"
+                                @click="deleteComment(comment.id)"
                             >
                                 <q-tooltip>삭제</q-tooltip>
                             </q-btn>
@@ -326,6 +369,14 @@ function getAuthorAvatar(comment: any): string {
             font-size: 1.1em;
             font-weight: 700;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+
+            .comment-count {
+                font-weight: normal;
+                color: var(--text-light);
+                margin-left: 4px;
+            }
         }
     }
 
@@ -399,6 +450,10 @@ function getAuthorAvatar(comment: any): string {
                     .comment-date {
                         font-size: 12px;
                         color: var(--text-light);
+
+                        .edited-badge {
+                            font-style: italic;
+                        }
                     }
                 }
 
@@ -424,6 +479,7 @@ function getAuthorAvatar(comment: any): string {
                 .edit-actions {
                     margin-top: 8px;
                     display: flex;
+                    justify-content: flex-end;
                     gap: 8px;
                 }
             }

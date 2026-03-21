@@ -216,7 +216,6 @@ const formattedDate = computed(() => {
 .quiz-detail-page {
     max-width: 800px;
     margin: 0 auto;
-    padding: 16px;
 
     .back-btn {
         margin-bottom: 16px;
