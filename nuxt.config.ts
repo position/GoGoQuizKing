@@ -49,7 +49,7 @@ export default defineNuxtConfig({
                 {
                     property: 'og:image',
                     content:
-                        'https://xyjjnbpgkzjjghqgsmgs.supabase.co/storage/v1/object/public/gogoquizking/img/quizking-character.png',
+                        (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net') + '/img/quizking-opengraph-v1.jpg',
                 },
                 {
                     property: 'og:image:width',
@@ -72,7 +72,7 @@ export default defineNuxtConfig({
                 {
                     name: 'twitter:image',
                     content:
-                        'https://xyjjnbpgkzjjghqgsmgs.supabase.co/storage/v1/object/public/gogoquizking/img/quizking-character.png',
+                        (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net') + '/img/quizking-opengraph-v1.jpg',
                 },
                 { name: 'naver-site-verification', content: '' },
                 { name: 'google-site-verification', content: '' },

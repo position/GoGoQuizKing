@@ -37,7 +37,6 @@ const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 const siteUrl = runtimeConfig.public.siteUrl || 'https://www.gogoquizking.net';
-const imgHost = runtimeConfig.public.supabaseStorage as string;
 
 router.afterEach(() => {
     nextTick(() => {
@@ -68,7 +67,7 @@ useSeoMeta({
         '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
     ogUrl: computed(() => `${siteUrl}${route.path}`),
     ogType: 'website',
-    ogImage: `${imgHost}/img/quizking-opengraph-v1.jpg`,
+    ogImage: `${siteUrl}/img/quizking-opengraph-v1.jpg`,
     twitterCard: 'summary_large_image',
     twitterTitle: '고고퀴즈킹 | 실시간 퀴즈 게임',
     twitterDescription:
