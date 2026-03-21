@@ -150,6 +150,7 @@ export default defineNuxtConfig({
             supabaseStorage: '',
             cdnBase: '',
             gtmId: process.env.NUXT_PUBLIC_GTM_ID || '',
+            gaId: process.env.NUXT_PUBLIC_GA_ID || '',
             siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
         },
     },
