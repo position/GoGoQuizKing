@@ -4,7 +4,7 @@ import { routeRules } from './nuxt.routes';
 export default defineNuxtConfig({
     // SEO 설정
     site: {
-        url: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
+        url: process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net',
         name: '고고퀴즈킹 - GoGoQuizKing',
         description:
             '고고퀴즈킹 - 실시간 퀴즈 게임, 상식 퀴즈, OX 퀴즈, 객관식 퀴즈를 친구들과 함께 즐겨보세요! 무료 온라인 퀴즈 플랫폼, 퀴즈 사이트',
@@ -117,7 +117,7 @@ export default defineNuxtConfig({
                         '@type': 'WebApplication',
                         name: '고고퀴즈킹',
                         alternateName: 'GoGoQuizKing',
-                        url: 'https://gogoquizking.com',
+                        url: 'https://www.gogoquizking.net',
                         description:
                             '친구들과 실시간 퀴즈 대결! 상식 퀴즈, OX 퀴즈, 객관식 퀴즈 등 다양한 퀴즈를 무료로 즐기세요.',
                         applicationCategory: 'GameApplication',
@@ -151,7 +151,7 @@ export default defineNuxtConfig({
             cdnBase: '',
             gtmId: process.env.NUXT_PUBLIC_GTM_ID || '',
             gaId: process.env.NUXT_PUBLIC_GA_ID || '',
-            siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://gogoquizking.com',
+            siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net',
         },
     },
     components: [

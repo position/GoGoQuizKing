@@ -11,4 +11,4 @@ Disallow: /notice/create-notice
 Disallow: /notice/edit-notice/
 
 # 사이트맵
-Sitemap: https://gogoquizking.com/sitemap.xml
+Sitemap: https://www.gogoquizking.net/sitemap.xml

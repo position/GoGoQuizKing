@@ -190,7 +190,7 @@ Lv.7  퀴즈 킹       (5001점~)
 interface QuizShareData {
     title: string;       // "[퀴즈 제목] - 고고퀴즈킹"
     text: string;        // "이 퀴즈에 도전해보세요! 🎯"
-    url: string;         // "https://gogoquizking.com/quiz/{id}"
+    url: string;         // "https://www.gogoquizking.net/quiz/{id}"
 }
 ```
 

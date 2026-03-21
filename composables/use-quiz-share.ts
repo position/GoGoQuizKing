@@ -33,7 +33,7 @@ interface UseQuizShareReturn {
     claimShareReward: (quizId: string) => Promise<void>;
 }
 
-const SITE_URL = 'https://gogoquizking.com';
+const SITE_URL = 'https://www.gogoquizking.net';
 
 /**
  * 퀴즈 공유 Composable

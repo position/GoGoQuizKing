@@ -28,7 +28,7 @@
 ### Step 2: 속성 추가
 1. 왼쪽 상단 "속성 추가" 클릭
 2. **URL 접두어** 선택
-3. `https://gogoquizking.com` 입력
+3. `https://www.gogoquizking.net` 입력
 
 ### Step 3: 소유권 확인 (HTML 태그 방식)
 1. "HTML 태그" 방식 선택
@@ -57,7 +57,7 @@
 
 ### Step 2: 사이트 등록
 1. "웹마스터 도구" → "사이트 관리"
-2. `https://gogoquizking.com` 입력
+2. `https://www.gogoquizking.net` 입력
 
 ### Step 3: 소유권 확인
 1. "HTML 태그" 방식 선택
@@ -69,7 +69,7 @@
 
 ### Step 4: 사이트맵 제출
 1. "요청" → "사이트맵 제출"
-2. URL 입력: `https://gogoquizking.com/sitemap.xml`
+2. URL 입력: `https://www.gogoquizking.net/sitemap.xml`
 
 ---
 
@@ -129,7 +129,7 @@ script: [
 
 ### Google에서 확인
 ```
-site:gogoquizking.com
+site:www.gogoquizking.net
 ```
 위 검색어로 인덱싱 여부 확인 (등록 후 1-2주 소요)
 

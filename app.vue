@@ -36,7 +36,7 @@ const { showUnlockDialog: showBadgeDialog } = storeToRefs(badgeStore);
 const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
-const siteUrl = runtimeConfig.public.siteUrl || 'https://gogoquizking.com';
+const siteUrl = runtimeConfig.public.siteUrl || 'https://www.gogoquizking.net';
 const imgHost = runtimeConfig.public.supabaseStorage as string;
 
 router.afterEach(() => {
