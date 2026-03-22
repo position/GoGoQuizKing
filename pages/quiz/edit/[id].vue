@@ -36,7 +36,7 @@ import QuizForm from '@/components/quiz/QuizForm.vue';
 
 // SEO 설정 - 퀴즈 수정 페이지는 검색 엔진에서 제외
 useSeoMeta({
-    title: '퀴즈 수정 - GoGoQuizKing',
+    title: '퀴즈 수정 - 고고퀴즈킹(GoGo QuizKing)',
     robots: 'noindex, nofollow',
 });
 

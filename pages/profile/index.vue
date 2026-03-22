@@ -213,6 +213,13 @@ import { useBadgeStore } from '@/store/badge.store';
 import { StatsSummaryCards, RecentPerformanceList } from '@/components/stats';
 import ProfileEditDialog from '@/components/profile/ProfileEditDialog.vue';
 
+// SEO 설정 - 개인 프로필 페이지는 검색 엔진에서 제외
+useSeoMeta({
+    title: '마이페이지 - 고고퀴즈킹(GoGo QuizKing)',
+    description: '나의 프로필, 포인트, 레벨, 뱃지, 퀴즈 활동 통계를 한눈에 확인하세요.',
+    robots: 'noindex, nofollow',
+});
+
 definePageMeta({
     layout: 'default',
 });

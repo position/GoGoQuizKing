@@ -12,6 +12,13 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '실시간 퀴즈 대결 - 고고퀴즈킹(GoGo QuizKing)',
+    description: '1:1 실시간 퀴즈 대결이 진행 중입니다!',
+    robots: 'noindex, nofollow',
+});
+
 const route = useRoute();
 const router = useRouter();
 const supabase = useSupabase();

@@ -11,6 +11,13 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '대결 매칭 중 - 고고퀴즈킹(GoGo QuizKing)',
+    description: '실시간 퀴즈 대결 상대를 찾고 있습니다. 잠시만 기다려주세요!',
+    robots: 'noindex, nofollow',
+});
+
 const route = useRoute();
 const router = useRouter();
 const supabase = useSupabase();

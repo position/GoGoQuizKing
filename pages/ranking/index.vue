@@ -56,6 +56,16 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '랭킹 & 리더보드 - 고고퀴즈킹(GoGo QuizKing) | 퀴즈 킹을 찾아라!',
+    description:
+        '고고퀴즈킹 랭킹 리더보드! 전체 랭킹, 주간 랭킹, 과목별 랭킹으로 나의 순위를 확인하고 퀴즈 킹에 도전하세요.',
+    ogTitle: '랭킹 & 리더보드 - 고고퀴즈킹(GoGo QuizKing)',
+    ogDescription:
+        '퀴즈 킹은 누구? 전체·주간·과목별 랭킹을 확인하고 친구들과 순위를 겨뤄보세요!',
+});
+
 const rankingStore = useRankingStore();
 const user = useSupabaseUser();
 

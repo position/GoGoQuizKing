@@ -156,12 +156,12 @@ definePageMeta({
 
 // SEO 설정
 useSeoMeta({
-    title: '퀴즈 탐험 - GoGoQuizKing',
+    title: '퀴즈 탐험 - 고고퀴즈킹(GoGo QuizKing) | 다양한 퀴즈를 풀어보세요',
     description:
-        '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
-    ogTitle: '퀴즈 탐험 - GoGoQuizKing',
+        '수학, 과학, 국어, 영어, 상식, 넌센스 등 다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 난이도별, 학년별 퀴즈 검색과 인기 퀴즈 추천까지.',
+    ogTitle: '퀴즈 탐험 - 고고퀴즈킹(GoGo QuizKing)',
     ogDescription:
-        '다양한 카테고리의 재미있는 퀴즈를 탐험해보세요! 수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다.',
+        '수학, 과학, 국어, 영어 등 다양한 분야의 퀴즈가 준비되어 있습니다. 지금 도전해보세요!',
 });
 
 const router = useRouter();

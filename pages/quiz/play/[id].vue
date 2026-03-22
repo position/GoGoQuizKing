@@ -57,10 +57,11 @@ const quizDescription = computed(
 );
 
 useSeoMeta({
-    title: () => `${quizTitle.value} - GoGoQuizKing`,
+    title: () => `${quizTitle.value} - 고고퀴즈킹(GoGo QuizKing)`,
     description: () => quizDescription.value,
-    ogTitle: () => `${quizTitle.value} - GoGoQuizKing`,
+    ogTitle: () => `${quizTitle.value} - 고고퀴즈킹(GoGo QuizKing)`,
     ogDescription: () => quizDescription.value,
+    robots: 'noindex, nofollow',
 });
 
 onMounted(async () => {

@@ -11,7 +11,7 @@ definePageMeta({
 
 // SEO 설정 - 인증 페이지는 검색 엔진에서 제외
 useSeoMeta({
-    title: '로그인 처리 중 - GoGoQuizKing',
+    title: '로그인 처리 중 - 고고퀴즈킹(GoGo QuizKing)',
     robots: 'noindex, nofollow',
 });
 

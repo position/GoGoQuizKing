@@ -105,7 +105,8 @@ definePageMeta({
 
 // SEO 설정 - 사용자 전용 페이지는 검색 엔진에서 제외
 useSeoMeta({
-    title: '내 퀴즈 관리 - GoGoQuizKing',
+    title: '내 퀴즈 관리 - 고고퀴즈킹(GoGo QuizKing)',
+    description: '내가 만든 퀴즈를 관리하세요. 퀴즈 수정, 삭제, 플레이 현황을 확인할 수 있습니다.',
     robots: 'noindex, nofollow',
 });
 

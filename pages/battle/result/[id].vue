@@ -8,6 +8,13 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '대결 결과 - 고고퀴즈킹(GoGo QuizKing) | 퀴즈 배틀 결과',
+    description: '퀴즈 대결 결과를 확인하세요! 점수, 정답률, 획득 보상을 한눈에 볼 수 있습니다.',
+    robots: 'noindex, nofollow',
+});
+
 const route = useRoute();
 const router = useRouter();
 const supabase = useSupabase();

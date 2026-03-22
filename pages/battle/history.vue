@@ -8,6 +8,15 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '대결 기록 & 랭킹 - 고고퀴즈킹(GoGo QuizKing) | 퀴즈 배틀 전적',
+    description:
+        '나의 퀴즈 대결 기록과 배틀 랭킹을 확인하세요. 승률, 연승 기록, 대결 상세 전적을 한눈에!',
+    ogTitle: '대결 기록 & 랭킹 - 고고퀴즈킹(GoGo QuizKing)',
+    ogDescription: '퀴즈 대결 전적과 배틀 랭킹을 확인하세요!',
+});
+
 const route = useRoute();
 const router = useRouter();
 const battleStore = useBattleStore();

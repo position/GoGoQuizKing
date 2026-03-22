@@ -24,6 +24,13 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '내 뱃지 - 고고퀴즈킹(GoGo QuizKing) | 퀴즈 활동 뱃지 컬렉션',
+    description: '퀴즈 활동으로 획득한 뱃지를 확인하세요! 다양한 도전 과제를 달성하고 뱃지를 모아보세요.',
+    robots: 'noindex, nofollow',
+});
+
 const badgeStore = useBadgeStore();
 
 onMounted(async () => {

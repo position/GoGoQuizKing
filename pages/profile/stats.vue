@@ -196,6 +196,13 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '학습 통계 - 고고퀴즈킹(GoGo QuizKing) | 나의 퀴즈 분석 리포트',
+    description: '과목별 정답률, 난이도별 성적, 활동 추이 등 나의 퀴즈 학습 통계를 상세히 분석해보세요.',
+    robots: 'noindex, nofollow',
+});
+
 const statsStore = useStatsStore();
 
 const isLoading = ref(true);

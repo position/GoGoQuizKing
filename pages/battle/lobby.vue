@@ -9,6 +9,16 @@ definePageMeta({
     layout: 'default',
 });
 
+// SEO 설정
+useSeoMeta({
+    title: '실시간 퀴즈 대결 - 고고퀴즈킹(GoGo QuizKing) | 1:1 퀴즈 배틀',
+    description:
+        '실시간 1:1 퀴즈 대결에 도전하세요! 랜덤 매칭 또는 친구 초대로 퀴즈 배틀을 시작하세요. 빠른 대결, 일반 대결 모드 선택 가능!',
+    ogTitle: '실시간 퀴즈 대결 - 고고퀴즈킹(GoGo QuizKing)',
+    ogDescription:
+        '친구와 1:1 실시간 퀴즈 대결! 누가 더 빠르고 정확할까? 지금 바로 도전하세요!',
+});
+
 const router = useRouter();
 const battleStore = useBattleStore();
 

@@ -16,7 +16,8 @@ import QuizForm from '@/components/quiz/QuizForm.vue';
 
 // SEO 설정 - 퀴즈 생성 페이지는 검색 엔진에서 제외
 useSeoMeta({
-    title: '퀴즈 만들기 - GoGoQuizKing',
+    title: '퀴즈 만들기 - 고고퀴즈킹(GoGo QuizKing)',
+    description: '나만의 퀴즈를 만들어보세요! 객관식, OX, 단답형 등 다양한 유형의 퀴즈를 생성할 수 있습니다.',
     robots: 'noindex, nofollow',
 });
 

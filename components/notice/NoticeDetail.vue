@@ -22,10 +22,12 @@ const props = defineProps<{
 
 // 동적 SEO - 공지사항 정보에 따라 메타 태그 설정
 const seoTitle = computed(() => {
-    if (props.isEdit) return '공지사항 수정 - GoGoQuizKing';
+    if (props.isEdit) {
+        return '공지사항 수정 - 고고퀴즈킹(GoGo QuizKing)';
+    }
     return noticeDetail.value.title
-        ? `${noticeDetail.value.title} - GoGoQuizKing`
-        : '공지사항 - GoGoQuizKing';
+        ? `${noticeDetail.value.title} - 고고퀴즈킹(GoGo QuizKing)`
+        : '공지사항 - 고고퀴즈킹(GoGo QuizKing)';
 });
 
 const seoDescription = computed(() => {
@@ -34,7 +36,7 @@ const seoDescription = computed(() => {
         .replace(/<[^>]*>/g, '')
         .replace(/<br>/g, ' ')
         .slice(0, 160);
-    return cleanBody || 'GoGoQuizKing 공지사항입니다.';
+    return cleanBody || '고고퀴즈킹의 공지사항입니다. 새로운 기능, 이벤트, 업데이트 소식을 확인하세요.';
 });
 
 useSeoMeta({
