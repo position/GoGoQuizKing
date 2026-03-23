@@ -7,7 +7,10 @@
         "dev": "nuxt dev --dotenv .env.local",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
-        "postinstall": "nuxt prepare"
+        "postinstall": "nuxt prepare",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
         "@google/generative-ai": "^0.24.1",
@@ -38,7 +41,9 @@
         "@vitejs/plugin-vue": "^5.1.4",
         "@vue/eslint-config-prettier": "^8.0.0",
         "@vue/eslint-config-typescript": "^12.0.0",
+        "@vue/test-utils": "^2.4.6",
         "dayjs-nuxt": "^2.1.11",
+        "happy-dom": "^20.8.4",
         "lightningcss": "^1.31.1",
         "nuxt-quasar-ui": "2.1.12",
         "nuxt-time": "^1.0.3",
@@ -49,6 +54,7 @@
         "terser": "^5.46.0",
         "tsx": "^4.21.0",
         "typescript": "^5.7.3",
-        "vite": "^7.3.1"
+        "vite": "^7.3.1",
+        "vitest": "^4.1.0"
     }
 }

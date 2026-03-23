@@ -197,7 +197,6 @@ export function useMatchmakingRealtime(
                         filter: `guest_id=eq.${userId}`,
                     },
                     (payload) => {
-                        console.log('매칭 INSERT 감지 (게스트):', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         if (room && options.onMatchFound) {
                             options.onMatchFound(room.id);
@@ -216,7 +215,6 @@ export function useMatchmakingRealtime(
                         filter: `host_id=eq.${userId}`,
                     },
                     (payload) => {
-                        console.log('매칭 INSERT 감지 (호스트):', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         // 게스트가 이미 있으면 바로 매칭 완료
                         if (room && room.guest_id && options.onMatchFound) {
@@ -236,7 +234,6 @@ export function useMatchmakingRealtime(
                         filter: `host_id=eq.${userId}`,
                     },
                     (payload) => {
-                        console.log('매칭 UPDATE 감지 (호스트):', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         // 게스트가 참가하면 매칭 완료
                         if (room && room.guest_id && room.status === 'ready' && options.onMatchFound) {
@@ -256,7 +253,6 @@ export function useMatchmakingRealtime(
                         filter: `guest_id=eq.${userId}`,
                     },
                     (payload) => {
-                        console.log('매칭 UPDATE 감지 (게스트):', payload);
                         const room = payload.new as IBattleRoomWithPlayers;
                         if (room && room.status === 'ready' && options.onMatchFound) {
                             options.onMatchFound(room.id);

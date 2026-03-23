@@ -2,9 +2,7 @@
 import { defineStore } from 'pinia';
 import { useSupabase } from '~/composables/use-supabase';
 import type {
-    IBattleRoom,
     IBattleRoomWithPlayers,
-    IBattleHistory,
     IBattleHistoryWithOpponent,
     IBattleRankingEntry,
     IUserRankingStats,
@@ -16,8 +14,9 @@ import type {
     BattleType,
     BattleStatus,
 } from '~/models/battle';
-import { DEFAULT_MATCHMAKING_OPTIONS, determineBattleResult } from '~/models/battle';
+import { DEFAULT_MATCHMAKING_OPTIONS } from '~/models/battle';
 import type { Question } from '~/models/quiz';
+import { ToastMessage } from '~/helper/message';
 
 interface BattleState {
     // 현재 대결 방
@@ -76,30 +75,40 @@ export const useBattleStore = defineStore('battle', {
     getters: {
         isInRoom: (state): boolean => state.currentRoom !== null,
         isHost: (state): boolean => {
-            const supabase = useSupabase();
-            const userId = supabase.auth.getUser();
-            return state.currentRoom?.host_id === state.playState.room?.host?.id;
+            const user = useSupabaseUser();
+            if (!user.value || !state.currentRoom) {
+                return false;
+            }
+            return state.currentRoom.host_id === user.value.id;
         },
         roomStatus: (state): BattleStatus | null => state.currentRoom?.status ?? null,
         myScore: (state): number => {
             if (!state.currentRoom) {
                 return 0;
             }
-            return state.playState.isHost ? state.currentRoom.host_score : state.currentRoom.guest_score;
+            return state.playState.isHost
+                ? state.currentRoom.host_score
+                : state.currentRoom.guest_score;
         },
         opponentScore: (state): number => {
             if (!state.currentRoom) {
                 return 0;
             }
-            return state.playState.isHost ? state.currentRoom.guest_score : state.currentRoom.host_score;
+            return state.playState.isHost
+                ? state.currentRoom.guest_score
+                : state.currentRoom.host_score;
         },
         winRate: (state): number => {
             if (!state.myRankingStats || state.myRankingStats.total_battles === 0) {
                 return 0;
             }
-            return Math.round(
-                (state.myRankingStats.total_wins / state.myRankingStats.total_battles) * 100 * 100
-            ) / 100;
+            return (
+                Math.round(
+                    (state.myRankingStats.total_wins / state.myRankingStats.total_battles) *
+                        100 *
+                        100,
+                ) / 100
+            );
         },
     },
 
@@ -107,7 +116,10 @@ export const useBattleStore = defineStore('battle', {
         /**
          * 대결 방 생성
          */
-        async createRoom(battleType: BattleType = 'quick', quizId?: string): Promise<{ roomId: string; roomCode: string } | null> {
+        async createRoom(
+            battleType: BattleType = 'quick',
+            quizId?: string,
+        ): Promise<{ roomId: string; roomCode: string } | null> {
             const supabase = useSupabase();
             this.loading = true;
             this.error = null;
@@ -148,7 +160,9 @@ export const useBattleStore = defineStore('battle', {
         /**
          * 초대 코드로 방 참가
          */
-        async joinRoomByCode(roomCode: string): Promise<{ success: boolean; roomId: string | null; message: string }> {
+        async joinRoomByCode(
+            roomCode: string,
+        ): Promise<{ success: boolean; roomId: string | null; message: string }> {
             const supabase = useSupabase();
             this.loading = true;
             this.error = null;
@@ -189,7 +203,9 @@ export const useBattleStore = defineStore('battle', {
         /**
          * 랜덤 매칭 시작
          */
-        async startMatchmaking(options: IMatchmakingOptions = DEFAULT_MATCHMAKING_OPTIONS): Promise<void> {
+        async startMatchmaking(
+            options: IMatchmakingOptions = DEFAULT_MATCHMAKING_OPTIONS,
+        ): Promise<void> {
             const supabase = useSupabase();
             this.matchmaking = {
                 status: 'searching',
@@ -298,8 +314,8 @@ export const useBattleStore = defineStore('battle', {
 
                 const result: IBattleRoomWithPlayers = {
                     ...roomData,
-                    host_answers: roomData.host_answers as IBattleAnswer[] ?? [],
-                    guest_answers: roomData.guest_answers as IBattleAnswer[] ?? [],
+                    host_answers: (roomData.host_answers as IBattleAnswer[]) ?? [],
+                    guest_answers: (roomData.guest_answers as IBattleAnswer[]) ?? [],
                     host: hostProfile ?? undefined,
                     guest: guestProfile ?? undefined,
                 };
@@ -362,7 +378,12 @@ export const useBattleStore = defineStore('battle', {
         /**
          * 답변 제출
          */
-        async submitAnswer(roomId: string, questionIndex: number, answer: string, responseTime: number): Promise<{
+        async submitAnswer(
+            roomId: string,
+            questionIndex: number,
+            answer: string,
+            responseTime: number,
+        ): Promise<{
             success: boolean;
             isCorrect: boolean;
             scoreEarned: number;
@@ -470,6 +491,11 @@ export const useBattleStore = defineStore('battle', {
                     const result = data[0];
                     const isHost = this.currentRoom?.host_id === userData.user.id;
 
+                    const hostCorrectCount =
+                        this.currentRoom?.host_answers?.filter((a) => a.is_correct).length ?? 0;
+                    const guestCorrectCount =
+                        this.currentRoom?.guest_answers?.filter((a) => a.is_correct).length ?? 0;
+
                     return {
                         room_id: roomId,
                         winner_id: result.winner_id,
@@ -477,20 +503,34 @@ export const useBattleStore = defineStore('battle', {
                         is_draw: result.winner_id === null,
                         my_score: isHost ? result.host_final_score : result.guest_final_score,
                         opponent_score: isHost ? result.guest_final_score : result.host_final_score,
-                        my_correct_count: 0, // TODO: 계산 필요
-                        opponent_correct_count: 0,
+                        my_correct_count: isHost ? hostCorrectCount : guestCorrectCount,
+                        opponent_correct_count: isHost ? guestCorrectCount : hostCorrectCount,
                         total_questions: this.currentRoom?.question_count ?? 5,
                         reward: {
-                            points_earned: isHost ? result.host_points_earned : result.guest_points_earned,
-                            ranking_points_earned: isHost ? result.host_rp_earned : result.guest_rp_earned,
+                            points_earned: isHost
+                                ? result.host_points_earned
+                                : result.guest_points_earned,
+                            ranking_points_earned: isHost
+                                ? result.host_rp_earned
+                                : result.guest_rp_earned,
                         },
                         opponent: {
-                            id: isHost ? this.currentRoom?.guest?.id ?? '' : this.currentRoom?.host?.id ?? '',
+                            id: isHost
+                                ? (this.currentRoom?.guest?.id ?? '')
+                                : (this.currentRoom?.host?.id ?? ''),
                             name: isHost
-                                ? (this.currentRoom?.guest?.preferred_username ?? this.currentRoom?.guest?.full_name ?? 'Unknown')
-                                : (this.currentRoom?.host?.preferred_username ?? this.currentRoom?.host?.full_name ?? 'Unknown'),
-                            avatar_url: isHost ? this.currentRoom?.guest?.avatar_url ?? null : this.currentRoom?.host?.avatar_url ?? null,
-                            level: isHost ? this.currentRoom?.guest?.level ?? 1 : this.currentRoom?.host?.level ?? 1,
+                                ? (this.currentRoom?.guest?.preferred_username ??
+                                  this.currentRoom?.guest?.full_name ??
+                                  'Unknown')
+                                : (this.currentRoom?.host?.preferred_username ??
+                                  this.currentRoom?.host?.full_name ??
+                                  'Unknown'),
+                            avatar_url: isHost
+                                ? (this.currentRoom?.guest?.avatar_url ?? null)
+                                : (this.currentRoom?.host?.avatar_url ?? null),
+                            level: isHost
+                                ? (this.currentRoom?.guest?.level ?? 1)
+                                : (this.currentRoom?.host?.level ?? 1),
                         },
                     };
                 }
