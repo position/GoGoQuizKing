@@ -16,7 +16,6 @@ useSeoMeta({
     ogTitle: '로그인 - 고고퀴즈킹(GoGo QuizKing)(GoGoQuizKing)',
     ogDescription:
         '고고퀴즈킹에 로그인하고 친구들과 함께 재미있는 퀴즈를 풀어보세요! 카카오 간편 로그인 지원.',
-    robots: 'noindex, nofollow',
 });
 </script>
 

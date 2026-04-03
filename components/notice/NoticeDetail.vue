@@ -36,7 +36,9 @@ const seoDescription = computed(() => {
         .replace(/<[^>]*>/g, '')
         .replace(/<br>/g, ' ')
         .slice(0, 160);
-    return cleanBody || '고고퀴즈킹의 공지사항입니다. 새로운 기능, 이벤트, 업데이트 소식을 확인하세요.';
+    return (
+        cleanBody || '고고퀴즈킹의 공지사항입니다. 새로운 기능, 이벤트, 업데이트 소식을 확인하세요.'
+    );
 });
 
 useSeoMeta({
@@ -44,7 +46,6 @@ useSeoMeta({
     description: seoDescription,
     ogTitle: seoTitle,
     ogDescription: seoDescription,
-    robots: () => (props.isEdit ? 'noindex, nofollow' : 'index, follow'),
 });
 
 onMounted(async () => {

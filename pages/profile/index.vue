@@ -217,7 +217,6 @@ import ProfileEditDialog from '@/components/profile/ProfileEditDialog.vue';
 useSeoMeta({
     title: '마이페이지 - 고고퀴즈킹(GoGo QuizKing)',
     description: '나의 프로필, 포인트, 레벨, 뱃지, 퀴즈 활동 통계를 한눈에 확인하세요.',
-    robots: 'noindex, nofollow',
 });
 
 definePageMeta({
