@@ -770,4 +770,10 @@ export const useQuizStore = defineStore('quiz', {
             this.filter = { ...DEFAULT_QUIZ_FILTER };
         },
     },
+
+    // 필터 상태를 sessionStorage에 저장 (페이지 이동 후에도 유지)
+    persist: {
+        pick: ['filter'],
+        storage: piniaPluginPersistedstate.sessionStorage(),
+    },
 });

@@ -89,6 +89,18 @@
                     class="sort-toggle"
                     @update:model-value="handleFilterChange"
                 />
+
+                <!-- 필터 초기화 버튼 -->
+                <q-btn
+                    v-if="hasActiveFilter"
+                    label="필터 초기화"
+                    icon="refresh"
+                    flat
+                    dense
+                    color="grey-7"
+                    class="reset-btn"
+                    @click="handleResetFilter"
+                />
             </div>
         </div>
 
@@ -143,7 +155,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import type { QInfiniteScroll } from 'quasar';
 import { useQuizStore } from '@/store/quiz.store';
 import { CATEGORIES, DIFFICULTIES } from '@/models/quiz';
@@ -165,17 +177,115 @@ useSeoMeta({
 });
 
 const router = useRouter();
+const route = useRoute();
 const quizStore = useQuizStore();
 
 // Infinite Scroll ref
 const infiniteScrollRef = ref<QInfiniteScroll | null>(null);
 
-// 필터 상태
-const searchQuery = ref('');
-const selectedCategory = ref<QuizCategory | null>(null);
-const selectedDifficulty = ref<DifficultyLevel | null>(null);
-const selectedGrade = ref<number | null>(null);
-const sortBy = ref<'created_at' | 'play_count'>('created_at');
+// URL 쿼리에서 필터 값 파싱
+function parseQuerySearchQuery(): string | null {
+    const q = route.query.q;
+    return typeof q === 'string' && q ? q : null;
+}
+
+function parseQueryCategory(): QuizCategory | null {
+    const category = route.query.category;
+    if (typeof category === 'string' && category in CATEGORIES) {
+        return category as QuizCategory;
+    }
+    return null;
+}
+
+function parseQueryDifficulty(): DifficultyLevel | null {
+    const difficulty = route.query.difficulty;
+    if (typeof difficulty === 'string' && difficulty in DIFFICULTIES) {
+        return difficulty as DifficultyLevel;
+    }
+    return null;
+}
+
+function parseQueryGrade(): number | null {
+    const grade = route.query.grade;
+    if (typeof grade === 'string') {
+        const parsed = parseInt(grade, 10);
+        if (!isNaN(parsed) && parsed >= 1 && parsed <= 6) {
+            return parsed;
+        }
+    }
+    return null;
+}
+
+function parseQuerySortBy(): 'created_at' | 'play_count' | null {
+    const sort = route.query.sort;
+    if (sort === 'play_count') {
+        return 'play_count';
+    }
+    if (sort === 'created_at') {
+        return 'created_at';
+    }
+    return null;
+}
+
+// URL 쿼리스트링이 있는지 확인
+function hasQueryParams(): boolean {
+    return !!(
+        route.query.q ||
+        route.query.category ||
+        route.query.difficulty ||
+        route.query.grade ||
+        route.query.sort
+    );
+}
+
+// 초기값 결정: URL 쿼리 우선, 없으면 store 값 사용
+function getInitialValue<T>(queryValue: T | null, storeValue: T | null | undefined): T | null {
+    if (hasQueryParams()) {
+        return queryValue;
+    }
+    return storeValue ?? null;
+}
+
+// 필터 상태 (URL 쿼리 우선 → store 값 fallback)
+const searchQuery = ref(
+    getInitialValue(parseQuerySearchQuery(), quizStore.filter.searchQuery) || '',
+);
+const selectedCategory = ref<QuizCategory | null>(
+    getInitialValue(parseQueryCategory(), quizStore.filter.category),
+);
+const selectedDifficulty = ref<DifficultyLevel | null>(
+    getInitialValue(parseQueryDifficulty(), quizStore.filter.difficulty),
+);
+const selectedGrade = ref<number | null>(
+    getInitialValue(parseQueryGrade(), quizStore.filter.gradeLevel),
+);
+const sortBy = ref<'created_at' | 'play_count'>(
+    getInitialValue(parseQuerySortBy(), quizStore.filter.sortBy) || 'created_at',
+);
+
+// URL 쿼리 파라미터 업데이트 함수
+function updateQueryParams() {
+    const query: Record<string, string> = {};
+
+    if (searchQuery.value) {
+        query.q = searchQuery.value;
+    }
+    if (selectedCategory.value) {
+        query.category = selectedCategory.value;
+    }
+    if (selectedDifficulty.value) {
+        query.difficulty = selectedDifficulty.value;
+    }
+    if (selectedGrade.value) {
+        query.grade = String(selectedGrade.value);
+    }
+    if (sortBy.value !== 'created_at') {
+        query.sort = sortBy.value;
+    }
+
+    // URL 업데이트 (히스토리에 추가하지 않고 replace)
+    router.replace({ query });
+}
 
 // 카테고리 옵션
 const categoryOptions = computed(() => [
@@ -225,6 +335,17 @@ const sortOptions = [
 // 필터링된 퀴즈 (서버에서 필터링 되므로 quizStore.quizzes 직접 사용)
 const filteredQuizzes = computed(() => quizStore.quizzes);
 
+// 활성화된 필터가 있는지 확인
+const hasActiveFilter = computed(() => {
+    return !!(
+        searchQuery.value ||
+        selectedCategory.value ||
+        selectedDifficulty.value ||
+        selectedGrade.value ||
+        sortBy.value !== 'created_at'
+    );
+});
+
 // 무한 스크롤 로드 핸들러
 async function onLoadMore(index: number, done: (stop?: boolean) => void) {
     await quizStore.fetchQuizzesPaginated();
@@ -238,6 +359,10 @@ function handleFilterChange() {
         clearTimeout(filterTimeout);
     }
     filterTimeout = setTimeout(() => {
+        // URL 쿼리 파라미터 업데이트
+        updateQueryParams();
+
+        // Store에 필터 저장 (persist로 sessionStorage에 자동 저장됨)
         quizStore.setFilter({
             category: selectedCategory.value,
             difficulty: selectedDifficulty.value,
@@ -254,11 +379,93 @@ function handleFilterChange() {
     }, 300);
 }
 
+// 필터 전체 초기화 핸들러
+function handleResetFilter() {
+    // 로컬 상태 초기화
+    searchQuery.value = '';
+    selectedCategory.value = null;
+    selectedDifficulty.value = null;
+    selectedGrade.value = null;
+    sortBy.value = 'created_at';
+
+    // Store 필터 초기화
+    quizStore.resetFilter();
+
+    // URL 쿼리 파라미터 초기화
+    router.replace({ query: {} });
+
+    // 퀴즈 목록 다시 로드
+    quizStore.resetQuizzes();
+    infiniteScrollRef.value?.reset();
+    infiniteScrollRef.value?.resume();
+    quizStore.fetchQuizzesPaginated();
+}
+
 // 초기 데이터 로드
 onMounted(() => {
+    // Store에 현재 필터 값 적용
+    quizStore.setFilter({
+        category: selectedCategory.value,
+        difficulty: selectedDifficulty.value,
+        gradeLevel: selectedGrade.value,
+        searchQuery: searchQuery.value,
+        sortBy: sortBy.value,
+        sortOrder: 'desc',
+    });
+
+    // URL 쿼리 파라미터 동기화 (store에서 복원된 경우 URL에도 반영)
+    updateQueryParams();
+
     quizStore.resetQuizzes();
     quizStore.fetchQuizzesPaginated();
 });
+
+// URL 쿼리 변경 감지 (브라우저 뒤로가기/앞으로가기 대응)
+watch(
+    () => route.query,
+    (newQuery, oldQuery) => {
+        // 쿼리가 실제로 변경된 경우에만 처리
+        if (JSON.stringify(newQuery) === JSON.stringify(oldQuery)) {
+            return;
+        }
+
+        const newSearchQuery = parseQuerySearchQuery() || '';
+        const newCategory = parseQueryCategory();
+        const newDifficulty = parseQueryDifficulty();
+        const newGrade = parseQueryGrade();
+        const newSortBy = parseQuerySortBy() || 'created_at';
+
+        // 값이 변경된 경우에만 업데이트
+        const hasChanged =
+            searchQuery.value !== newSearchQuery ||
+            selectedCategory.value !== newCategory ||
+            selectedDifficulty.value !== newDifficulty ||
+            selectedGrade.value !== newGrade ||
+            sortBy.value !== newSortBy;
+
+        if (hasChanged) {
+            searchQuery.value = newSearchQuery;
+            selectedCategory.value = newCategory;
+            selectedDifficulty.value = newDifficulty;
+            selectedGrade.value = newGrade;
+            sortBy.value = newSortBy;
+
+            quizStore.setFilter({
+                category: newCategory,
+                difficulty: newDifficulty,
+                gradeLevel: newGrade,
+                searchQuery: newSearchQuery,
+                sortBy: newSortBy,
+                sortOrder: 'desc',
+            });
+
+            quizStore.resetQuizzes();
+            infiniteScrollRef.value?.reset();
+            infiniteScrollRef.value?.resume();
+            quizStore.fetchQuizzesPaginated();
+        }
+    },
+);
 
 function handlePlay(quizId: string) {
     router.push({ path: `/quiz/${quizId}` });
@@ -326,9 +533,15 @@ function handlePlay(quizId: string) {
         .sort-row {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
 
             .sort-toggle {
                 border-radius: 8px;
+            }
+
+            .reset-btn {
+                font-size: 13px;
             }
         }
     }

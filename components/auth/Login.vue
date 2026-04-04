@@ -43,7 +43,7 @@ async function login() {
                 <q-btn @click="login" class="kakao-login-btn" unelevated size="lg">
                     <NuxtImg
                         :src="`${$imgHost}/img/kakaotalk_sharing_btn_small.png`"
-                        alt="카카오 로그인"
+                        alt="카카오 아이콘"
                         class="kakao-img"
                         width="24"
                         height="24"
