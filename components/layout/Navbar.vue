@@ -160,7 +160,7 @@ function goProfile() {
                 <div v-if="!isLogin" class="before-login-area">
                     <div class="login-prompt">
                         <q-icon name="account_circle" size="48px" color="grey-5" />
-                        <p>로그인하고 퀴즈왕이 되어봐요! 👑</p>
+                        <p>로그인하고 퀴즈왕이 되어봐요!</p>
                     </div>
                     <q-btn
                         :to="{ path: '/login' }"
@@ -351,11 +351,11 @@ function goProfile() {
 
     .button-login {
         width: 100%;
-        background-color: #fee500;
-        color: #000;
+        background-color: var(--color-primary);
+        color: var(--text-white);
         font-weight: 600;
         :deep(.q-icon) {
-            color: #000;
+            color: var(--text-white);
         }
     }
 }

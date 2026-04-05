@@ -52,6 +52,138 @@ $bg-secondary: #E8F4F8; // 연한 블루
 
 ## 📱 핵심 기능
 
+### 0. 인증 시스템 (Supabase Auth)
+
+#### 0.1 소셜 로그인
+Supabase Auth를 활용한 간편 로그인을 제공합니다.
+
+##### 지원 로그인 방식
+
+| 방식 | 설명 | 우선순위 |
+|------|------|----------|
+| 🔵 Google 로그인 | OAuth 2.0 기반 소셜 로그인 | 🔴 높음 |
+| 📧 이메일 로그인 | 이메일/비밀번호 기본 인증 | 🟡 중간 |
+| 🍎 Apple 로그인 | iOS 사용자 대상 | 🟢 낮음 |
+| 💬 카카오 로그인 | 한국 사용자 대상 | 🟢 낮음 |
+
+##### Google 로그인 구현
+
+```mermaid
+flowchart TD
+    A[로그인 버튼 클릭] --> B[Supabase Auth signInWithOAuth]
+    B --> C[Google 로그인 페이지 리다이렉트]
+    C --> D[사용자 인증]
+    D --> E[콜백 URL로 리다이렉트]
+    E --> F{신규 사용자?}
+    F -->|Yes| G[프로필 생성 페이지]
+    F -->|No| H[홈 화면]
+    G --> I[닉네임/학년 설정]
+    I --> H
+```
+
+##### Supabase 설정
+
+```
+[Google Cloud Console]
+├── OAuth 2.0 클라이언트 ID 생성
+├── 승인된 리다이렉트 URI 설정
+│   └── https://[PROJECT_REF].supabase.co/auth/v1/callback
+└── 클라이언트 ID/Secret 발급
+
+[Supabase Dashboard]
+├── Authentication > Providers > Google
+├── Client ID 입력
+├── Client Secret 입력
+└── Enable 활성화
+```
+
+##### 코드 구현
+
+```typescript
+// 로그인 함수
+async function signInWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: `${window.location.origin}/confirm`,
+            queryParams: {
+                access_type: 'offline',
+                prompt: 'consent',
+            },
+        },
+    });
+}
+
+// 로그아웃 함수
+async function signOut() {
+    const { error } = await supabase.auth.signOut();
+}
+
+// 세션 확인
+const { data: { session } } = await supabase.auth.getSession();
+```
+
+##### 사용자 프로필 자동 생성
+
+```sql
+-- Supabase Database Trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.profiles (id, email, full_name, avatar_url)
+    VALUES (
+        NEW.id,
+        NEW.email,
+        NEW.raw_user_meta_data->>'full_name',
+        NEW.raw_user_meta_data->>'avatar_url'
+    );
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+```
+
+##### 로그인 화면 UI
+
+```
+┌─────────────────────────────────┐
+│                                 │
+│      🎯 GoGoQuizKing            │
+│      퀴즈왕이 되어보세요!        │
+│                                 │
+├─────────────────────────────────┤
+│                                 │
+│  ┌─────────────────────────┐   │
+│  │  🔵 Google로 시작하기    │   │
+│  └─────────────────────────┘   │
+│                                 │
+│  ┌─────────────────────────┐   │
+│  │  📧 이메일로 시작하기    │   │
+│  └─────────────────────────┘   │
+│                                 │
+│  로그인하면 서비스 이용약관 및   │
+│  개인정보 처리방침에 동의하게    │
+│  됩니다.                        │
+│                                 │
+└─────────────────────────────────┘
+```
+
+##### 인증 체크리스트
+
+- [ ] Google Cloud Console OAuth 설정
+- [ ] Supabase Google Provider 활성화
+- [ ] 로그인 페이지 UI 구현
+- [ ] signInWithOAuth 연동
+- [ ] 콜백 페이지 (/confirm) 구현
+- [ ] 신규 사용자 프로필 생성 트리거
+- [ ] 프로필 설정 페이지 (닉네임/학년)
+- [ ] 로그아웃 기능
+- [ ] 세션 유지/갱신
+- [ ] 인증 미들웨어 (auth-guard)
+
 ### 1. 퀴즈 시스템
 
 #### 1.1 퀴즈 생성
@@ -547,6 +679,7 @@ CREATE TABLE user_ranking_stats (
 ### Phase 1: 기초 기능 (MVP) - 4주
 | 주차 | 작업 항목 |
 |------|----------|
+| 0주차 | **✅ 인증 시스템 (Supabase Auth + Google OAuth)** |
 | 1주차 | 디자인 시스템 구축, UI 컴포넌트 제작 |
 | 2주차 | 퀴즈 생성 기능 (객관식, OX) |
 | 3주차 | 퀴즈 풀기 기능, 결과 화면 |
