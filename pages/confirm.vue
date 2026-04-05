@@ -20,10 +20,11 @@ const route = useRoute();
 const authStore = useAuthStore();
 
 // 프로필 테이블에 사용자 정보 저장/업데이트
-// 참고: Supabase 트리거(on_auth_user_created)가 자동으로 프로필을 생성하므로
-// 여기서의 upsert는 보조적인 역할. 중복 키 에러는 무시해도 안전함.
+// 중요: provider는 현재 로그인한 provider로 항상 업데이트됨
+// (같은 이메일로 Google/Kakao 등 여러 provider 로그인 시 최신 provider 반영)
 async function upsertProfile(userId: string, userMeta: Record<string, unknown>, provider?: string) {
     try {
+        // provider가 있으면 항상 업데이트 (현재 로그인한 provider 반영)
         const { error } = await supabase.from('profiles').upsert(
             {
                 id: userId,
@@ -31,7 +32,7 @@ async function upsertProfile(userId: string, userMeta: Record<string, unknown>, 
                 full_name: ((userMeta.full_name || userMeta.name) as string) || null,
                 avatar_url: (userMeta.avatar_url as string) || null,
                 preferred_username: (userMeta.preferred_username as string) || null,
-                provider: provider || null,
+                provider: provider || null, // 현재 로그인한 provider로 업데이트
                 updated_at: new Date().toISOString(),
             },
             { onConflict: 'id', ignoreDuplicates: false },
@@ -39,7 +40,6 @@ async function upsertProfile(userId: string, userMeta: Record<string, unknown>, 
 
         if (error) {
             // 중복 키 에러(23505)는 트리거가 이미 처리했으므로 무시
-            // 다른 에러만 로깅
             if (error.code !== '23505') {
                 console.error('Profile upsert error:', error);
             }

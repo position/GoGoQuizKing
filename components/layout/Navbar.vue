@@ -198,6 +198,13 @@ function goProfile() {
                                     height="20"
                                 />
                             </q-avatar>
+                            <q-avatar
+                                v-else-if="userInfo?.provider === DTO.Enums.AppProvider.Google"
+                                size="20px"
+                                class="sns-icon"
+                            >
+                                <q-icon name="fab fa-google" size="20px" />
+                            </q-avatar>
                         </dt>
                         <dd class="user-name">
                             <span class="text-weight-bold">{{ userInfo.user_name }}</span>
@@ -412,7 +419,6 @@ function goProfile() {
                     position: absolute;
                     bottom: 0;
                     right: -4px;
-                    border: 2px solid var(--bg-card);
                 }
             }
 

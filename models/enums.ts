@@ -7,4 +7,5 @@ export enum SupabaseTableName {
 
 export enum AppProvider {
     Kakaotalk = 'kakao',
+    Google = 'google',
 }
