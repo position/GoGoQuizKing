@@ -4,6 +4,8 @@ import { useAuthStore } from '~/store/auth.store';
 const publicPaths = [
     '/login',
     '/confirm',
+    '/terms',
+    '/privacy',
     '/notice/notice-list',
     '/notice/notice-detail',
 ];
