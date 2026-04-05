@@ -27,47 +27,47 @@ const displayName = computed(() => props.name || 'Unknown');
     <q-card
         :class="[
             'player-card',
-            { 'player-card--current': isCurrentUser },
-            { 'player-card--winner': isWinner },
+            { 'is-current': isCurrentUser },
+            { 'is-winner': isWinner },
         ]"
         flat
     >
-        <q-card-section class="player-card__content">
+        <q-card-section class="content">
             <!-- 승자 왕관 -->
-            <div v-if="isWinner" class="player-card__crown">👑</div>
+            <div v-if="isWinner" class="crown">👑</div>
 
             <!-- 아바타 -->
-            <q-avatar size="64px" class="player-card__avatar">
+            <q-avatar size="64px" class="avatar">
                 <q-img v-if="avatarUrl" :src="avatarUrl" spinner-color="primary" />
                 <q-icon v-else name="person" size="32px" color="grey-5" />
             </q-avatar>
 
             <!-- 이름 -->
-            <div class="player-card__name">
+            <div class="name">
                 {{ isCurrentUser ? '나' : displayName }}
             </div>
 
             <!-- 레벨 -->
-            <q-badge :color="isCurrentUser ? 'primary' : 'grey-6'" class="player-card__level">
+            <q-badge :color="isCurrentUser ? 'primary' : 'grey-6'" class="level">
                 Lv.{{ level }}
             </q-badge>
 
             <!-- 점수 -->
             <div
                 v-if="showScore"
-                :class="['player-card__score', { 'player-card__score--winner': isWinner }]"
+                :class="['score', { 'is-winner': isWinner }]"
             >
                 {{ score }}점
             </div>
 
             <!-- 정답 표시 -->
-            <div v-if="answers.length > 0" class="player-card__answers">
+            <div v-if="answers.length > 0" class="answers">
                 <span
                     v-for="(answer, index) in answers"
                     :key="index"
                     :class="[
-                        'player-card__answer-icon',
-                        answer.is_correct ? 'player-card__answer-icon--correct' : 'player-card__answer-icon--wrong',
+                        'answer-icon',
+                        answer.is_correct ? 'is-correct' : 'is-wrong',
                     ]"
                 >
                     {{ answer.is_correct ? '⭕' : '❌' }}
@@ -86,7 +86,7 @@ const displayName = computed(() => props.name || 'Unknown');
     border: 1px solid var(--border-color);
 
     // 현재 사용자 카드
-    &--current {
+    &.is-current {
         border: 2px solid $primary;
 
         .body--light & {
@@ -99,7 +99,7 @@ const displayName = computed(() => props.name || 'Unknown');
     }
 
     // 승자 카드
-    &--winner {
+    &.is-winner {
         border: 2px solid $warning;
 
         .body--light & {
@@ -112,20 +112,20 @@ const displayName = computed(() => props.name || 'Unknown');
     }
 
     // 내부 컨텐츠
-    &__content {
+    .content {
         text-align: center;
         padding: $spacing-md;
     }
 
     // 승자 왕관
-    &__crown {
+    .crown {
         font-size: $font-size-3xl;
         margin-bottom: $spacing-xs;
         animation: bounce 0.5s ease infinite alternate;
     }
 
     // 아바타
-    &__avatar {
+    .avatar {
         margin-bottom: $spacing-sm;
 
         .body--dark & {
@@ -134,7 +134,7 @@ const displayName = computed(() => props.name || 'Unknown');
     }
 
     // 이름
-    &__name {
+    .name {
         font-size: $font-size-base;
         font-weight: 600;
         color: var(--text-primary);
@@ -144,39 +144,39 @@ const displayName = computed(() => props.name || 'Unknown');
     }
 
     // 레벨 배지
-    &__level {
+    .level {
         margin-top: $spacing-xs;
     }
 
     // 점수
-    &__score {
+    .score {
         font-size: $font-size-xl;
         font-weight: 700;
         margin-top: $spacing-md;
         color: var(--text-primary);
 
-        &--winner {
+        &.is-winner {
             color: $success;
         }
     }
 
     // 정답 표시
-    &__answers {
+    .answers {
         margin-top: $spacing-sm;
         display: flex;
         justify-content: center;
         gap: $spacing-xs;
-    }
 
-    &__answer-icon {
-        font-size: $font-size-base;
+        .answer-icon {
+            font-size: $font-size-base;
 
-        &--correct {
-            color: $success;
-        }
+            &.is-correct {
+                color: $success;
+            }
 
-        &--wrong {
-            color: $negative;
+            &.is-wrong {
+                color: $negative;
+            }
         }
     }
 }

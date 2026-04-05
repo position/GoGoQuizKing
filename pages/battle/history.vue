@@ -69,40 +69,40 @@ async function loadMoreHistory() {
 <template>
     <q-page class="battle-history">
         <!-- 헤더 -->
-        <header class="battle-history__header">
-            <h1 class="battle-history__title page-title">⚔️ 대결 기록</h1>
+        <header class="header">
+            <h1 class="title page-title">⚔️ 대결 기록</h1>
         </header>
 
         <!-- 내 통계 -->
-        <section v-if="battleStore.myRankingStats" class="battle-history__stats">
-            <div class="battle-history__stat">
-                <span class="battle-history__stat-value battle-history__stat-value--primary">
+        <section v-if="battleStore.myRankingStats" class="stats">
+            <div class="stat">
+                <span class="stat-value is-primary">
                     {{ battleStore.myRankingStats.ranking_points }}
                 </span>
-                <span class="battle-history__stat-label">랭킹 포인트</span>
+                <span class="stat-label">랭킹 포인트</span>
             </div>
-            <div class="battle-history__stat">
-                <span class="battle-history__stat-value battle-history__stat-value--positive">
+            <div class="stat">
+                <span class="stat-value is-positive">
                     {{ battleStore.myRankingStats.total_wins }}
                 </span>
-                <span class="battle-history__stat-label">승리</span>
+                <span class="stat-label">승리</span>
             </div>
-            <div class="battle-history__stat">
-                <span class="battle-history__stat-value battle-history__stat-value--negative">
+            <div class="stat">
+                <span class="stat-value is-negative">
                     {{ battleStore.myRankingStats.total_losses }}
                 </span>
-                <span class="battle-history__stat-label">패배</span>
+                <span class="stat-label">패배</span>
             </div>
-            <div class="battle-history__stat">
-                <span class="battle-history__stat-value">{{ battleStore.winRate }}%</span>
-                <span class="battle-history__stat-label">승률</span>
+            <div class="stat">
+                <span class="stat-value">{{ battleStore.winRate }}%</span>
+                <span class="stat-label">승률</span>
             </div>
         </section>
 
         <!-- 탭 -->
         <q-tabs
             v-model="activeTab"
-            class="battle-history__tabs"
+            class="tabs"
             active-color="primary"
             indicator-color="primary"
             align="justify"
@@ -112,26 +112,26 @@ async function loadMoreHistory() {
         </q-tabs>
 
         <!-- 탭 패널 -->
-        <q-tab-panels v-model="activeTab" animated class="battle-history__panels">
+        <q-tab-panels v-model="activeTab" animated class="panels">
             <!-- 대결 기록 탭 -->
-            <q-tab-panel name="history" class="battle-history__panel">
+            <q-tab-panel name="history" class="panel">
                 <!-- 로딩 -->
                 <div
                     v-if="battleStore.historyLoading && !battleStore.history.length"
-                    class="battle-history__loading"
+                    class="loading"
                 >
                     <q-spinner-dots size="40px" color="primary" />
                 </div>
 
                 <!-- 기록 없음 -->
-                <div v-else-if="!battleStore.history.length" class="battle-history__empty">
+                <div v-else-if="!battleStore.history.length" class="empty">
                     <q-icon name="sports_esports" size="60px" color="grey-5" />
-                    <p class="battle-history__empty-text">아직 대결 기록이 없어요</p>
+                    <p class="empty-text">아직 대결 기록이 없어요</p>
                     <q-btn label="대결 시작하기" color="primary" to="/battle/lobby" size="large" />
                 </div>
 
                 <!-- 기록 목록 -->
-                <div v-else class="battle-history__list">
+                <div v-else class="list">
                     <BattleHistoryItem
                         v-for="item in battleStore.history"
                         :key="item.id"
@@ -139,7 +139,7 @@ async function loadMoreHistory() {
                     />
 
                     <!-- 더 보기 -->
-                    <div v-if="hasMoreHistory" class="battle-history__more">
+                    <div v-if="hasMoreHistory" class="more">
                         <q-btn
                             label="더 보기"
                             flat
@@ -152,20 +152,20 @@ async function loadMoreHistory() {
             </q-tab-panel>
 
             <!-- 랭킹 탭 -->
-            <q-tab-panel name="ranking" class="battle-history__panel">
+            <q-tab-panel name="ranking" class="panel">
                 <!-- 로딩 -->
-                <div v-if="battleStore.rankingsLoading" class="battle-history__loading">
+                <div v-if="battleStore.rankingsLoading" class="loading">
                     <q-spinner-dots size="40px" color="primary" />
                 </div>
 
                 <!-- 랭킹 없음 -->
-                <div v-else-if="!battleStore.rankings.length" class="battle-history__empty">
+                <div v-else-if="!battleStore.rankings.length" class="empty">
                     <q-icon name="leaderboard" size="60px" color="grey-5" />
-                    <p class="battle-history__empty-text">아직 랭킹 데이터가 없어요</p>
+                    <p class="empty-text">아직 랭킹 데이터가 없어요</p>
                 </div>
 
                 <!-- 랭킹 목록 -->
-                <div v-else class="battle-history__list">
+                <div v-else class="list">
                     <BattleRankingItem
                         v-for="entry in battleStore.rankings"
                         :key="entry.user_id"
@@ -184,19 +184,19 @@ async function loadMoreHistory() {
     margin: 0 auto;
 
     // 헤더
-    &__header {
+    .header {
         text-align: center;
         margin-bottom: $spacing-lg;
-    }
 
-    &__title {
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0;
+        .title {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
     }
 
     // 내 통계
-    &__stats {
+    .stats {
         display: flex;
         gap: $spacing-md;
         padding: $spacing-md;
@@ -210,42 +210,42 @@ async function loadMoreHistory() {
         .body--dark & {
             background: linear-gradient(135deg, rgba($primary, 0.15) 0%, $dark-bg-card 100%);
         }
-    }
 
-    &__stat {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
+        .stat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
 
-    &__stat-value {
-        font-size: $font-size-2xl;
-        font-weight: 700;
-        color: var(--text-primary);
+            .stat-value {
+                font-size: $font-size-2xl;
+                font-weight: 700;
+                color: var(--text-primary);
 
-        &--primary {
-            color: $primary;
+                &.is-primary {
+                    color: $primary;
+                }
+
+                &.is-positive {
+                    color: $success;
+                }
+
+                &.is-negative {
+                    color: $negative;
+                }
+            }
+
+            .stat-label {
+                font-size: $font-size-xs;
+                color: var(--text-light);
+                margin-top: $spacing-xs;
+            }
         }
-
-        &--positive {
-            color: $success;
-        }
-
-        &--negative {
-            color: $negative;
-        }
-    }
-
-    &__stat-label {
-        font-size: $font-size-xs;
-        color: var(--text-light);
-        margin-top: $spacing-xs;
     }
 
     // 탭
-    &__tabs {
+    .tabs {
         margin-bottom: $spacing-md;
 
         :deep(.q-tab__content .q-tab__label) {
@@ -254,45 +254,45 @@ async function loadMoreHistory() {
         }
     }
 
-    &__panels {
+    .panels {
         background: transparent;
     }
 
-    &__panel {
+    .panel {
         padding: 0;
     }
 
     // 로딩
-    &__loading {
+    .loading {
         display: flex;
         justify-content: center;
         padding: $spacing-xxl;
     }
 
     // 빈 상태
-    &__empty {
+    .empty {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: $spacing-md;
         padding: $spacing-xxl;
         text-align: center;
-    }
 
-    &__empty-text {
-        font-size: $font-size-base;
-        color: var(--text-secondary);
-        margin: 0;
+        .empty-text {
+            font-size: $font-size-base;
+            color: var(--text-secondary);
+            margin: 0;
+        }
     }
 
     // 목록
-    &__list {
+    .list {
         display: flex;
         flex-direction: column;
     }
 
     // 더 보기
-    &__more {
+    .more {
         text-align: center;
         padding: $spacing-md;
     }

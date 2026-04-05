@@ -53,13 +53,13 @@ function isSelected(option: string): boolean {
 <template>
     <div class="battle-question">
         <!-- 상단: 문제 번호 & 타이머 -->
-        <div class="battle-question__header">
-            <div class="battle-question__progress">
+        <div class="header">
+            <div class="progress">
                 Q.{{ questionIndex + 1 }} / {{ totalQuestions }}
             </div>
-            <div class="battle-question__timer">
+            <div class="timer">
                 <q-icon name="timer" :color="timeColor" />
-                <span :class="['battle-question__time', `text-${timeColor}`]">
+                <span :class="['time', `text-${timeColor}`]">
                     {{ timeRemaining }}초
                 </span>
             </div>
@@ -71,7 +71,7 @@ function isSelected(option: string): boolean {
             :color="timeColor"
             size="8px"
             rounded
-            class="battle-question__progress-bar"
+            class="progress-bar"
             :animation-speed="100"
         />
 
@@ -79,45 +79,44 @@ function isSelected(option: string): boolean {
         <q-img
             v-if="questionImageUrl"
             :src="questionImageUrl"
-            class="battle-question__image"
+            class="image"
             fit="contain"
             spinner-color="primary"
         />
 
         <!-- 문제 텍스트 -->
-        <div class="battle-question__card">
-            <div class="battle-question__text">
+        <div class="card">
+            <div class="text">
                 {{ questionText }}
             </div>
         </div>
 
         <!-- 답변 옵션 -->
-        <div class="battle-question__options">
+        <div class="options">
             <!-- 객관식 -->
             <template v-if="questionType === 'multiple' && options">
                 <button
                     v-for="(option, index) in options"
                     :key="index"
                     :class="[
-                        'battle-question__option',
-                        { 'battle-question__option--selected': isSelected(option) },
+                        'option',
+                        { 'is-selected': isSelected(option) },
                     ]"
                     :disabled="disabled || hasAnswered"
                     @click="selectAnswer(option)"
                 >
-                    <span class="battle-question__option-label">{{ optionLabels[index] }}</span>
-                    <span class="battle-question__option-text">{{ option }}</span>
+                    <span class="option-label">{{ optionLabels[index] }}</span>
+                    <span class="option-text">{{ option }}</span>
                 </button>
             </template>
 
             <!-- OX 퀴즈 -->
             <template v-else-if="questionType === 'ox'">
-                <div class="battle-question__ox-container">
+                <div class="ox-container">
                     <button
                         :class="[
-                            'battle-question__ox-btn',
-                            'battle-question__ox-btn--o',
-                            { 'battle-question__ox-btn--selected': isSelected('O') },
+                            'ox-btn is-o',
+                            { 'is-selected': isSelected('O') },
                         ]"
                         :disabled="disabled || hasAnswered"
                         @click="selectAnswer('O')"
@@ -126,9 +125,8 @@ function isSelected(option: string): boolean {
                     </button>
                     <button
                         :class="[
-                            'battle-question__ox-btn',
-                            'battle-question__ox-btn--x',
-                            { 'battle-question__ox-btn--selected': isSelected('X') },
+                            'ox-btn is-x',
+                            { 'is-selected': isSelected('X') },
                         ]"
                         :disabled="disabled || hasAnswered"
                         @click="selectAnswer('X')"
@@ -140,7 +138,7 @@ function isSelected(option: string): boolean {
         </div>
 
         <!-- 답변 완료 표시 -->
-        <div v-if="hasAnswered" class="battle-question__answered">
+        <div v-if="hasAnswered" class="answered">
             <q-chip color="positive" text-color="white" icon="check">
                 답변 완료! 상대방 대기 중...
             </q-chip>
@@ -154,44 +152,44 @@ function isSelected(option: string): boolean {
     margin: 0 auto;
 
     // 헤더 (문제 번호 + 타이머)
-    &__header {
+    .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-bottom: $spacing-md;
-    }
 
-    &__progress {
-        font-size: $font-size-base;
-        font-weight: 600;
-        color: var(--text-primary);
-    }
+        .progress {
+            font-size: $font-size-base;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-    &__timer {
-        display: flex;
-        align-items: center;
-        gap: $spacing-xs;
-    }
+        .timer {
+            display: flex;
+            align-items: center;
+            gap: $spacing-xs;
 
-    &__time {
-        font-size: $font-size-lg;
-        font-weight: 700;
+            .time {
+                font-size: $font-size-lg;
+                font-weight: 700;
+            }
+        }
     }
 
     // 프로그레스 바
-    &__progress-bar {
+    .progress-bar {
         margin-bottom: $spacing-lg;
     }
 
     // 문제 이미지
-    &__image {
+    .image {
         max-height: 200px;
         border-radius: $radius-md;
         margin-bottom: $spacing-md;
     }
 
     // 문제 카드
-    &__card {
+    .card {
         padding: $spacing-lg;
         border-radius: $radius-lg;
         margin-bottom: $spacing-lg;
@@ -204,25 +202,25 @@ function isSelected(option: string): boolean {
             background: linear-gradient(135deg, $dark-bg-surface 0%, $dark-bg-card 100%);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
-    }
 
-    &__text {
-        font-size: $font-size-lg;
-        font-weight: 500;
-        text-align: center;
-        color: var(--text-primary);
-        line-height: 1.6;
+        .text {
+            font-size: $font-size-lg;
+            font-weight: 500;
+            text-align: center;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
     }
 
     // 옵션 컨테이너
-    &__options {
+    .options {
         display: flex;
         flex-direction: column;
         gap: $spacing-sm;
     }
 
     // 객관식 옵션 버튼
-    &__option {
+    .option {
         display: flex;
         align-items: center;
         width: 100%;
@@ -244,41 +242,41 @@ function isSelected(option: string): boolean {
             opacity: 0.6;
         }
 
-        &--selected {
+        &.is-selected {
             background: $primary;
             border-color: $primary;
 
-            .battle-question__option-label,
-            .battle-question__option-text {
+            .option-label,
+            .option-text {
                 color: #fff;
             }
         }
-    }
 
-    &__option-label {
-        font-size: $font-size-lg;
-        font-weight: 600;
-        margin-right: $spacing-md;
-        color: $primary;
+        .option-label {
+            font-size: $font-size-lg;
+            font-weight: 600;
+            margin-right: $spacing-md;
+            color: $primary;
 
-        .body--dark & {
-            color: rgba($primary, 0.9);
+            .body--dark & {
+                color: rgba($primary, 0.9);
+            }
+        }
+
+        .option-text {
+            font-size: $font-size-base;
+            color: var(--text-primary);
         }
     }
 
-    &__option-text {
-        font-size: $font-size-base;
-        color: var(--text-primary);
-    }
-
     // OX 퀴즈 버튼
-    &__ox-container {
+    .ox-container {
         display: flex;
         justify-content: center;
         gap: $spacing-lg;
     }
 
-    &__ox-btn {
+    .ox-btn {
         width: 120px;
         height: 80px;
         border-radius: $radius-lg;
@@ -288,7 +286,7 @@ function isSelected(option: string): boolean {
         transition: all $transition-fast;
         border: 3px solid;
 
-        &--o {
+        &.is-o {
             color: $success;
             border-color: $success;
             background: transparent;
@@ -297,13 +295,13 @@ function isSelected(option: string): boolean {
                 background: rgba($success, 0.1);
             }
 
-            &--selected {
+            &.is-selected {
                 background: $success;
                 color: #fff;
             }
         }
 
-        &--x {
+        &.is-x {
             color: $negative;
             border-color: $negative;
             background: transparent;
@@ -312,7 +310,7 @@ function isSelected(option: string): boolean {
                 background: rgba($negative, 0.1);
             }
 
-            &--selected {
+            &.is-selected {
                 background: $negative;
                 color: #fff;
             }
@@ -325,7 +323,7 @@ function isSelected(option: string): boolean {
     }
 
     // 답변 완료
-    &__answered {
+    .answered {
         text-align: center;
         margin-top: $spacing-md;
     }

@@ -126,7 +126,7 @@ onMounted(() => {
 <template>
     <q-page class="battle-result-page">
         <!-- 로딩 -->
-        <div v-if="isLoading" class="battle-result-page__loading">
+        <div v-if="isLoading" class="loading">
             <q-spinner-gears size="60px" color="primary" />
         </div>
 
@@ -150,7 +150,7 @@ onMounted(() => {
         background: $dark-bg-primary;
     }
 
-    &__loading {
+    .loading {
         display: flex;
         align-items: center;
         justify-content: center;

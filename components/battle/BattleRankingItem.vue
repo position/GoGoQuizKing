@@ -30,35 +30,35 @@ const displayName = computed(
 </script>
 
 <template>
-    <div :class="['ranking-item', { 'ranking-item--current': isCurrentUser }]">
+    <div :class="['ranking-item', { 'is-current': isCurrentUser }]">
         <!-- 순위 -->
-        <div class="ranking-item__rank">
-            <span v-if="rankIcon" class="ranking-item__medal">{{ rankIcon }}</span>
-            <span v-else class="ranking-item__number">{{ entry.rank }}</span>
+        <div class="rank">
+            <span v-if="rankIcon" class="medal">{{ rankIcon }}</span>
+            <span v-else class="number">{{ entry.rank }}</span>
         </div>
 
         <!-- 아바타 -->
-        <q-avatar size="40px" class="ranking-item__avatar">
+        <q-avatar size="40px" class="avatar">
             <q-img v-if="entry.avatar_url" :src="entry.avatar_url" />
             <q-icon v-else name="person" size="20px" color="grey-5" />
         </q-avatar>
 
         <!-- 유저 정보 -->
-        <div class="ranking-item__info">
-            <span class="ranking-item__name">
+        <div class="info">
+            <span class="name">
                 {{ displayName }}
-                <q-badge v-if="isCurrentUser" color="primary" class="ranking-item__me-badge">
+                <q-badge v-if="isCurrentUser" color="primary" class="me-badge">
                     나
                 </q-badge>
             </span>
-            <span class="ranking-item__record">
+            <span class="record">
                 {{ entry.total_wins }}승 {{ entry.total_battles - entry.total_wins }}패
-                <span class="ranking-item__winrate">({{ entry.win_rate }}%)</span>
+                <span class="winrate">({{ entry.win_rate }}%)</span>
             </span>
         </div>
 
         <!-- 랭킹 포인트 -->
-        <div class="ranking-item__points">{{ entry.ranking_points }} RP</div>
+        <div class="points">{{ entry.ranking_points }} RP</div>
     </div>
 </template>
 
@@ -79,7 +79,7 @@ const displayName = computed(
     }
 
     // 현재 사용자 강조
-    &--current {
+    &.is-current {
         border: 2px solid $primary;
 
         .body--light & {
@@ -92,38 +92,38 @@ const displayName = computed(
     }
 
     // 순위
-    &__rank {
+    .rank {
         min-width: 48px;
         display: flex;
         justify-content: center;
-    }
 
-    &__medal {
-        font-size: $font-size-3xl;
-    }
-
-    &__number {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: $font-size-lg;
-        font-weight: 700;
-        border-radius: 50%;
-        color: var(--text-secondary);
-
-        .body--light & {
-            background: #f0f0f0;
+        .medal {
+            font-size: $font-size-3xl;
         }
 
-        .body--dark & {
-            background: $dark-bg-surface;
+        .number {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: $font-size-lg;
+            font-weight: 700;
+            border-radius: 50%;
+            color: var(--text-secondary);
+
+            .body--light & {
+                background: #f0f0f0;
+            }
+
+            .body--dark & {
+                background: $dark-bg-surface;
+            }
         }
     }
 
     // 아바타
-    &__avatar {
+    .avatar {
         flex-shrink: 0;
 
         .body--dark & {
@@ -132,37 +132,37 @@ const displayName = computed(
     }
 
     // 정보
-    &__info {
+    .info {
         flex: 1;
         display: flex;
         flex-direction: column;
         gap: $spacing-xs;
         min-width: 0;
-    }
 
-    &__name {
-        display: flex;
-        align-items: center;
-        gap: $spacing-xs;
-        font-weight: 600;
-        color: var(--text-primary);
-    }
+        .name {
+            display: flex;
+            align-items: center;
+            gap: $spacing-xs;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
-    &__me-badge {
-        font-size: $font-size-xs;
-    }
+        .me-badge {
+            font-size: $font-size-xs;
+        }
 
-    &__record {
-        font-size: $font-size-sm;
-        color: var(--text-secondary);
-    }
+        .record {
+            font-size: $font-size-sm;
+            color: var(--text-secondary);
+        }
 
-    &__winrate {
-        color: var(--text-light);
+        .winrate {
+            color: var(--text-light);
+        }
     }
 
     // 포인트
-    &__points {
+    .points {
         font-weight: 700;
         color: $primary;
         flex-shrink: 0;

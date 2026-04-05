@@ -31,16 +31,16 @@ function handleClick() {
     <button
         :class="[
             'battle-type-card',
-            { 'battle-type-card--selected': selected },
-            { 'battle-type-card--disabled': disabled },
+            { 'is-selected': selected },
+            { 'is-disabled': disabled },
         ]"
         :disabled="disabled"
         @click="handleClick"
     >
-        <span class="battle-type-card__icon">{{ typeInfo.icon }}</span>
-        <span class="battle-type-card__label">{{ typeInfo.label }}</span>
-        <span class="battle-type-card__count">{{ typeInfo.questionCount }}문제</span>
-        <q-badge v-if="type === 'ranked'" color="red" class="battle-type-card__badge">
+        <span class="icon">{{ typeInfo.icon }}</span>
+        <span class="label">{{ typeInfo.label }}</span>
+        <span class="count">{{ typeInfo.questionCount }}문제</span>
+        <q-badge v-if="type === 'ranked'" color="red" class="badge">
             랭킹 포인트 획득
         </q-badge>
 
@@ -49,7 +49,7 @@ function handleClick() {
             name="check_circle"
             color="primary"
             size="24px"
-            class="battle-type-card__check"
+            class="check"
         />
     </button>
 </template>
@@ -70,13 +70,13 @@ function handleClick() {
     transition: all $transition-fast;
     text-align: center;
 
-    &:hover:not(&--disabled) {
+    &:hover:not(.is-disabled) {
         transform: translateY(-4px);
         box-shadow: $shadow-md;
     }
 
     // 선택 상태
-    &--selected {
+    &.is-selected {
         border-color: $primary;
 
         .body--light & {
@@ -89,19 +89,19 @@ function handleClick() {
     }
 
     // 비활성화
-    &--disabled {
+    &.is-disabled {
         opacity: 0.5;
         cursor: not-allowed;
     }
 
     // 아이콘
-    &__icon {
+    .icon {
         font-size: $font-size-4xl;
         margin-bottom: $spacing-sm;
     }
 
     // 라벨
-    &__label {
+    .label {
         font-size: $font-size-lg;
         font-weight: 700;
         color: var(--text-primary);
@@ -109,18 +109,18 @@ function handleClick() {
     }
 
     // 문제 수
-    &__count {
+    .count {
         font-size: $font-size-xs;
         color: var(--text-light);
     }
 
     // 뱃지
-    &__badge {
+    .badge {
         margin-top: $spacing-sm;
     }
 
     // 체크 아이콘
-    &__check {
+    .check {
         position: absolute;
         top: $spacing-sm;
         right: $spacing-sm;

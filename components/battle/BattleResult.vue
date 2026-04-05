@@ -57,78 +57,74 @@ async function handleShare() {
 <template>
     <div class="battle-result">
         <!-- 결과 헤더 -->
-        <div :class="['battle-result__header', `battle-result__header--${resultType}`]">
-            <h1 class="battle-result__title">{{ resultTitle }}</h1>
-            <p class="battle-result__subtitle">대결이 종료되었습니다</p>
+        <div :class="['header', `is-${resultType}`]">
+            <h1 class="title">{{ resultTitle }}</h1>
+            <p class="subtitle">대결이 종료되었습니다</p>
         </div>
 
         <!-- 점수 비교 -->
-        <div class="battle-result__comparison">
-            <div class="battle-result__player">
-                <q-avatar size="60px" class="battle-result__avatar">
+        <div class="comparison">
+            <div class="player">
+                <q-avatar size="60px" class="avatar">
                     <q-icon name="person" size="30px" />
                 </q-avatar>
-                <span class="battle-result__player-name">나</span>
-                <span class="battle-result__player-score battle-result__player-score--me">
+                <span class="player-name">나</span>
+                <span class="player-score is-me">
                     {{ result.my_score }}점
                 </span>
-                <span class="battle-result__player-correct">
+                <span class="player-correct">
                     {{ result.my_correct_count }}/{{ result.total_questions }} 정답
                 </span>
             </div>
 
-            <div class="battle-result__vs">VS</div>
+            <div class="vs">VS</div>
 
-            <div class="battle-result__player">
-                <q-avatar size="60px" class="battle-result__avatar">
+            <div class="player">
+                <q-avatar size="60px" class="avatar">
                     <q-img v-if="result.opponent.avatar_url" :src="result.opponent.avatar_url" />
                     <q-icon v-else name="person" size="30px" />
                 </q-avatar>
-                <span class="battle-result__player-name">{{ result.opponent.name }}</span>
-                <span class="battle-result__player-score">
-                    {{ result.opponent_score }}점
-                </span>
-                <span class="battle-result__player-correct">
+                <span class="player-name">{{ result.opponent.name }}</span>
+                <span class="player-score"> {{ result.opponent_score }}점 </span>
+                <span class="player-correct">
                     {{ result.opponent_correct_count }}/{{ result.total_questions }} 정답
                 </span>
             </div>
         </div>
 
         <!-- 상세 결과 -->
-        <div class="battle-result__details">
-            <h2 class="battle-result__section-title">📊 상세 결과</h2>
-            <div class="battle-result__stat">
+        <div class="details">
+            <h2 class="section-title">📊 상세 결과</h2>
+            <div class="stat">
                 <q-icon name="check_circle" color="positive" size="24px" />
-                <span class="battle-result__stat-label">정답률</span>
-                <span class="battle-result__stat-value">{{ accuracy }}%</span>
+                <span class="stat-label">정답률</span>
+                <span class="stat-value">{{ accuracy }}%</span>
             </div>
         </div>
 
         <!-- 획득 보상 -->
-        <div class="battle-result__rewards">
-            <h2 class="battle-result__section-title">🎁 획득 보상</h2>
-            <div class="battle-result__rewards-grid">
-                <div class="battle-result__reward">
-                    <span class="battle-result__reward-icon">💰</span>
-                    <span class="battle-result__reward-value battle-result__reward-value--positive">
+        <div class="rewards">
+            <h2 class="section-title">🎁 획득 보상</h2>
+            <div class="rewards-grid">
+                <div class="reward">
+                    <span class="reward-icon">💰</span>
+                    <span class="reward-value is-positive">
                         +{{ result.reward.points_earned }}
                     </span>
-                    <span class="battle-result__reward-label">포인트</span>
+                    <span class="reward-label">포인트</span>
                 </div>
-                <div v-if="result.reward.ranking_points_earned !== 0" class="battle-result__reward">
-                    <span class="battle-result__reward-icon">📈</span>
+                <div v-if="result.reward.ranking_points_earned !== 0" class="reward">
+                    <span class="reward-icon">📈</span>
                     <span
                         :class="[
-                            'battle-result__reward-value',
-                            result.reward.ranking_points_earned > 0
-                                ? 'battle-result__reward-value--positive'
-                                : 'battle-result__reward-value--negative',
+                            'reward-value',
+                            result.reward.ranking_points_earned > 0 ? 'is-positive' : 'is-negative',
                         ]"
                     >
                         {{ result.reward.ranking_points_earned > 0 ? '+' : ''
                         }}{{ result.reward.ranking_points_earned }}
                     </span>
-                    <span class="battle-result__reward-label">랭킹 포인트</span>
+                    <span class="reward-label">랭킹 포인트</span>
                 </div>
             </div>
         </div>
@@ -136,10 +132,10 @@ async function handleShare() {
         <!-- 획득 뱃지 -->
         <div
             v-if="result.reward.badges_earned && result.reward.badges_earned.length > 0"
-            class="battle-result__badges"
+            class="badges"
         >
-            <h2 class="battle-result__section-title">🏅 새 뱃지 획득!</h2>
-            <div class="battle-result__badges-list">
+            <h2 class="section-title">🏅 새 뱃지 획득!</h2>
+            <div class="badges-list">
                 <q-chip
                     v-for="badge in result.reward.badges_earned"
                     :key="badge.badge_id"
@@ -153,12 +149,12 @@ async function handleShare() {
         </div>
 
         <!-- 버튼 -->
-        <div class="battle-result__actions">
+        <div class="actions">
             <q-btn
                 label="재대결"
                 color="primary"
                 size="lg"
-                class="battle-result__btn"
+                class="btn"
                 @click="emit('rematch')"
             />
             <q-btn
@@ -167,7 +163,7 @@ async function handleShare() {
                 color="secondary"
                 outline
                 size="lg"
-                class="battle-result__btn"
+                class="btn"
                 @click="handleShare"
             />
             <q-btn
@@ -175,7 +171,7 @@ async function handleShare() {
                 color="grey-6"
                 outline
                 size="lg"
-                class="battle-result__btn"
+                class="btn"
                 @click="emit('goHome')"
             />
         </div>
@@ -202,38 +198,38 @@ async function handleShare() {
     }
 
     // 결과 헤더
-    &__header {
+    .header {
         padding: 60px $spacing-lg 80px;
         text-align: center;
         color: #fff;
 
-        &--win {
+        &.is-win {
             background: linear-gradient(135deg, $success 0%, #4ecdc4 100%);
         }
 
-        &--lose {
+        &.is-lose {
             background: linear-gradient(135deg, $negative 0%, #ff8e8e 100%);
         }
 
-        &--draw {
+        &.is-draw {
             background: linear-gradient(135deg, $info 0%, #74d4e8 100%);
+        }
+
+        .title {
+            font-size: $font-size-4xl;
+            font-weight: 700;
+            margin: 0 0 $spacing-sm;
+        }
+
+        .subtitle {
+            font-size: $font-size-lg;
+            opacity: 0.9;
+            margin: 0;
         }
     }
 
-    &__title {
-        font-size: $font-size-4xl;
-        font-weight: 700;
-        margin: 0 0 $spacing-sm;
-    }
-
-    &__subtitle {
-        font-size: $font-size-lg;
-        opacity: 0.9;
-        margin: 0;
-    }
-
     // 점수 비교 카드
-    &__comparison {
+    .comparison {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -242,56 +238,56 @@ async function handleShare() {
         border-radius: $radius-lg;
         background: var(--bg-card);
         box-shadow: $shadow-lg;
-    }
 
-    &__player {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
+        .player {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
 
-    &__avatar {
-        margin-bottom: $spacing-sm;
+            .avatar {
+                margin-bottom: $spacing-sm;
 
-        .body--dark & {
-            background: $dark-bg-surface;
+                .body--dark & {
+                    background: $dark-bg-surface;
+                }
+            }
+
+            .player-name {
+                font-size: $font-size-sm;
+                color: var(--text-secondary);
+                margin-bottom: $spacing-xs;
+            }
+
+            .player-score {
+                font-size: $font-size-2xl;
+                font-weight: 700;
+                color: var(--text-secondary);
+
+                &.is-me {
+                    color: $primary;
+                }
+            }
+
+            .player-correct {
+                font-size: $font-size-xs;
+                color: var(--text-light);
+            }
         }
-    }
 
-    &__player-name {
-        font-size: $font-size-sm;
-        color: var(--text-secondary);
-        margin-bottom: $spacing-xs;
-    }
-
-    &__player-score {
-        font-size: $font-size-2xl;
-        font-weight: 700;
-        color: var(--text-secondary);
-
-        &--me {
-            color: $primary;
+        .vs {
+            padding: $spacing-sm $spacing-md;
+            border-radius: $radius-full;
+            background: linear-gradient(135deg, $negative, #ff8e8e);
+            color: #fff;
+            font-weight: 700;
+            font-size: $font-size-sm;
         }
-    }
-
-    &__player-correct {
-        font-size: $font-size-xs;
-        color: var(--text-light);
-    }
-
-    &__vs {
-        padding: $spacing-sm $spacing-md;
-        border-radius: $radius-full;
-        background: linear-gradient(135deg, $negative, #ff8e8e);
-        color: #fff;
-        font-weight: 700;
-        font-size: $font-size-sm;
     }
 
     // 섹션 제목
-    &__section-title {
+    .section-title {
         font-size: $font-size-base;
         font-weight: 600;
         margin: 0 0 $spacing-md;
@@ -299,31 +295,31 @@ async function handleShare() {
     }
 
     // 상세 결과
-    &__details {
+    .details {
         margin: $spacing-md;
         padding: $spacing-md;
         border-radius: $radius-md;
         background: var(--bg-card);
-    }
 
-    &__stat {
-        display: flex;
-        align-items: center;
-        gap: $spacing-md;
-    }
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: $spacing-md;
 
-    &__stat-label {
-        flex: 1;
-        color: var(--text-secondary);
-    }
+            .stat-label {
+                flex: 1;
+                color: var(--text-secondary);
+            }
 
-    &__stat-value {
-        font-weight: 700;
-        color: var(--text-primary);
+            .stat-value {
+                font-weight: 700;
+                color: var(--text-primary);
+            }
+        }
     }
 
     // 보상
-    &__rewards {
+    .rewards {
         margin: $spacing-md;
         padding: $spacing-md;
         border-radius: $radius-md;
@@ -335,68 +331,69 @@ async function handleShare() {
         .body--dark & {
             background: linear-gradient(135deg, rgba($warning, 0.15) 0%, $dark-bg-card 100%);
         }
-    }
 
-    &__rewards-grid {
-        display: flex;
-        gap: $spacing-lg;
-    }
-
-    &__reward {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-
-    &__reward-icon {
-        font-size: $font-size-3xl;
-        margin-bottom: $spacing-sm;
-    }
-
-    &__reward-value {
-        font-size: $font-size-xl;
-        font-weight: 700;
-
-        &--positive {
-            color: $success;
+        .rewards-grid {
+            display: flex;
+            gap: $spacing-lg;
         }
 
-        &--negative {
-            color: $negative;
-        }
-    }
+        .reward {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
 
-    &__reward-label {
-        font-size: $font-size-xs;
-        color: var(--text-light);
+            .reward-icon {
+                font-size: $font-size-3xl;
+                margin-bottom: $spacing-sm;
+            }
+
+            .reward-value {
+                font-size: $font-size-xl;
+                font-weight: 700;
+
+                &.is-positive {
+                    color: $success;
+                }
+
+                &.is-negative {
+                    color: $negative;
+                }
+            }
+
+            .reward-label {
+                font-size: $font-size-xs;
+                color: var(--text-light);
+            }
+        }
     }
 
     // 뱃지
-    &__badges {
+    .badges {
         margin: $spacing-md;
         padding: $spacing-md;
         border-radius: $radius-md;
         background: var(--bg-card);
-    }
 
-    &__badges-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: $spacing-sm;
+        .badges-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: $spacing-sm;
+        }
     }
 
     // 액션 버튼
-    &__actions {
+    .actions {
         display: flex;
         gap: $spacing-md;
         padding: $spacing-lg;
-    }
 
-    &__btn {
-        flex: 1;
+        .btn {
+            flex: 1;
+            padding: 5px 10px;
+        }
     }
 }
 </style>

@@ -37,26 +37,26 @@ const formatTime = (seconds: number): string => {
 <template>
     <div class="matchmaking">
         <!-- 애니메이션 아이콘 -->
-        <div class="matchmaking__animation">
-            <div class="matchmaking__pulse-ring"></div>
-            <div class="matchmaking__pulse-ring matchmaking__pulse-ring--delay-1"></div>
-            <div class="matchmaking__pulse-ring matchmaking__pulse-ring--delay-2"></div>
-            <q-avatar size="100px" class="matchmaking__avatar">
+        <div class="animation">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring delay-1"></div>
+            <div class="pulse-ring delay-2"></div>
+            <q-avatar size="100px" class="avatar">
                 <q-icon name="person_search" size="50px" color="primary" />
             </q-avatar>
         </div>
 
         <!-- 상태 텍스트 -->
-        <h2 class="matchmaking__title">상대를 찾고 있어요</h2>
-        <p class="matchmaking__status">{{ statusText }}</p>
+        <h2 class="title">상대를 찾고 있어요</h2>
+        <p class="status">{{ statusText }}</p>
 
         <!-- 대결 유형 -->
-        <q-chip color="primary" text-color="white" class="matchmaking__type">
+        <q-chip color="primary" text-color="white" class="type">
             {{ battleType }}
         </q-chip>
 
         <!-- 경과 시간 -->
-        <div class="matchmaking__time">
+        <div class="time">
             <q-icon name="timer" />
             {{ formatTime(elapsedTime) }}
         </div>
@@ -69,7 +69,7 @@ const formatTime = (seconds: number): string => {
             rounded
             stripe
             animation-speed="500"
-            class="matchmaking__progress"
+            class="progress"
         />
 
         <!-- 취소 버튼 -->
@@ -78,12 +78,12 @@ const formatTime = (seconds: number): string => {
             color="grey-6"
             outline
             size="large"
-            class="matchmaking__cancel"
+            class="cancel"
             @click="emit('cancel')"
         />
 
         <!-- 팁 -->
-        <div class="matchmaking__tip">
+        <div class="tip">
             <q-icon name="lightbulb" color="warning" />
             <span>Tip: 매칭 중에도 다른 사람들이 당신을 찾고 있어요!</span>
         </div>
@@ -98,7 +98,7 @@ const formatTime = (seconds: number): string => {
     text-align: center;
 
     // 펄스 애니메이션 컨테이너
-    &__animation {
+    .animation {
         position: relative;
         width: 150px;
         height: 150px;
@@ -106,7 +106,7 @@ const formatTime = (seconds: number): string => {
     }
 
     // 펄스 링
-    &__pulse-ring {
+    .pulse-ring {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -118,17 +118,17 @@ const formatTime = (seconds: number): string => {
         animation: pulse 2s ease-out infinite;
         opacity: 0;
 
-        &--delay-1 {
+        &.delay-1 {
             animation-delay: 0.5s;
         }
 
-        &--delay-2 {
+        &.delay-2 {
             animation-delay: 1s;
         }
     }
 
     // 중앙 아바타
-    &__avatar {
+    .avatar {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -145,7 +145,7 @@ const formatTime = (seconds: number): string => {
     }
 
     // 제목
-    &__title {
+    .title {
         font-size: $font-size-xl;
         font-weight: 600;
         color: var(--text-primary);
@@ -153,19 +153,19 @@ const formatTime = (seconds: number): string => {
     }
 
     // 상태 텍스트
-    &__status {
+    .status {
         font-size: $font-size-base;
         color: var(--text-secondary);
         margin: 0 0 $spacing-lg;
     }
 
     // 대결 유형 칩
-    &__type {
+    .type {
         margin-bottom: $spacing-md;
     }
 
     // 경과 시간
-    &__time {
+    .time {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -177,18 +177,18 @@ const formatTime = (seconds: number): string => {
     }
 
     // 프로그레스 바
-    &__progress {
+    .progress {
         max-width: 300px;
         margin: 0 auto $spacing-lg;
     }
 
     // 취소 버튼
-    &__cancel {
+    .cancel {
         margin-top: $spacing-xl;
     }
 
     // 팁
-    &__tip {
+    .tip {
         display: flex;
         align-items: center;
         justify-content: center;

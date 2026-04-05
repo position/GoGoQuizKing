@@ -363,19 +363,19 @@ onUnmounted(() => {
 <template>
     <q-page class="battle-room">
         <!-- 로딩 -->
-        <div v-if="isLoading" class="battle-room__loading">
+        <div v-if="isLoading" class="loading">
             <q-spinner-gears size="60px" color="primary" />
         </div>
 
         <!-- 대기 중 (게스트 기다리는 중) -->
-        <div v-else-if="gamePhase === 'waiting'" class="battle-room__waiting">
-            <h1 class="battle-room__title">🎮 대결 방</h1>
-            <p class="battle-room__subtitle">친구를 초대해서 대결을 시작하세요!</p>
+        <div v-else-if="gamePhase === 'waiting'" class="waiting">
+            <h1 class="title">🎮 대결 방</h1>
+            <p class="subtitle">친구를 초대해서 대결을 시작하세요!</p>
 
             <!-- 초대 코드 -->
-            <div class="battle-room__code-card">
-                <span class="battle-room__code-label">초대 코드</span>
-                <span class="battle-room__code">{{ room?.room_code }}</span>
+            <div class="code-card">
+                <span class="code-label">초대 코드</span>
+                <span class="code">{{ room?.room_code }}</span>
                 <q-btn
                     label="코드 복사"
                     icon="content_copy"
@@ -394,10 +394,10 @@ onUnmounted(() => {
                 :level="room.host.level"
                 :is-current-user="isHost"
                 :show-score="false"
-                class="battle-room__player-card"
+                class="player-card"
             />
 
-            <div class="battle-room__waiting-text">
+            <div class="waiting-text">
                 <q-spinner-dots size="20px" />
                 <span>상대방을 기다리는 중...</span>
             </div>
@@ -406,11 +406,11 @@ onUnmounted(() => {
         </div>
 
         <!-- 준비 완료 (양측 참가) -->
-        <div v-else-if="gamePhase === 'ready'" class="battle-room__ready">
-            <h2 class="battle-room__ready-title">⚔️ 대결 준비 완료!</h2>
+        <div v-else-if="gamePhase === 'ready'" class="ready">
+            <h2 class="ready-title">⚔️ 대결 준비 완료!</h2>
 
             <!-- 플레이어 정보 -->
-            <div class="battle-room__players">
+            <div class="players">
                 <BattlePlayerCard
                     v-if="room?.host"
                     :user-id="room.host.id"
@@ -421,7 +421,7 @@ onUnmounted(() => {
                     :show-score="false"
                 />
 
-                <span class="battle-room__vs">VS</span>
+                <span class="vs">VS</span>
 
                 <BattlePlayerCard
                     v-if="room?.guest"
@@ -442,22 +442,22 @@ onUnmounted(() => {
                 size="xl"
                 @click="handleStartBattle"
             />
-            <p v-else class="battle-room__waiting-host">호스트가 대결을 시작하면 시작됩니다...</p>
+            <p v-else class="waiting-host">호스트가 대결을 시작하면 시작됩니다...</p>
         </div>
 
         <!-- 카운트다운 -->
-        <div v-else-if="gamePhase === 'countdown'" class="battle-room__countdown">
-            <span class="battle-room__countdown-number">{{ countdownNumber }}</span>
-            <span class="battle-room__countdown-text">대결 시작!</span>
+        <div v-else-if="gamePhase === 'countdown'" class="countdown">
+            <span class="countdown-number">{{ countdownNumber }}</span>
+            <span class="countdown-text">대결 시작!</span>
         </div>
 
         <!-- 게임 진행 중 -->
         <div
             v-else-if="gamePhase === 'playing' || gamePhase === 'roundResult'"
-            class="battle-room__playing"
+            class="playing"
         >
             <!-- 상단: 플레이어 점수 -->
-            <div class="battle-room__scoreboard">
+            <div class="scoreboard">
                 <BattlePlayerCard
                     v-if="room?.host"
                     :user-id="room.host.id"
@@ -502,11 +502,11 @@ onUnmounted(() => {
             />
 
             <!-- 라운드 결과 -->
-            <div v-if="gamePhase === 'roundResult'" class="battle-room__round-result">
-                <h3 class="battle-room__round-result-title">
+            <div v-if="gamePhase === 'roundResult'" class="round-result">
+                <h3 class="round-result-title">
                     정답: {{ currentQuestion?.correct_answer }}
                 </h3>
-                <p class="battle-room__round-result-text">다음 문제로 넘어갑니다...</p>
+                <p class="round-result-text">다음 문제로 넘어갑니다...</p>
             </div>
         </div>
     </q-page>
@@ -517,7 +517,7 @@ onUnmounted(() => {
     min-height: calc(100vh - 100px);
 
     // 로딩
-    &__loading {
+    .loading {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -525,28 +525,28 @@ onUnmounted(() => {
     }
 
     // 대기 화면
-    &__waiting {
+    .waiting {
         max-width: 600px;
         margin: 0 auto;
         padding: $spacing-lg;
         text-align: center;
-    }
 
-    &__title {
-        font-size: $font-size-3xl;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0 0 $spacing-sm;
-    }
+        .title {
+            font-size: $font-size-3xl;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 $spacing-sm;
+        }
 
-    &__subtitle {
-        font-size: $font-size-base;
-        color: var(--text-secondary);
-        margin: 0 0 $spacing-xxl;
+        .subtitle {
+            font-size: $font-size-base;
+            color: var(--text-secondary);
+            margin: 0 0 $spacing-xxl;
+        }
     }
 
     // 초대 코드 카드
-    &__code-card {
+    .code-card {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -562,26 +562,26 @@ onUnmounted(() => {
         .body--dark & {
             background: linear-gradient(135deg, rgba($warning, 0.15) 0%, $dark-bg-card 100%);
         }
+
+        .code-label {
+            font-size: $font-size-sm;
+            color: var(--text-light);
+        }
+
+        .code {
+            font-size: $font-size-4xl;
+            font-weight: 700;
+            color: $primary;
+            letter-spacing: 8px;
+        }
     }
 
-    &__code-label {
-        font-size: $font-size-sm;
-        color: var(--text-light);
-    }
-
-    &__code {
-        font-size: $font-size-4xl;
-        font-weight: 700;
-        color: $primary;
-        letter-spacing: 8px;
-    }
-
-    &__player-card {
+    .player-card {
         max-width: 200px;
         margin: 0 auto $spacing-lg;
     }
 
-    &__waiting-text {
+    .waiting-text {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -592,30 +592,34 @@ onUnmounted(() => {
     }
 
     // 준비 화면
-    &__ready {
+    .ready {
         max-width: 600px;
         margin: 0 auto;
         padding: $spacing-lg;
         text-align: center;
+
+        .ready-title {
+            font-size: $font-size-2xl;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 $spacing-xl;
+        }
     }
 
-    &__ready-title {
-        font-size: $font-size-2xl;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0 0 $spacing-xl;
-    }
-
-    &__players {
+    .players {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: $spacing-xl;
         margin-bottom: $spacing-xl;
         flex-wrap: wrap;
+
+        @media (max-width: 599px) {
+            flex-direction: column;
+        }
     }
 
-    &__vs {
+    .vs {
         font-size: $font-size-2xl;
         font-weight: 700;
         background: linear-gradient(135deg, $negative, #ff8e8e);
@@ -624,42 +628,42 @@ onUnmounted(() => {
         background-clip: text;
     }
 
-    &__waiting-host {
+    .waiting-host {
         font-size: $font-size-base;
         color: var(--text-light);
         margin: 0;
     }
 
     // 카운트다운
-    &__countdown {
+    .countdown {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         min-height: calc(100vh - 200px);
-    }
 
-    &__countdown-number {
-        font-size: 120px;
-        font-weight: 700;
-        color: $primary;
-        animation: pulse 1s ease-in-out infinite;
-    }
+        .countdown-number {
+            font-size: 120px;
+            font-weight: 700;
+            color: $primary;
+            animation: pulse 1s ease-in-out infinite;
+        }
 
-    &__countdown-text {
-        font-size: $font-size-xl;
-        color: var(--text-primary);
-        margin-top: $spacing-md;
+        .countdown-text {
+            font-size: $font-size-xl;
+            color: var(--text-primary);
+            margin-top: $spacing-md;
+        }
     }
 
     // 플레이 화면
-    &__playing {
+    .playing {
         max-width: 700px;
         margin: 0 auto;
         padding: $spacing-md;
     }
 
-    &__scoreboard {
+    .scoreboard {
         display: flex;
         justify-content: space-between;
         gap: $spacing-md;
@@ -667,7 +671,7 @@ onUnmounted(() => {
     }
 
     // 라운드 결과 오버레이
-    &__round-result {
+    .round-result {
         position: fixed;
         top: 0;
         left: 0;
@@ -680,17 +684,17 @@ onUnmounted(() => {
         justify-content: center;
         color: #fff;
         z-index: 100;
-    }
 
-    &__round-result-title {
-        font-size: $font-size-xl;
-        font-weight: 600;
-        margin: 0 0 $spacing-sm;
-    }
+        .round-result-title {
+            font-size: $font-size-xl;
+            font-weight: 600;
+            margin: 0 0 $spacing-sm;
+        }
 
-    &__round-result-text {
-        font-size: $font-size-base;
-        margin: 0;
+        .round-result-text {
+            font-size: $font-size-base;
+            margin: 0;
+        }
     }
 }
 
