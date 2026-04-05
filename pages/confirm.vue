@@ -20,6 +20,8 @@ const route = useRoute();
 const authStore = useAuthStore();
 
 // 프로필 테이블에 사용자 정보 저장/업데이트
+// 참고: Supabase 트리거(on_auth_user_created)가 자동으로 프로필을 생성하므로
+// 여기서의 upsert는 보조적인 역할. 중복 키 에러는 무시해도 안전함.
 async function upsertProfile(userId: string, userMeta: Record<string, unknown>, provider?: string) {
     try {
         const { error } = await supabase.from('profiles').upsert(
@@ -32,11 +34,15 @@ async function upsertProfile(userId: string, userMeta: Record<string, unknown>, 
                 provider: provider || null,
                 updated_at: new Date().toISOString(),
             },
-            { onConflict: 'id' },
+            { onConflict: 'id', ignoreDuplicates: false },
         );
 
         if (error) {
-            console.error('Profile upsert error:', error);
+            // 중복 키 에러(23505)는 트리거가 이미 처리했으므로 무시
+            // 다른 에러만 로깅
+            if (error.code !== '23505') {
+                console.error('Profile upsert error:', error);
+            }
         }
     } catch (e) {
         console.error('Failed to upsert profile:', e);
@@ -45,6 +51,27 @@ async function upsertProfile(userId: string, userMeta: Record<string, unknown>, 
 
 onMounted(async () => {
     try {
+        // URL 쿼리에서 에러 체크 (OAuth 콜백 에러)
+        const errorParam = route.query.error as string | undefined;
+        const errorDescription = route.query.error_description as string | undefined;
+
+        if (errorParam) {
+            // 중복 키 에러(profiles_pkey)는 트리거가 이미 처리했으므로 무시하고 진행
+            const isDuplicateKeyError = errorDescription?.includes('profiles_pkey') ||
+                                         errorDescription?.includes('duplicate key');
+
+            if (isDuplicateKeyError) {
+                console.log('Profile already exists (created by trigger), continuing...');
+                // 에러 파라미터 무시하고 세션 확인으로 진행
+            } else {
+                // 다른 에러는 로그인 페이지로 리다이렉트
+                console.error('OAuth callback error:', errorParam, errorDescription);
+                ToastMessage.error('로그인 처리 중 오류가 발생했습니다.');
+                await router.push('/login');
+                return;
+            }
+        }
+
         // OAuth 콜백에서 세션 가져오기
         const { data, error } = await supabase.auth.getSession();
 
