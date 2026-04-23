@@ -227,7 +227,7 @@ function handlePreview(quizId: string) {
         overflow: auto;
 
         .quiz-item-wrapper {
-            padding-bottom: 16px;
+            padding: 0 10px 16px 10px;
         }
     }
 

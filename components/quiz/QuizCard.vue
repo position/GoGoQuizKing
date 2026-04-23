@@ -80,7 +80,7 @@ const props = withDefaults(
     {
         showActions: false,
         showPlayButton: true,
-    }
+    },
 );
 
 const emit = defineEmits<{
@@ -110,6 +110,7 @@ function handleClick() {
     background: var(--bg-card);
     overflow: hidden;
     border: 1px solid var(--border-color);
+    box-shadow: 0 0 12px var(--shadow-color);
 
     &:hover {
         transform: translateY(-4px);

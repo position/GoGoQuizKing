@@ -411,7 +411,6 @@ function goProfile() {
                         var(--color-secondary) 0%,
                         var(--color-info) 100%
                     );
-                    border: 2px solid var(--bg-card);
                     box-shadow: 0 2px 8px var(--shadow-color);
                 }
 

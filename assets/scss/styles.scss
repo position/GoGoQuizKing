@@ -197,6 +197,10 @@ button:focus-visible {
     position: fixed !important;
 }
 
+.q-page {
+    background-color: var(--color-primary);
+}
+
 // q-page-container 모바일 스크롤 지원
 .q-page-container {
     overflow-y: auto;
