@@ -18,6 +18,88 @@ interface Question {
     hint: string;
 }
 
+interface DailyQuizSpec {
+    gradeLevel: number;
+    category: string;
+    difficulty: 'seedling' | 'leaf' | 'tree' | 'king';
+    topic: string;
+    questionCount: number;
+}
+
+interface GeminiResponse {
+    candidates?: Array<{
+        content?: {
+            parts?: Array<{ text?: string }>;
+        };
+    }>;
+}
+
+interface GeneratedQuiz {
+    title?: string;
+    description?: string;
+    questions?: Partial<Question>[];
+}
+
+const categoryDescriptions: Record<string, string> = {
+    korean: '국어/한글',
+    math: '수학/계산',
+    social: '사회/역사',
+    science: '과학/자연',
+    english: '영어',
+    general: '일반 상식',
+    art: '예술/체육',
+    fun: '재미/오락',
+};
+
+const difficultyDescriptions: Record<DailyQuizSpec['difficulty'], string> = {
+    seedling: '1~2학년 수준의 매우 쉬운',
+    leaf: '3~4학년 수준의 적당한',
+    tree: '5~6학년 수준의 어려운',
+    king: '최고 난이도의 도전적인',
+};
+
+const dailyQuizBlueprints: Record<
+    number,
+    Array<Pick<DailyQuizSpec, 'category' | 'difficulty' | 'topic'>>
+> = {
+    1: [
+        { category: 'korean', difficulty: 'seedling', topic: '받침 있는 낱말 읽기' },
+        { category: 'math', difficulty: 'seedling', topic: '10 이하의 덧셈과 뺄셈' },
+        { category: 'science', difficulty: 'seedling', topic: '동물과 식물의 특징' },
+        { category: 'general', difficulty: 'seedling', topic: '학교생활 안전과 예절' },
+    ],
+    2: [
+        { category: 'math', difficulty: 'seedling', topic: '두 자리 수 계산과 시각 읽기' },
+        { category: 'korean', difficulty: 'seedling', topic: '문장 부호와 짧은 글 이해' },
+        { category: 'science', difficulty: 'seedling', topic: '계절과 날씨 변화' },
+        { category: 'english', difficulty: 'seedling', topic: '기초 영어 인사와 색깔 단어' },
+    ],
+    3: [
+        { category: 'social', difficulty: 'leaf', topic: '우리 고장과 지도 읽기' },
+        { category: 'math', difficulty: 'leaf', topic: '곱셈과 나눗셈 기초' },
+        { category: 'science', difficulty: 'leaf', topic: '물질의 상태와 변화' },
+        { category: 'korean', difficulty: 'leaf', topic: '중심 문장 찾기' },
+    ],
+    4: [
+        { category: 'science', difficulty: 'leaf', topic: '식물의 한살이와 생태' },
+        { category: 'math', difficulty: 'leaf', topic: '분수와 소수 기초' },
+        { category: 'social', difficulty: 'leaf', topic: '지역의 생활 모습과 문화유산' },
+        { category: 'english', difficulty: 'leaf', topic: '일상생활 영어 표현' },
+    ],
+    5: [
+        { category: 'science', difficulty: 'tree', topic: '태양계와 지구의 운동' },
+        { category: 'math', difficulty: 'tree', topic: '약수와 배수, 분수 계산' },
+        { category: 'social', difficulty: 'tree', topic: '한국사 주요 사건과 인물' },
+        { category: 'korean', difficulty: 'tree', topic: '글의 주장과 근거 파악' },
+    ],
+    6: [
+        { category: 'math', difficulty: 'tree', topic: '비와 비율, 백분율' },
+        { category: 'english', difficulty: 'tree', topic: '과거형과 미래 표현' },
+        { category: 'science', difficulty: 'tree', topic: '전기 회로와 에너지' },
+        { category: 'social', difficulty: 'tree', topic: '민주주의와 세계 여러 나라' },
+    ],
+};
+
 const quizTemplates: QuizTemplate[] = [
     // ====== 4학년용 수학 seedling 1: 기초 연산 ======
     {
@@ -296,7 +378,585 @@ const quizTemplates: QuizTemplate[] = [
             },
         ],
     },
+
+    // ====== 1학년용 국어 seedling: 낱말과 문장 ======
+    {
+        title: '📚 1학년 국어 낱말과 문장',
+        description: '1학년을 위한 쉬운 낱말, 문장, 받침 문제예요.',
+        category: 'korean',
+        grade_level: 1,
+        difficulty: 'seedling',
+        questions: [
+            {
+                question_type: 'multiple',
+                question_text: '다음 중 동물을 나타내는 낱말은 무엇인가요?',
+                correct_answer: '강아지',
+                options: ['연필', '강아지', '책상', '가방'],
+                hint: '살아 움직이고 우리와 함께 지낼 수 있어요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '"학교"는 두 글자로 된 낱말이다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '학, 교를 한 글자씩 세어 보세요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '문장을 마칠 때 쓰는 기호는 무엇인가요?',
+                correct_answer: '마침표',
+                options: ['쉼표', '마침표', '물결표', '따옴표'],
+                hint: '문장이 끝났다는 표시예요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '"하늘이 파랗다."에서 색깔을 나타내는 말은?',
+                correct_answer: '파랗다',
+                options: ['하늘', '이', '파랗다', '없다'],
+                hint: '어떤 색인지 알려 주는 말이에요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '"친구와 사이좋게 지내요."는 문장이다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '뜻이 이어져 있고 끝맺음이 있어요.',
+            },
+        ],
+    },
+
+    // ====== 2학년용 수학 seedling: 덧셈과 시각 ======
+    {
+        title: '🔢 2학년 수학 덧셈과 시각',
+        description: '두 자리 수 계산과 시계를 읽는 연습을 해봐요.',
+        category: 'math',
+        grade_level: 2,
+        difficulty: 'seedling',
+        questions: [
+            {
+                question_type: 'multiple',
+                question_text: '38 + 24 = ?',
+                correct_answer: '62',
+                options: ['52', '60', '62', '72'],
+                hint: '일의 자리에서 받아올림이 있는지 확인해 보세요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '70 - 18 = ?',
+                correct_answer: '52',
+                options: ['48', '50', '52', '58'],
+                hint: '70에서 20을 빼고 2를 다시 더해도 돼요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '1시간은 60분이다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '시계의 긴 바늘이 한 바퀴 도는 시간이에요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '시계가 3시를 가리킬 때 짧은 바늘은 어디를 가리키나요?',
+                correct_answer: '3',
+                options: ['12', '3', '6', '9'],
+                hint: '몇 시인지 알려 주는 바늘이에요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '10이 5개이면 얼마인가요?',
+                correct_answer: '50',
+                options: ['15', '30', '50', '100'],
+                hint: '10 + 10 + 10 + 10 + 10을 계산해 보세요.',
+            },
+        ],
+    },
+
+    // ====== 3학년용 사회 leaf: 우리 고장 ======
+    {
+        title: '🌍 3학년 사회 우리 고장',
+        description: '지도, 방위, 공공장소 등 우리 고장을 알아봐요.',
+        category: 'social',
+        grade_level: 3,
+        difficulty: 'leaf',
+        questions: [
+            {
+                question_type: 'multiple',
+                question_text: '지도에서 위쪽은 보통 어느 방향을 나타내나요?',
+                correct_answer: '북쪽',
+                options: ['동쪽', '서쪽', '남쪽', '북쪽'],
+                hint: '나침반의 N이 가리키는 방향이에요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '도서관은 여러 사람이 함께 이용하는 공공장소이다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '공공장소에서는 모두를 위한 예절이 필요해요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '고장의 옛 모습을 알 수 있는 자료로 알맞은 것은?',
+                correct_answer: '옛 사진',
+                options: ['새 장난감', '옛 사진', '오늘의 날씨', '급식 메뉴'],
+                hint: '예전에 어떤 모습이었는지 보여 주는 자료예요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '동서남북을 알아볼 때 사용하는 도구는?',
+                correct_answer: '나침반',
+                options: ['자', '나침반', '계산기', '돋보기'],
+                hint: '방향을 알려 주는 도구예요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '고장마다 자연환경과 생활 모습이 다를 수 있다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '바닷가, 산, 도시의 생활 모습을 떠올려 보세요.',
+            },
+        ],
+    },
+
+    // ====== 5학년용 과학 tree: 생물과 환경 ======
+    {
+        title: '🌳 5학년 과학 생물과 환경',
+        description: '생물의 특징과 환경의 관계를 이해하는 퀴즈예요.',
+        category: 'science',
+        grade_level: 5,
+        difficulty: 'tree',
+        questions: [
+            {
+                question_type: 'multiple',
+                question_text: '식물이 스스로 양분을 만들 때 필요한 것은?',
+                correct_answer: '햇빛',
+                options: ['햇빛', '소금', '모래', '플라스틱'],
+                hint: '광합성에 꼭 필요한 에너지예요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '생태계에는 생물 요소와 비생물 요소가 함께 있다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '물, 공기, 햇빛도 생태계에 영향을 줘요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '먹이사슬에서 생산자에 해당하는 것은?',
+                correct_answer: '풀',
+                options: ['토끼', '여우', '풀', '독수리'],
+                hint: '스스로 양분을 만드는 생물을 찾아보세요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '동물이 겨울을 나기 위해 잠을 자는 것을 무엇이라고 하나요?',
+                correct_answer: '겨울잠',
+                options: ['여름잠', '겨울잠', '낮잠', '선잠'],
+                hint: '곰이나 개구리를 떠올려 보세요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '환경이 변하면 생물의 생활 모습도 달라질 수 있다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '먹이와 살 곳이 바뀌면 생물도 영향을 받아요.',
+            },
+        ],
+    },
+
+    // ====== 6학년용 영어 tree: 기본 표현 ======
+    {
+        title: '🔤 6학년 영어 기본 표현',
+        description: '초등 고학년을 위한 영어 단어와 생활 표현 퀴즈예요.',
+        category: 'english',
+        grade_level: 6,
+        difficulty: 'tree',
+        questions: [
+            {
+                question_type: 'multiple',
+                question_text: '"나는 과학을 좋아해요."를 영어로 가장 알맞게 표현한 것은?',
+                correct_answer: 'I like science.',
+                options: ['I like science.', 'I am science.', 'I has science.', 'I go science.'],
+                hint: '좋아한다는 표현은 like를 사용해요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '"library"의 뜻은 무엇인가요?',
+                correct_answer: '도서관',
+                options: ['운동장', '도서관', '병원', '시장'],
+                hint: '책을 읽거나 빌리는 곳이에요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '"What time is it?"은 시간을 묻는 표현이다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: 'time이라는 단어에 주목해 보세요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '다음 중 과거를 나타내는 표현은?',
+                correct_answer: 'yesterday',
+                options: ['today', 'tomorrow', 'yesterday', 'now'],
+                hint: '어제를 뜻하는 단어예요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '"Can I help you?"의 자연스러운 뜻은?',
+                correct_answer: '도와드릴까요?',
+                options: ['몇 살인가요?', '도와드릴까요?', '어디 가나요?', '무엇을 먹나요?'],
+                hint: '가게나 안내 데스크에서 들을 수 있어요.',
+            },
+        ],
+    },
+
+    // ====== 6학년용 수학 king: 비와 비례 ======
+    {
+        title: '👑 6학년 수학 비와 비례',
+        description: '비, 비율, 백분율을 활용해 보는 도전 퀴즈예요.',
+        category: 'math',
+        grade_level: 6,
+        difficulty: 'king',
+        questions: [
+            {
+                question_type: 'multiple',
+                question_text: '20의 25%는 얼마인가요?',
+                correct_answer: '5',
+                options: ['4', '5', '10', '25'],
+                hint: '25%는 1/4과 같아요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '3:5와 같은 비는 무엇인가요?',
+                correct_answer: '6:10',
+                options: ['3:10', '5:3', '6:10', '9:10'],
+                hint: '두 수에 같은 수를 곱해 보세요.',
+            },
+            {
+                question_type: 'ox',
+                question_text: '0.5는 50%와 같다. O일까요 X일까요?',
+                correct_answer: 'O',
+                options: ['O', 'X'],
+                hint: '소수에 100을 곱하면 백분율이 돼요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '사과 4개가 2000원이라면 사과 1개 가격은?',
+                correct_answer: '500원',
+                options: ['400원', '500원', '600원', '800원'],
+                hint: '전체 가격을 개수로 나누어 보세요.',
+            },
+            {
+                question_type: 'multiple',
+                question_text: '분수 2/5를 백분율로 나타내면?',
+                correct_answer: '40%',
+                options: ['20%', '25%', '40%', '50%'],
+                hint: '2를 5로 나누면 0.4예요.',
+            },
+        ],
+    },
 ];
+const DAILY_DIVERSE_QUIZ_COUNT = 6;
+const DAILY_AI_QUESTION_COUNT = 5;
+const KOREA_TIME_ZONE = 'Asia/Seoul';
+const GEMINI_MODEL = 'gemini-2.5-flash';
+
+function getKoreanDateParts(date: Date): { year: number; month: number; day: number } {
+    const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: KOREA_TIME_ZONE,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+    }).formatToParts(date);
+
+    const values = Object.fromEntries(
+        parts
+            .filter((part) => part.type !== 'literal')
+            .map((part) => [part.type, Number(part.value)]),
+    );
+
+    return {
+        year: values.year,
+        month: values.month,
+        day: values.day,
+    };
+}
+
+function getDayOfYear(date: Date): number {
+    const { year, month, day } = getKoreanDateParts(date);
+    const startOfYear = Date.UTC(year, 0, 0);
+    const currentDay = Date.UTC(year, month - 1, day);
+
+    return Math.floor((currentDay - startOfYear) / 86400000);
+}
+
+function formatKoreanDate(date: Date): string {
+    return new Intl.DateTimeFormat('ko-KR', { timeZone: KOREA_TIME_ZONE }).format(date);
+}
+
+function selectDailyAiSpecs(date: Date): DailyQuizSpec[] {
+    const dayOfYear = getDayOfYear(date);
+
+    return [1, 2, 3, 4, 5, 6].map((gradeLevel) => {
+        const blueprints = dailyQuizBlueprints[gradeLevel];
+        const blueprint = blueprints[(dayOfYear + gradeLevel) % blueprints.length];
+
+        return {
+            ...blueprint,
+            gradeLevel,
+            questionCount: DAILY_AI_QUESTION_COUNT,
+        };
+    });
+}
+
+function selectDailyDiverseTemplates(date: Date, count = DAILY_DIVERSE_QUIZ_COUNT): QuizTemplate[] {
+    const dayOfYear = getDayOfYear(date);
+    const selected: QuizTemplate[] = [];
+    const selectedTitles = new Set<string>();
+
+    for (const gradeLevel of [1, 2, 3, 4, 5, 6]) {
+        const candidates = quizTemplates.filter((template) => template.grade_level === gradeLevel);
+
+        if (candidates.length === 0) {
+            continue;
+        }
+
+        const template = candidates[(dayOfYear + gradeLevel) % candidates.length];
+        selected.push(template);
+        selectedTitles.add(template.title);
+
+        if (selected.length >= count) {
+            return selected;
+        }
+    }
+
+    for (let i = 0; selected.length < count && i < quizTemplates.length; i++) {
+        const template = quizTemplates[(dayOfYear + i) % quizTemplates.length];
+
+        if (!selectedTitles.has(template.title)) {
+            selected.push(template);
+            selectedTitles.add(template.title);
+        }
+    }
+
+    return selected;
+}
+
+function buildGeminiPrompt(spec: DailyQuizSpec, dateLabel: string, sequence: number): string {
+    const categoryDesc = categoryDescriptions[spec.category] || spec.category;
+    const difficultyDesc = difficultyDescriptions[spec.difficulty];
+
+    return `당신은 한국 초등학생을 위한 교육용 퀴즈 생성 전문가입니다.
+오늘 날짜는 ${dateLabel}이고, 매시간 새롭게 공개되는 자동 퀴즈 ${sequence}번을 만들고 있습니다.
+
+아래 조건에 맞는 완전히 새로운 퀴즈를 JSON 형식으로만 생성해주세요.
+
+- 대상 학년: 초등학교 ${spec.gradeLevel}학년
+- 과목/카테고리: ${categoryDesc}
+- 주제: ${spec.topic}
+- 난이도: ${difficultyDesc}
+- 문제 수: ${spec.questionCount}개
+- 문제 유형: 객관식(multiple)과 OX(ox)를 섞어서 사용
+
+반드시 아래 JSON 형식만 반환하세요. 설명, 마크다운, 코드블록은 포함하지 마세요.
+{
+  "title": "퀴즈 제목 (이모지 1개 포함)",
+  "description": "퀴즈에 대한 한 문장 설명",
+  "questions": [
+    {
+      "question_type": "multiple",
+      "question_text": "문제 내용",
+      "correct_answer": "정답",
+      "options": ["선택지1", "선택지2", "선택지3", "선택지4"],
+      "hint": "정답을 직접 말하지 않는 짧은 힌트"
+    }
+  ]
+}
+
+중요 규칙:
+1. question_type은 "multiple" 또는 "ox"만 사용합니다.
+2. multiple은 options 4개를 제공하고 correct_answer가 options 중 하나와 정확히 일치해야 합니다.
+3. ox는 options를 ["O", "X"]로 제공하고 correct_answer는 "O" 또는 "X"만 사용합니다.
+4. 모든 문제는 한국 초등학교 ${spec.gradeLevel}학년 수준에 맞아야 합니다.
+5. 문제와 선택지는 서로 중복되지 않게 하세요.
+6. 정답이 모호하거나 논란이 있을 수 있는 문제는 만들지 마세요.
+7. 어제와 똑같은 제목처럼 보이지 않도록 주제 안에서 구체적인 소재를 바꿔 주세요.`;
+}
+
+function parseGeneratedQuiz(content: string): GeneratedQuiz {
+    let jsonContent = content.trim();
+
+    if (jsonContent.startsWith('```json')) {
+        jsonContent = jsonContent.slice(7);
+    }
+    if (jsonContent.startsWith('```')) {
+        jsonContent = jsonContent.slice(3);
+    }
+    if (jsonContent.endsWith('```')) {
+        jsonContent = jsonContent.slice(0, -3);
+    }
+
+    return JSON.parse(jsonContent.trim());
+}
+
+function truncateTitle(title: string): string {
+    const normalizedTitle = title.trim();
+
+    if (!normalizedTitle) {
+        throw new Error('AI 응답 title이 비어 있습니다.');
+    }
+
+    if (normalizedTitle.length <= 100) {
+        return normalizedTitle;
+    }
+
+    return normalizedTitle.slice(0, 99).trimEnd();
+}
+
+function normalizeGeneratedQuiz(generatedQuiz: GeneratedQuiz, spec: DailyQuizSpec): QuizTemplate {
+    if (
+        !generatedQuiz.title ||
+        !generatedQuiz.questions ||
+        !Array.isArray(generatedQuiz.questions)
+    ) {
+        throw new Error('AI 응답에 title 또는 questions가 없습니다.');
+    }
+
+    const questions = generatedQuiz.questions
+        .slice(0, spec.questionCount)
+        .map((question, index) => {
+            const questionType = question.question_type === 'ox' ? 'ox' : 'multiple';
+            const options = Array.isArray(question.options)
+                ? question.options.map((option) => String(option).trim()).filter(Boolean)
+                : [];
+            const correctAnswer = String(question.correct_answer || '').trim();
+            const questionText = String(question.question_text || '').trim();
+
+            if (!questionText) {
+                throw new Error(`AI 응답 ${index + 1}번 문제의 question_text가 비어 있습니다.`);
+            }
+
+            if (!correctAnswer) {
+                throw new Error(`AI 응답 ${index + 1}번 문제의 correct_answer가 비어 있습니다.`);
+            }
+
+            if (questionType === 'ox') {
+                if (correctAnswer !== 'O' && correctAnswer !== 'X') {
+                    throw new Error(`AI 응답 ${index + 1}번 OX 문제의 정답이 O/X가 아닙니다.`);
+                }
+
+                return {
+                    question_type: 'ox' as const,
+                    question_text: questionText,
+                    correct_answer: correctAnswer,
+                    options: ['O', 'X'],
+                    hint: String(question.hint || ''),
+                };
+            }
+
+            if (options.length !== 4) {
+                throw new Error(`AI 응답 ${index + 1}번 객관식 문제의 선택지가 4개가 아닙니다.`);
+            }
+
+            if (!options.includes(correctAnswer)) {
+                throw new Error(`AI 응답 ${index + 1}번 객관식 문제의 정답이 선택지에 없습니다.`);
+            }
+
+            return {
+                question_type: 'multiple' as const,
+                question_text: questionText,
+                correct_answer: correctAnswer,
+                options,
+                hint: String(question.hint || ''),
+            };
+        });
+
+    if (questions.length < spec.questionCount) {
+        throw new Error(`AI 응답 문제 수가 부족합니다. ${questions.length}/${spec.questionCount}`);
+    }
+
+    return {
+        title: truncateTitle(String(generatedQuiz.title)),
+        description: String(
+            generatedQuiz.description || `${spec.gradeLevel}학년 ${spec.topic} 퀴즈`,
+        ),
+        category: spec.category,
+        grade_level: spec.gradeLevel,
+        difficulty: spec.difficulty,
+        questions,
+    };
+}
+
+async function generateQuizTemplateWithGemini(
+    spec: DailyQuizSpec,
+    dateLabel: string,
+    sequence: number,
+): Promise<QuizTemplate> {
+    const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+
+    if (!geminiApiKey) {
+        throw new Error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
+    }
+
+    const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiApiKey}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        role: 'user',
+                        parts: [{ text: buildGeminiPrompt(spec, dateLabel, sequence) }],
+                    },
+                ],
+                generationConfig: {
+                    responseMimeType: 'application/json',
+                    temperature: 0.9,
+                },
+            }),
+        },
+    );
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Gemini API 호출 실패: ${response.status} ${errorText}`);
+    }
+
+    const data = (await response.json()) as GeminiResponse;
+    const content = data.candidates?.[0]?.content?.parts
+        ?.map((part) => part.text || '')
+        .join('')
+        .trim();
+
+    if (!content) {
+        throw new Error('Gemini API 응답 텍스트가 비어 있습니다.');
+    }
+
+    return normalizeGeneratedQuiz(parseGeneratedQuiz(content), spec);
+}
+
+async function getAdminUserId(supabase: ReturnType<typeof createClient>): Promise<string> {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('role', 'admin')
+        .order('created_at', { ascending: true })
+        .limit(1);
+
+    if (error) {
+        throw new Error(`관리자 사용자 조회 실패: ${error.message}`);
+    }
+
+    const adminUser = data?.[0];
+
+    if (!adminUser?.id) {
+        throw new Error(
+            'admin role 사용자를 찾을 수 없습니다. profiles 테이블에서 role = admin 인 사용자를 1명 이상 설정하세요.',
+        );
+    }
+
+    return adminUser.id;
+}
 // 단일 퀴즈 생성 함수
 async function createQuizFromTemplate(
     supabase: ReturnType<typeof createClient>,
@@ -305,9 +965,10 @@ async function createQuizFromTemplate(
     dateLabel?: string,
 ): Promise<{ quiz_id: string; title: string; questions_count: number }> {
     const today = new Date();
-    const label = dateLabel || today.toLocaleDateString('ko-KR');
-
-    console.log(`퀴즈 생성 시작: ${template.title}, 사용자 ID: ${systemUserId}`);
+    const generationLabel = dateLabel || formatKoreanDate(today);
+    console.log(
+        `퀴즈 생성 시작: ${template.title}, 사용자 ID: ${systemUserId}, 생성 라벨: ${generationLabel}`,
+    );
 
     // 퀴즈 생성
     const { data: quiz, error: quizError } = await supabase
@@ -374,7 +1035,7 @@ async function createQuizFromTemplate(
  * 퀴즈 생성 Edge Function
  *
  * 요청 방식:
- * 1. mode: 'daily' (기본값) - 오늘 날짜 기준으로 1개의 퀴즈 생성 (순환)
+ * 1. mode: 'daily' (기본값) - 오늘 날짜 기준으로 학년별 퀴즈를 다양하게 생성
  * 2. mode: 'all' - 모든 템플릿으로 퀴즈 한 번에 생성
  * 3. mode: 'single' + index - 특정 인덱스의 템플릿으로 퀴즈 생성
  * 4. mode: 'batch' + count - 지정한 개수만큼 순차적으로 퀴즈 생성
@@ -423,25 +1084,8 @@ Deno.serve(async (req: Request) => {
 
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        // 시스템 사용자 가져오기 (첫 번째 사용자)
-        const { data: users, error: userError } = await supabase
-            .from('profiles')
-            .select('id')
-            .limit(1)
-            .single();
-
-        if (userError) {
-            console.error('프로필 조회 에러:', userError);
-            throw new Error(`시스템 사용자 조회 실패: ${userError.message}`);
-        }
-
-        if (!users) {
-            throw new Error(
-                '시스템 사용자를 찾을 수 없습니다. profiles 테이블에 사용자가 있는지 확인하세요.',
-            );
-        }
-
-        const systemUserId = users.id;
+        // 생성 주체는 admin role 사용자로 고정
+        const systemUserId = await getAdminUserId(supabase);
         const today = new Date();
         const results: { quiz_id: string; title: string; questions_count: number }[] = [];
 
@@ -454,7 +1098,7 @@ Deno.serve(async (req: Request) => {
                         supabase,
                         template,
                         systemUserId,
-                        `${today.toLocaleDateString('ko-KR')} #${i + 1}`,
+                        `${formatKoreanDate(today)} #${i + 1}`,
                     );
                     results.push(result);
                 }
@@ -484,7 +1128,7 @@ Deno.serve(async (req: Request) => {
                         supabase,
                         template,
                         systemUserId,
-                        `${today.toLocaleDateString('ko-KR')} #${i + 1}`,
+                        `${formatKoreanDate(today)} #${i + 1}`,
                     );
                     results.push(result);
                 }
@@ -493,14 +1137,39 @@ Deno.serve(async (req: Request) => {
 
             case 'daily':
             default: {
-                // 오늘 날짜 기준으로 퀴즈 선택 (순환) - 기존 로직
-                const dayOfYear = Math.floor(
-                    (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000,
-                );
-                const idx = dayOfYear % quizTemplates.length;
-                const template = quizTemplates[idx];
-                const result = await createQuizFromTemplate(supabase, template, systemUserId);
-                results.push(result);
+                // 매일 한국 날짜 기준으로 학년별/과목별 AI 퀴즈를 새로 생성
+                const dateLabel = formatKoreanDate(today);
+                const specs = selectDailyAiSpecs(today);
+                const enableTemplateFallback =
+                    Deno.env.get('ENABLE_DAILY_AI_TEMPLATE_FALLBACK') === 'true';
+
+                for (let i = 0; i < specs.length; i++) {
+                    let template: QuizTemplate;
+
+                    try {
+                        template = await generateQuizTemplateWithGemini(specs[i], dateLabel, i + 1);
+                    } catch (aiError) {
+                        console.error('AI 퀴즈 생성 실패:', {
+                            spec: specs[i],
+                            error: aiError instanceof Error ? aiError.message : aiError,
+                        });
+
+                        if (!enableTemplateFallback) {
+                            throw aiError;
+                        }
+
+                        const fallbackTemplates = selectDailyDiverseTemplates(today);
+                        template = fallbackTemplates[i % fallbackTemplates.length];
+                    }
+
+                    const result = await createQuizFromTemplate(
+                        supabase,
+                        template,
+                        systemUserId,
+                        `${dateLabel} AI #${i + 1}`,
+                    );
+                    results.push(result);
+                }
                 break;
             }
         }

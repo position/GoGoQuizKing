@@ -3,15 +3,17 @@
 ## Supabase Project 설정
 
 1. Supabase Dashboard > Settings > API에서 다음 정보 확인:
-   - Project URL
-   - Anon (public) key
-   - Service role key
+
+    - Project URL
+    - Anon (public) key
+    - Service role key
 
 2. .env 파일에 추가:
 
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+GEMINI_API_KEY=your-gemini-api-key
 
 ## Edge Function 환경 변수
 
@@ -19,16 +21,30 @@ Supabase Dashboard > Edge Functions > Settings에서:
 
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+GEMINI_API_KEY=your-gemini-api-key
 
-## pg_cron 설정 (선택사항)
+# 선택사항: AI 실패 시 기존 quizTemplates로 대체 생성
 
-database 설정에 추가 (postgresql.conf 또는 SQL):
+ENABLE_DAILY_AI_TEMPLATE_FALLBACK=false
 
+## pg_cron 설정
+
+Supabase Dashboard > Database > Extensions에서 `pg_cron`, `pg_net`을 활성화한 뒤 SQL Editor에서 설정합니다.
+
+```sql
+ALTER DATABASE postgres SET app.supabase_url = 'https://your-project.supabase.co';
+ALTER DATABASE postgres SET app.supabase_anon_key = 'your-anon-key';
+```
+
+매시간 정각에 실행하려면 아래처럼 등록합니다.
+
+```sql
 SELECT cron.schedule(
   'daily-quiz-generation',
-  '0 0 * * *',
+  '0 * * * *',
   $$SELECT public.trigger_daily_quiz_generation();$$
 );
+```
 
 ## 보안 주의사항
 

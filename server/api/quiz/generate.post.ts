@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
         });
 
         // Edge Function 호출
-        const { data, error } = await supabase.functions.invoke('daily-quiz-generation', {
+        const { data, error } = await supabase.functions.invoke('generate-daily-quiz', {
             body: {
                 mode: body?.mode || 'daily',
                 index: body?.index,

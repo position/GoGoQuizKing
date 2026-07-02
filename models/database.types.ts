@@ -16,6 +16,7 @@ export interface Database {
                     avatar_url: string | null;
                     preferred_username: string | null;
                     provider: string | null;
+                    role: string;
                     points: number;
                     level: number;
                     streak_days: number;
@@ -30,6 +31,7 @@ export interface Database {
                     avatar_url?: string | null;
                     preferred_username?: string | null;
                     provider?: string | null;
+                    role?: string;
                     points?: number;
                     level?: number;
                     streak_days?: number;
@@ -44,6 +46,7 @@ export interface Database {
                     avatar_url?: string | null;
                     preferred_username?: string | null;
                     provider?: string | null;
+                    role?: string;
                     points?: number;
                     level?: number;
                     streak_days?: number;
@@ -661,7 +664,11 @@ export interface Database {
             };
             check_daily_attendance: {
                 Args: { p_user_id: string };
-                Returns: { attendance_points: number; new_streak: number; already_checked: boolean }[];
+                Returns: {
+                    attendance_points: number;
+                    new_streak: number;
+                    already_checked: boolean;
+                }[];
             };
             award_quiz_points: {
                 Args: {

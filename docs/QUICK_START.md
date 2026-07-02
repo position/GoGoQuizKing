@@ -22,11 +22,13 @@ Supabase Dashboard > SQL Editor에서 실행:
 supabase db push
 ```
 
-### 2️⃣ pg_cron Extension 활성화 (30초)
+### 2️⃣ Extension 활성화 (30초)
 
 1. Supabase Dashboard > Database > Extensions
 2. `pg_cron` 검색
 3. Enable 버튼 클릭
+4. `pg_net` 검색
+5. Enable 버튼 클릭
 
 ### 3️⃣ Edge Function 배포 (1분)
 
@@ -48,6 +50,14 @@ Supabase Dashboard > Edge Functions > Settings:
 ```
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+GEMINI_API_KEY=your-gemini-api-key
+```
+
+Supabase Dashboard > SQL Editor에서 DB 설정값 등록:
+
+```sql
+ALTER DATABASE postgres SET app.supabase_url = 'https://your-project.supabase.co';
+ALTER DATABASE postgres SET app.supabase_anon_key = 'your-anon-key';
 ```
 
 ### 5️⃣ 테스트 (30초)
@@ -62,38 +72,44 @@ export SUPABASE_KEY="your-anon-key"
 ```
 
 또는 웹 인터페이스에서:
+
 - `/admin/quiz-automation` 접속
 - "지금 퀴즈 생성하기" 클릭
 
 ## 🎉 완료!
 
-이제 매일 자정(UTC, 한국 시간 오전 9시)에 자동으로 퀴즈가 생성됩니다!
+이제 매시간 정각에 AI가 학년별/과목별 퀴즈를 자동 생성합니다!
 
 ## 🔍 확인하기
 
 ### 퀴즈 생성 확인
+
 ```sql
-SELECT * FROM quizzes 
-ORDER BY created_at DESC 
+SELECT * FROM quizzes
+ORDER BY created_at DESC
 LIMIT 5;
 ```
 
 ### 생성 이력 확인
+
 ```sql
-SELECT * FROM quiz_generation_history 
-ORDER BY generated_at DESC 
+SELECT * FROM quiz_generation_history
+ORDER BY generated_at DESC
 LIMIT 5;
 ```
 
 ### 스케줄러 확인
+
 ```sql
-SELECT * FROM cron.job 
+SELECT * FROM cron.job
 WHERE jobname = 'daily-quiz-generation';
 ```
 
 ## ⚙️ 커스터마이징
 
-### 퀴즈 템플릿 추가
+### fallback 퀴즈 템플릿 추가
+
+자동 실행은 AI로 생성합니다. `quizTemplates` 배열은 수동 생성 모드와 AI 실패 fallback에 사용합니다.
 
 `supabase/functions/generate-daily-quiz/index.ts`의 `quizTemplates` 배열에 추가:
 
@@ -103,7 +119,7 @@ WHERE jobname = 'daily-quiz-generation';
   description: '재미있는 퀴즈!',
   category: 'art',
   grade_level: 3,
-  difficulty: 'sprout',
+  difficulty: 'leaf',
   questions: [
     {
       question_type: 'multiple',
@@ -123,7 +139,7 @@ WHERE jobname = 'daily-quiz-generation';
 ```sql
 SELECT cron.schedule(
     'daily-quiz-generation',
-    '0 12 * * *',  -- 매일 정오(UTC)
+    '0 * * * *',  -- 매시간 정각
     $$SELECT public.trigger_daily_quiz_generation();$$
 );
 ```
@@ -131,13 +147,17 @@ SELECT cron.schedule(
 ## 🆘 문제 해결
 
 ### "시스템 사용자를 찾을 수 없습니다" 오류
+
 → 최소 1명의 사용자가 등록되어 있어야 합니다.
 
 ### Edge Function이 실행되지 않음
-→ 환경 변수가 올바르게 설정되었는지 확인하세요.
+
+→ `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY`가 올바르게 설정되었는지 확인하세요.
 
 ### 스케줄러가 작동하지 않음
-→ pg_cron extension이 활성화되었는지 확인하세요.
+
+→ pg_cron, pg_net extension이 활성화되었는지 확인하세요.
 
 ### 더 많은 도움이 필요하신가요?
+
 → [QUIZ_AUTOMATION.md](./QUIZ_AUTOMATION.md) 문서를 참고하세요.

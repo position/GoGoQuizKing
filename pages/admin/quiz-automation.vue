@@ -5,8 +5,8 @@
                 <q-card-section>
                     <div class="text-h5 q-mb-md">🤖 퀴즈 자동 생성 관리</div>
                     <p class="text-body2 text-grey-7">
-                        매일 자정에 자동으로 새로운 퀴즈가 생성됩니다. 수동으로 생성할 수도
-                        있습니다.
+                        매시간 정각에 AI가 학년별/과목별 퀴즈를 자동 생성합니다. 수동으로 템플릿
+                        기반 생성도 할 수 있습니다.
                     </p>
                 </q-card-section>
 
@@ -235,33 +235,34 @@ const batchCount = ref(3);
 
 // 모드 옵션
 const modeOptions = [
-    { label: '📅 오늘의 퀴즈 (Daily)', value: 'daily' },
-    { label: '📦 전체 생성 (All)', value: 'all' },
+    { label: '📅 오늘의 AI 학년별 퀴즈 (Daily)', value: 'daily' },
+    { label: '📦 전체 템플릿 생성 (All)', value: 'all' },
     { label: '🎯 단일 템플릿 (Single)', value: 'single' },
-    { label: '🔢 일괄 생성 (Batch)', value: 'batch' },
+    { label: '🔢 템플릿 일괄 생성 (Batch)', value: 'batch' },
 ];
 
-// 템플릿 옵션 (0-9 인덱스)
+// 템플릿 옵션
 const templateOptions = [
-    { label: '0: 수학 - 덧셈과 뺄셈', value: 0 },
-    { label: '1: 과학 - 동물의 세계', value: 1 },
-    { label: '2: 사회 - 우리 동네', value: 2 },
-    { label: '3: 국어 - 받아쓰기', value: 3 },
-    { label: '4: 영어 - 기초 단어', value: 4 },
-    { label: '5: 수학 - 곱셈 구구단', value: 5 },
-    { label: '6: 과학 - 식물의 성장', value: 6 },
-    { label: '7: 사회 - 세계 여러 나라', value: 7 },
-    { label: '8: 음악 - 악기 알아보기', value: 8 },
-    { label: '9: 미술 - 색의 이해', value: 9 },
+    { label: '0: 4학년 수학 - 기초 연산', value: 0 },
+    { label: '1: 4학년 수학 - 도형 기초', value: 1 },
+    { label: '2: 4학년 국어 - 읽기 이해', value: 2 },
+    { label: '3: 4학년 과학 - 계절과 날씨', value: 3 },
+    { label: '4: 4학년 생활 - 예절과 안전', value: 4 },
+    { label: '5: 1학년 국어 - 낱말과 문장', value: 5 },
+    { label: '6: 2학년 수학 - 덧셈과 시각', value: 6 },
+    { label: '7: 3학년 사회 - 우리 고장', value: 7 },
+    { label: '8: 5학년 과학 - 생물과 환경', value: 8 },
+    { label: '9: 6학년 영어 - 기본 표현', value: 9 },
+    { label: '10: 6학년 수학 - 비와 비례', value: 10 },
 ];
 
 // 모드별 설명
 const modeDescription = computed(() => {
     switch (selectedMode.value) {
         case 'daily':
-            return '오늘 날짜를 기준으로 순환하여 1개의 퀴즈를 생성합니다. (매일 자동 생성과 동일)';
+            return '오늘 날짜를 기준으로 AI가 1~6학년별 과목/주제를 선택해 최대 6개의 새 퀴즈를 생성합니다. (자동 생성과 동일)';
         case 'all':
-            return '모든 템플릿(10개)으로 퀴즈를 한 번에 생성합니다.';
+            return 'fallback 및 수동 생성용 템플릿 전체로 퀴즈를 한 번에 생성합니다.';
         case 'single':
             return '선택한 템플릿으로 1개의 퀴즈만 생성합니다.';
         case 'batch':
@@ -275,9 +276,9 @@ const modeDescription = computed(() => {
 const generateButtonLabel = computed(() => {
     switch (selectedMode.value) {
         case 'daily':
-            return '오늘의 퀴즈 생성';
+            return '오늘의 AI 학년별 퀴즈 생성';
         case 'all':
-            return '전체 퀴즈 생성 (10개)';
+            return '전체 퀴즈 생성';
         case 'single':
             return '선택 퀴즈 생성';
         case 'batch':

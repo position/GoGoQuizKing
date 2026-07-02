@@ -7,7 +7,7 @@
 - 🔐 사용자 인증 (OAuth, Email)
 - 📝 공지사항 게시판
 - 🎮 실시간 퀴즈 시스템
-- 🤖 **자동 퀴즈 생성** (매일 자정)
+- 🤖 **자동 퀴즈 생성** (매시간)
 - 📊 퀴즈 결과 추적
 - 👑 난이도별 퀴즈 (새싹 → 새순 → 나무 → 킹왕짱)
 
@@ -102,27 +102,32 @@ Check out the [deployment documentation](https://nuxt.com/docs/getting-started/d
 ### 빠른 시작
 
 1. **마이그레이션 실행**
+
 ```bash
 # Supabase Dashboard에서 SQL 실행
 # supabase/migrations/006_setup_quiz_automation.sql
 ```
 
 2. **Edge Function 배포**
+
 ```bash
 supabase functions deploy generate-daily-quiz
 ```
 
 3. **환경 변수 설정**
+
 - Supabase Dashboard > Edge Functions > Settings
-- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` 추가
+- `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY` 추가
 
 4. **pg_cron Extension 활성화**
+
 - Supabase Dashboard > Database > Extensions
 - `pg_cron` 활성화
+- `pg_net` 활성화
 
 ### 사용 방법
 
-- **자동**: 매일 자정(UTC) = 한국 시간 오전 9시
+- **자동**: 매시간 정각에 AI가 학년별 퀴즈 생성
 - **수동**: `/admin/quiz-automation` 페이지에서 "지금 퀴즈 생성하기"
 - **API**: `POST /api/quiz/generate`
 
@@ -157,6 +162,7 @@ GoGoQuizKing/
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+GEMINI_API_KEY=your-gemini-api-key
 ```
 
 ## 📝 라이센스
