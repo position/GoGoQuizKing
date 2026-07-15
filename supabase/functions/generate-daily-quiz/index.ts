@@ -58,6 +58,21 @@ const difficultyDescriptions: Record<DailyQuizSpec['difficulty'], string> = {
     king: '최고 난이도의 도전적인',
 };
 
+const GEMINI_MAX_ATTEMPTS = 3;
+const GEMINI_RETRY_BASE_DELAY_MS = 1000;
+
+class GeminiApiError extends Error {
+    status?: number;
+    retryable: boolean;
+
+    constructor(message: string, options: { status?: number; retryable?: boolean } = {}) {
+        super(message);
+        this.name = 'GeminiApiError';
+        this.status = options.status;
+        this.retryable = options.retryable ?? false;
+    }
+}
+
 const dailyQuizBlueprints: Record<
     number,
     Array<Pick<DailyQuizSpec, 'category' | 'difficulty' | 'topic'>>
@@ -886,6 +901,22 @@ function normalizeGeneratedQuiz(generatedQuiz: GeneratedQuiz, spec: DailyQuizSpe
     };
 }
 
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableGeminiStatus(status: number): boolean {
+    return status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+}
+
+function shouldUseTemplateFallback(error: unknown, enableTemplateFallback: boolean): boolean {
+    if (enableTemplateFallback) {
+        return true;
+    }
+
+    return error instanceof GeminiApiError && error.retryable;
+}
+
 async function generateQuizTemplateWithGemini(
     spec: DailyQuizSpec,
     dateLabel: string,
@@ -897,42 +928,82 @@ async function generateQuizTemplateWithGemini(
         throw new Error('GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.');
     }
 
-    const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiApiKey}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        role: 'user',
-                        parts: [{ text: buildGeminiPrompt(spec, dateLabel, sequence) }],
-                    },
-                ],
-                generationConfig: {
-                    responseMimeType: 'application/json',
-                    temperature: 0.9,
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= GEMINI_MAX_ATTEMPTS; attempt++) {
+        try {
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${geminiApiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                role: 'user',
+                                parts: [{ text: buildGeminiPrompt(spec, dateLabel, sequence) }],
+                            },
+                        ],
+                        generationConfig: {
+                            responseMimeType: 'application/json',
+                            temperature: 0.9,
+                        },
+                    }),
                 },
-            }),
-        },
-    );
+            );
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Gemini API 호출 실패: ${response.status} ${errorText}`);
+            if (!response.ok) {
+                const errorText = await response.text();
+                const retryable = isRetryableGeminiStatus(response.status);
+                throw new GeminiApiError(
+                    `Gemini API 호출 실패: ${response.status} ${errorText}`,
+                    {
+                        status: response.status,
+                        retryable,
+                    },
+                );
+            }
+
+            const data = (await response.json()) as GeminiResponse;
+            const content = data.candidates?.[0]?.content?.parts
+                ?.map((part) => part.text || '')
+                .join('')
+                .trim();
+
+            if (!content) {
+                throw new Error('Gemini API 응답 텍스트가 비어 있습니다.');
+            }
+
+            return normalizeGeneratedQuiz(parseGeneratedQuiz(content), spec);
+        } catch (error) {
+            lastError = error;
+            const retryable =
+                error instanceof GeminiApiError
+                    ? error.retryable
+                    : error instanceof TypeError;
+
+            if (!retryable) {
+                throw error;
+            }
+
+            if (attempt === GEMINI_MAX_ATTEMPTS) {
+                throw error instanceof GeminiApiError
+                    ? error
+                    : new GeminiApiError(
+                          `Gemini API 네트워크 오류: ${
+                              error instanceof Error ? error.message : String(error)
+                          }`,
+                          { retryable: true },
+                      );
+            }
+
+            await sleep(GEMINI_RETRY_BASE_DELAY_MS * attempt);
+        }
     }
 
-    const data = (await response.json()) as GeminiResponse;
-    const content = data.candidates?.[0]?.content?.parts
-        ?.map((part) => part.text || '')
-        .join('')
-        .trim();
-
-    if (!content) {
-        throw new Error('Gemini API 응답 텍스트가 비어 있습니다.');
-    }
-
-    return normalizeGeneratedQuiz(parseGeneratedQuiz(content), spec);
+    throw lastError instanceof Error
+        ? lastError
+        : new Error('Gemini API 호출 중 알 수 없는 오류가 발생했습니다.');
 }
 
 async function getAdminUserId(supabase: ReturnType<typeof createClient>): Promise<string> {
@@ -1154,7 +1225,7 @@ Deno.serve(async (req: Request) => {
                             error: aiError instanceof Error ? aiError.message : aiError,
                         });
 
-                        if (!enableTemplateFallback) {
+                        if (!shouldUseTemplateFallback(aiError, enableTemplateFallback)) {
                             throw aiError;
                         }
 

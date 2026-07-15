@@ -23,7 +23,8 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 GEMINI_API_KEY=your-gemini-api-key
 
-# 선택사항: AI 실패 시 기존 quizTemplates로 대체 생성
+# 선택사항: 모든 AI 실패 시 기존 quizTemplates로 대체 생성
+# Gemini 429/5xx 일시 장애는 false여도 3회 재시도 후 자동 대체 생성됩니다.
 
 ENABLE_DAILY_AI_TEMPLATE_FALLBACK=false
 
@@ -32,8 +33,13 @@ ENABLE_DAILY_AI_TEMPLATE_FALLBACK=false
 Supabase Dashboard > Database > Extensions에서 `pg_cron`, `pg_net`을 활성화한 뒤 SQL Editor에서 설정합니다.
 
 ```sql
-ALTER DATABASE postgres SET app.supabase_url = 'https://your-project.supabase.co';
-ALTER DATABASE postgres SET app.supabase_anon_key = 'your-anon-key';
+INSERT INTO public.quiz_automation_settings (setting_key, setting_value)
+VALUES
+  ('supabase_url', 'https://your-project.supabase.co'),
+  ('supabase_anon_key', 'your-anon-key')
+ON CONFLICT (setting_key) DO UPDATE
+SET setting_value = EXCLUDED.setting_value,
+    updated_at = TIMEZONE('utc'::text, NOW());
 ```
 
 매시간 정각에 실행하려면 아래처럼 등록합니다.

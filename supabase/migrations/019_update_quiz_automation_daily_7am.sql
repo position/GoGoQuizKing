@@ -7,6 +7,12 @@
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 CREATE EXTENSION IF NOT EXISTS pg_net;
 
+CREATE TABLE IF NOT EXISTS public.quiz_automation_settings (
+    setting_key TEXT PRIMARY KEY,
+    setting_value TEXT NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
 CREATE OR REPLACE FUNCTION public.trigger_daily_quiz_generation()
 RETURNS void
 LANGUAGE plpgsql
@@ -17,19 +23,25 @@ DECLARE
     anon_key TEXT;
     request_id BIGINT;
 BEGIN
-    -- SQL Editor에서 프로젝트별로 설정하세요:
-    -- ALTER DATABASE postgres SET app.supabase_url = 'https://PROJECT_REF.supabase.co';
-    -- ALTER DATABASE postgres SET app.supabase_anon_key = 'YOUR_ANON_KEY';
-    function_url := current_setting('app.supabase_url', true) || '/functions/v1/generate-daily-quiz';
-    anon_key := current_setting('app.supabase_anon_key', true);
+    SELECT setting_value
+      INTO function_url
+      FROM public.quiz_automation_settings
+     WHERE setting_key = 'supabase_url';
 
-    IF function_url IS NULL OR function_url = '/functions/v1/generate-daily-quiz' THEN
-        RAISE EXCEPTION 'app.supabase_url 설정이 필요합니다.';
+    SELECT setting_value
+      INTO anon_key
+      FROM public.quiz_automation_settings
+     WHERE setting_key = 'supabase_anon_key';
+
+    IF function_url IS NULL OR function_url = '' THEN
+        RAISE EXCEPTION 'quiz_automation_settings.supabase_url 설정이 필요합니다.';
     END IF;
 
     IF anon_key IS NULL OR anon_key = '' THEN
-        RAISE EXCEPTION 'app.supabase_anon_key 설정이 필요합니다.';
+        RAISE EXCEPTION 'quiz_automation_settings.supabase_anon_key 설정이 필요합니다.';
     END IF;
+
+    function_url := rtrim(function_url, '/') || '/functions/v1/generate-daily-quiz';
 
     SELECT net.http_post(
         url := function_url,

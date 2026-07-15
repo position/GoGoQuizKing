@@ -46,7 +46,7 @@ Supabase Dashboard > Project Settings > Edge Functions에서:
 - `SUPABASE_URL`: 프로젝트 URL
 - `SUPABASE_SERVICE_ROLE_KEY`: 서비스 역할 키
 - `GEMINI_API_KEY`: Gemini API 키
-- `ENABLE_DAILY_AI_TEMPLATE_FALLBACK`: 선택값. `true`이면 AI 실패 시 기존 템플릿으로 대체 생성
+- `ENABLE_DAILY_AI_TEMPLATE_FALLBACK`: 선택값. `true`이면 모든 AI 실패 시 기존 템플릿으로 대체 생성
 
 ### 4. pg_cron 활성화
 
@@ -60,8 +60,13 @@ Supabase Dashboard > Database > Extensions에서:
 Supabase Dashboard > SQL Editor에서 프로젝트 URL과 anon key를 등록하세요.
 
 ```sql
-ALTER DATABASE postgres SET app.supabase_url = 'https://YOUR_PROJECT_REF.supabase.co';
-ALTER DATABASE postgres SET app.supabase_anon_key = 'YOUR_ANON_KEY';
+INSERT INTO public.quiz_automation_settings (setting_key, setting_value)
+VALUES
+  ('supabase_url', 'https://YOUR_PROJECT_REF.supabase.co'),
+  ('supabase_anon_key', 'YOUR_ANON_KEY')
+ON CONFLICT (setting_key) DO UPDATE
+SET setting_value = EXCLUDED.setting_value,
+    updated_at = TIMEZONE('utc'::text, NOW());
 ```
 
 ## 🚀 사용 방법
@@ -103,7 +108,7 @@ SELECT public.generate_quiz_now();
 5. **5학년**: 과학, 수학, 사회, 국어
 6. **6학년**: 수학, 영어, 과학, 사회
 
-`quizTemplates` 배열은 `all`, `single`, `batch` 수동 모드와 `ENABLE_DAILY_AI_TEMPLATE_FALLBACK=true`일 때의 대체 생성에 사용됩니다.
+`quizTemplates` 배열은 `all`, `single`, `batch` 수동 모드와 대체 생성에 사용됩니다. Gemini 429/5xx 같은 일시 장애는 3회 재시도 후 자동으로 템플릿 대체 생성되며, `ENABLE_DAILY_AI_TEMPLATE_FALLBACK=true`이면 응답 형식 오류 같은 일반 AI 실패도 대체 생성됩니다.
 
 ### fallback 템플릿 추가 방법
 
@@ -181,6 +186,7 @@ SELECT * FROM net._http_response ORDER BY created DESC LIMIT 10;
 1. `quiz_generation_history` 테이블의 `error_message` 확인
 2. Edge Function 로그 확인
 3. 데이터베이스 연결 상태 확인
+4. Gemini 503/429가 반복되면 Edge Function은 3회 재시도 후 템플릿 대체 생성으로 진행합니다
 
 ## 🔐 보안
 

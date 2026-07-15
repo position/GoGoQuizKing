@@ -56,8 +56,13 @@ GEMINI_API_KEY=your-gemini-api-key
 Supabase Dashboard > SQL Editor에서 DB 설정값 등록:
 
 ```sql
-ALTER DATABASE postgres SET app.supabase_url = 'https://your-project.supabase.co';
-ALTER DATABASE postgres SET app.supabase_anon_key = 'your-anon-key';
+INSERT INTO public.quiz_automation_settings (setting_key, setting_value)
+VALUES
+  ('supabase_url', 'https://your-project.supabase.co'),
+  ('supabase_anon_key', 'your-anon-key')
+ON CONFLICT (setting_key) DO UPDATE
+SET setting_value = EXCLUDED.setting_value,
+    updated_at = TIMEZONE('utc'::text, NOW());
 ```
 
 ### 5️⃣ 테스트 (30초)
@@ -109,7 +114,7 @@ WHERE jobname = 'daily-quiz-generation';
 
 ### fallback 퀴즈 템플릿 추가
 
-자동 실행은 AI로 생성합니다. `quizTemplates` 배열은 수동 생성 모드와 AI 실패 fallback에 사용합니다.
+자동 실행은 AI로 생성합니다. `quizTemplates` 배열은 수동 생성 모드와 Gemini 429/5xx 같은 일시 장애 fallback에 사용합니다.
 
 `supabase/functions/generate-daily-quiz/index.ts`의 `quizTemplates` 배열에 추가:
 

@@ -1,44 +1,19 @@
 -- ============================================
--- 퀴즈 자동 생성 시스템 설정
+-- 퀴즈 자동 생성 설정 경로 수정
+-- - DB GUC 의존성 제거
+-- - quiz_automation_settings 테이블 사용
+-- - 매시간 정각 스케줄 유지
 -- ============================================
 
--- pg_cron extension 활성화 (스케줄링을 위해)
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 CREATE EXTENSION IF NOT EXISTS pg_net;
 
--- 자동 생성 호출에 필요한 프로젝트 설정 저장 테이블
 CREATE TABLE IF NOT EXISTS public.quiz_automation_settings (
     setting_key TEXT PRIMARY KEY,
     setting_value TEXT NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
 );
 
--- 퀴즈 생성 이력 추적 테이블 생성
-CREATE TABLE IF NOT EXISTS public.quiz_generation_history (
-    id BIGSERIAL PRIMARY KEY,
-    quiz_id UUID NOT NULL REFERENCES public.quizzes(id) ON DELETE CASCADE,
-    template_name TEXT NOT NULL,
-    generated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
-    status TEXT DEFAULT 'success',
-    error_message TEXT
-);
-
--- RLS 활성화
-ALTER TABLE public.quiz_generation_history ENABLE ROW LEVEL SECURITY;
-
--- 모두가 볼 수 있도록 정책 설정
-DROP POLICY IF EXISTS "Anyone can view quiz generation history"
-    ON public.quiz_generation_history;
-
-CREATE POLICY "Anyone can view quiz generation history"
-    ON public.quiz_generation_history FOR SELECT
-    USING (true);
-
--- 인덱스 생성
-CREATE INDEX IF NOT EXISTS idx_quiz_generation_history_quiz_id ON public.quiz_generation_history(quiz_id);
-CREATE INDEX IF NOT EXISTS idx_quiz_generation_history_generated_at ON public.quiz_generation_history(generated_at DESC);
-
--- Edge Function 호출을 위한 함수 생성
 CREATE OR REPLACE FUNCTION public.trigger_daily_quiz_generation()
 RETURNS void
 LANGUAGE plpgsql
@@ -68,7 +43,7 @@ BEGIN
     END IF;
 
     function_url := rtrim(function_url, '/') || '/functions/v1/generate-daily-quiz';
-    
+
     SELECT net.http_post(
         url := function_url,
         headers := jsonb_build_object(
@@ -83,8 +58,6 @@ BEGIN
 END;
 $$;
 
--- 매시간 정각에 퀴즈 생성 스케줄 등록
--- 주의: pg_cron은 UTC 시간대를 사용합니다
 SELECT cron.unschedule('daily-quiz-generation')
 WHERE EXISTS (
     SELECT 1
@@ -94,32 +67,9 @@ WHERE EXISTS (
 
 SELECT cron.schedule(
     'daily-quiz-generation',
-    '0 * * * *',  -- 매시간 정각
+    '0 * * * *',
     $$SELECT public.trigger_daily_quiz_generation();$$
 );
 
--- 수동 실행을 위한 함수
-CREATE OR REPLACE FUNCTION public.generate_quiz_now()
-RETURNS JSON
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-DECLARE
-    result JSON;
-BEGIN
-    -- 퀴즈 생성 트리거 실행
-    PERFORM public.trigger_daily_quiz_generation();
-    
-    result := json_build_object(
-        'success', true,
-        'message', '퀴즈 생성이 트리거되었습니다.',
-        'triggered_at', NOW()
-    );
-    
-    RETURN result;
-END;
-$$;
-
-COMMENT ON TABLE public.quiz_generation_history IS '퀴즈 자동 생성 이력을 추적하는 테이블';
+COMMENT ON TABLE public.quiz_automation_settings IS '퀴즈 자동 생성 호출에 필요한 프로젝트 설정 저장 테이블';
 COMMENT ON FUNCTION public.trigger_daily_quiz_generation() IS '매시간 정각에 자동으로 퀴즈를 생성하는 함수';
-COMMENT ON FUNCTION public.generate_quiz_now() IS '수동으로 퀴즈를 즉시 생성하는 함수';

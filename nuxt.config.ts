@@ -39,7 +39,8 @@ export default defineNuxtConfig({
                 { property: 'og:site_name', content: '고고퀴즈킹(GoGo QuizKing)' },
                 {
                     property: 'og:title',
-                    content: '고고퀴즈킹(GoGo QuizKing) | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
+                    content:
+                        '고고퀴즈킹(GoGo QuizKing) | 실시간 퀴즈 게임 - 상식퀴즈, OX퀴즈, 객관식 퀴즈',
                 },
                 {
                     property: 'og:description',
@@ -49,7 +50,8 @@ export default defineNuxtConfig({
                 {
                     property: 'og:image',
                     content:
-                        (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net') + '/img/quizking-opengraph-v1.jpg',
+                        (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net') +
+                        '/img/quizking-opengraph-v1.jpg',
                 },
                 {
                     property: 'og:image:width',
@@ -72,7 +74,8 @@ export default defineNuxtConfig({
                 {
                     name: 'twitter:image',
                     content:
-                        (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net') + '/img/quizking-opengraph-v1.jpg',
+                        (process.env.NUXT_PUBLIC_SITE_URL || 'https://www.gogoquizking.net') +
+                        '/img/quizking-opengraph-v1.jpg',
                 },
                 { name: 'naver-site-verification', content: '' },
                 { name: 'google-site-verification', content: '' },
@@ -143,6 +146,7 @@ export default defineNuxtConfig({
         public: {
             supabaseUrl: process.env.SUPABASE_URL,
             supabaseKey: process.env.SUPABASE_KEY,
+            supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
             supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
             geminiApiKey: process.env.GEMINI_API_KEY,
             apiTimeout: '',
