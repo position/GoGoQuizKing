@@ -80,38 +80,63 @@ const dailyQuizBlueprints: Record<
     1: [
         { category: 'korean', difficulty: 'seedling', topic: '받침 있는 낱말 읽기' },
         { category: 'math', difficulty: 'seedling', topic: '10 이하의 덧셈과 뺄셈' },
+        { category: 'math', difficulty: 'leaf', topic: '그림으로 이해하는 덧셈과 뺄셈 문장제' },
         { category: 'science', difficulty: 'seedling', topic: '동물과 식물의 특징' },
         { category: 'general', difficulty: 'seedling', topic: '학교생활 안전과 예절' },
+        { category: 'korean', difficulty: 'leaf', topic: '짧은 이야기의 순서와 인물 마음' },
+        { category: 'science', difficulty: 'leaf', topic: '우리 주변 물건의 재료와 쓰임' },
+        { category: 'fun', difficulty: 'seedling', topic: '생활 속 관찰력과 규칙 찾기' },
     ],
     2: [
         { category: 'math', difficulty: 'seedling', topic: '두 자리 수 계산과 시각 읽기' },
+        { category: 'math', difficulty: 'leaf', topic: '받아올림과 받아내림이 있는 계산' },
         { category: 'korean', difficulty: 'seedling', topic: '문장 부호와 짧은 글 이해' },
         { category: 'science', difficulty: 'seedling', topic: '계절과 날씨 변화' },
         { category: 'english', difficulty: 'seedling', topic: '기초 영어 인사와 색깔 단어' },
+        { category: 'general', difficulty: 'leaf', topic: '달력, 시간, 생활 계획 세우기' },
+        { category: 'science', difficulty: 'leaf', topic: '물의 상태와 생활 속 변화' },
+        { category: 'korean', difficulty: 'leaf', topic: '원인과 결과가 드러난 문장 읽기' },
     ],
     3: [
+        { category: 'math', difficulty: 'seedling', topic: '곱셈구구와 간단한 나눗셈' },
         { category: 'social', difficulty: 'leaf', topic: '우리 고장과 지도 읽기' },
         { category: 'math', difficulty: 'leaf', topic: '곱셈과 나눗셈 기초' },
+        { category: 'math', difficulty: 'tree', topic: '나눗셈 문장제와 검산' },
         { category: 'science', difficulty: 'leaf', topic: '물질의 상태와 변화' },
         { category: 'korean', difficulty: 'leaf', topic: '중심 문장 찾기' },
+        { category: 'english', difficulty: 'seedling', topic: '알파벳 소리와 쉬운 단어' },
+        { category: 'social', difficulty: 'tree', topic: '고장의 문제 해결과 참여' },
     ],
     4: [
+        { category: 'math', difficulty: 'seedling', topic: '큰 수와 어림하기' },
         { category: 'science', difficulty: 'leaf', topic: '식물의 한살이와 생태' },
         { category: 'math', difficulty: 'leaf', topic: '분수와 소수 기초' },
+        { category: 'math', difficulty: 'tree', topic: '각도, 삼각형, 사각형의 성질' },
         { category: 'social', difficulty: 'leaf', topic: '지역의 생활 모습과 문화유산' },
         { category: 'english', difficulty: 'leaf', topic: '일상생활 영어 표현' },
+        { category: 'science', difficulty: 'tree', topic: '화산과 지진, 지층과 화석' },
+        { category: 'korean', difficulty: 'seedling', topic: '글쓴이의 생각과 까닭 찾기' },
     ],
     5: [
+        { category: 'math', difficulty: 'leaf', topic: '약수와 배수의 기본 개념' },
         { category: 'science', difficulty: 'tree', topic: '태양계와 지구의 운동' },
         { category: 'math', difficulty: 'tree', topic: '약수와 배수, 분수 계산' },
+        { category: 'math', difficulty: 'king', topic: '분수와 소수의 혼합 계산 응용' },
         { category: 'social', difficulty: 'tree', topic: '한국사 주요 사건과 인물' },
         { category: 'korean', difficulty: 'tree', topic: '글의 주장과 근거 파악' },
+        { category: 'english', difficulty: 'leaf', topic: '비교 표현과 짧은 대화 이해' },
+        { category: 'science', difficulty: 'leaf', topic: '생물의 구조와 기능 기초' },
     ],
     6: [
+        { category: 'math', difficulty: 'leaf', topic: '비와 비율의 기본 의미' },
         { category: 'math', difficulty: 'tree', topic: '비와 비율, 백분율' },
+        { category: 'math', difficulty: 'king', topic: '속력, 비례식, 백분율 응용' },
         { category: 'english', difficulty: 'tree', topic: '과거형과 미래 표현' },
         { category: 'science', difficulty: 'tree', topic: '전기 회로와 에너지' },
         { category: 'social', difficulty: 'tree', topic: '민주주의와 세계 여러 나라' },
+        { category: 'korean', difficulty: 'leaf', topic: '문학 작품의 표현과 분위기' },
+        { category: 'science', difficulty: 'king', topic: '기체, 연소, 에너지 전환 심화' },
+        { category: 'social', difficulty: 'leaf', topic: '세계 지리와 문화 비교' },
     ],
 };
 
@@ -704,16 +729,28 @@ function getDayOfYear(date: Date): number {
     return Math.floor((currentDay - startOfYear) / 86400000);
 }
 
+function getKoreanHour(date: Date): number {
+    const hour = new Intl.DateTimeFormat('en-US', {
+        timeZone: KOREA_TIME_ZONE,
+        hour: 'numeric',
+        hourCycle: 'h23',
+    }).format(date);
+
+    return Number(hour);
+}
+
 function formatKoreanDate(date: Date): string {
     return new Intl.DateTimeFormat('ko-KR', { timeZone: KOREA_TIME_ZONE }).format(date);
 }
 
 function selectDailyAiSpecs(date: Date): DailyQuizSpec[] {
     const dayOfYear = getDayOfYear(date);
+    const hour = getKoreanHour(date);
+    const hourlySeed = dayOfYear * 24 + hour;
 
-    return [1, 2, 3, 4, 5, 6].map((gradeLevel) => {
+    const specs = [1, 2, 3, 4, 5, 6].map((gradeLevel, index) => {
         const blueprints = dailyQuizBlueprints[gradeLevel];
-        const blueprint = blueprints[(dayOfYear + gradeLevel) % blueprints.length];
+        const blueprint = blueprints[(hourlySeed + gradeLevel * 2 + index) % blueprints.length];
 
         return {
             ...blueprint,
@@ -721,10 +758,69 @@ function selectDailyAiSpecs(date: Date): DailyQuizSpec[] {
             questionCount: DAILY_AI_QUESTION_COUNT,
         };
     });
+
+    let kingIndexes = specs
+        .map((spec, index) => (spec.difficulty === 'king' ? index : -1))
+        .filter((index) => index >= 0);
+
+    if (kingIndexes.length === 0) {
+        const gradeLevel = 6;
+        const kingBlueprints = dailyQuizBlueprints[gradeLevel].filter(
+            (blueprint) => blueprint.difficulty === 'king',
+        );
+        const blueprint = kingBlueprints[hourlySeed % kingBlueprints.length];
+
+        specs[gradeLevel - 1] = {
+            ...blueprint,
+            gradeLevel,
+            questionCount: DAILY_AI_QUESTION_COUNT,
+        };
+        kingIndexes = [gradeLevel - 1];
+    }
+
+    if (kingIndexes.length > 1) {
+        const keepKingIndex = kingIndexes[hourlySeed % kingIndexes.length];
+
+        for (const index of kingIndexes) {
+            if (index === keepKingIndex) {
+                continue;
+            }
+
+            const gradeLevel = specs[index].gradeLevel;
+            const nonKingBlueprints = dailyQuizBlueprints[gradeLevel].filter(
+                (blueprint) => blueprint.difficulty !== 'king',
+            );
+            const blueprint = nonKingBlueprints[hourlySeed % nonKingBlueprints.length];
+
+            specs[index] = {
+                ...blueprint,
+                gradeLevel,
+                questionCount: DAILY_AI_QUESTION_COUNT,
+            };
+        }
+    }
+
+    if (!specs.some((spec) => spec.category === 'english')) {
+        const gradeLevel = 2;
+        const englishBlueprints = dailyQuizBlueprints[gradeLevel].filter(
+            (blueprint) => blueprint.category === 'english',
+        );
+        const blueprint = englishBlueprints[hourlySeed % englishBlueprints.length];
+
+        specs[gradeLevel - 1] = {
+            ...blueprint,
+            gradeLevel,
+            questionCount: DAILY_AI_QUESTION_COUNT,
+        };
+    }
+
+    return specs;
 }
 
 function selectDailyDiverseTemplates(date: Date, count = DAILY_DIVERSE_QUIZ_COUNT): QuizTemplate[] {
     const dayOfYear = getDayOfYear(date);
+    const hour = getKoreanHour(date);
+    const hourlySeed = dayOfYear * 24 + hour;
     const selected: QuizTemplate[] = [];
     const selectedTitles = new Set<string>();
 
@@ -735,7 +831,7 @@ function selectDailyDiverseTemplates(date: Date, count = DAILY_DIVERSE_QUIZ_COUN
             continue;
         }
 
-        const template = candidates[(dayOfYear + gradeLevel) % candidates.length];
+        const template = candidates[(hourlySeed + gradeLevel) % candidates.length];
         selected.push(template);
         selectedTitles.add(template.title);
 
@@ -745,7 +841,7 @@ function selectDailyDiverseTemplates(date: Date, count = DAILY_DIVERSE_QUIZ_COUN
     }
 
     for (let i = 0; selected.length < count && i < quizTemplates.length; i++) {
-        const template = quizTemplates[(dayOfYear + i) % quizTemplates.length];
+        const template = quizTemplates[(hourlySeed + i) % quizTemplates.length];
 
         if (!selectedTitles.has(template.title)) {
             selected.push(template);
@@ -794,7 +890,10 @@ function buildGeminiPrompt(spec: DailyQuizSpec, dateLabel: string, sequence: num
 4. 모든 문제는 한국 초등학교 ${spec.gradeLevel}학년 수준에 맞아야 합니다.
 5. 문제와 선택지는 서로 중복되지 않게 하세요.
 6. 정답이 모호하거나 논란이 있을 수 있는 문제는 만들지 마세요.
-7. 어제와 똑같은 제목처럼 보이지 않도록 주제 안에서 구체적인 소재를 바꿔 주세요.`;
+7. 제목은 "즐거운 OO 놀이", "신나는 OO 퀴즈"처럼 흔한 표현을 반복하지 말고, 오늘의 세부 소재가 드러나게 구체적으로 만드세요.
+8. 같은 과목이라도 이전 자동 퀴즈와 구별되도록 숫자 범위, 상황, 배경, 예시 소재를 바꿔 주세요.
+9. 문제 5개 안에서도 단순 계산, 문장제, 개념 이해, 생활 적용을 섞어 주세요.
+10. 매시간 자동 생성 묶음에는 킹왕짱(king) 난이도 퀴즈가 정확히 1개, 영어 카테고리 퀴즈가 1개 이상 포함되도록 서버가 스펙을 배정합니다. 이 요청의 대상 학년, 과목, 주제, 난이도를 반드시 따르세요.`;
 }
 
 function parseGeneratedQuiz(content: string): GeneratedQuiz {
