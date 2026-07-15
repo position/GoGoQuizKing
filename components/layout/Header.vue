@@ -13,6 +13,26 @@
             <q-space />
 
             <q-btn
+                v-if="authStore.isLogin"
+                flat
+                round
+                dense
+                icon="notifications_none"
+                class="notification-btn"
+                aria-label="커뮤니티 알림"
+                @click="router.push('/profile/notifications')"
+            >
+                <q-badge
+                    v-if="unreadCount"
+                    color="negative"
+                    floating
+                    rounded
+                    :label="unreadCount > 99 ? '99+' : unreadCount"
+                />
+                <q-tooltip>커뮤니티 알림</q-tooltip>
+            </q-btn>
+
+            <q-btn
                 @click="toggleTheme"
                 flat
                 round
@@ -33,9 +53,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useCommonStore } from '~/store/common.store';
+import { useAuthStore } from '~/store/auth.store';
+import { useCommentNotifications } from '~/composables/use-comment-notifications';
 
 const commonStore = useCommonStore();
+const authStore = useAuthStore();
 const router = useRouter();
+const route = useRoute();
+const { unreadCount, fetchUnreadCount } = useCommentNotifications();
 
 const isDarkMode = computed(() => commonStore.isDarkMode);
 
@@ -50,6 +75,18 @@ function goMain() {
 function toggleTheme() {
     commonStore.toggleTheme();
 }
+
+watch([() => authStore.isLogin, () => route.fullPath], ([isLogin]) => {
+    if (isLogin) {
+        fetchUnreadCount();
+    }
+});
+
+onMounted(() => {
+    if (authStore.isLogin) {
+        fetchUnreadCount();
+    }
+});
 </script>
 
 <style scoped lang="scss">
@@ -99,6 +136,11 @@ function toggleTheme() {
         &:hover {
             transform: rotate(15deg);
         }
+    }
+
+    .notification-btn {
+        margin-right: 4px;
+        color: white;
     }
 
     .profile-btn {

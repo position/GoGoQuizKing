@@ -24,9 +24,29 @@ export interface QuizComment {
     updated_at: string;
     profiles?: {
         full_name: string | null;
+        preferred_username: string | null;
         avatar_url: string | null;
+        level?: number;
     };
+    mentions?: QuizCommentMention[];
     replies?: QuizComment[];
+}
+
+export interface MentionCandidate {
+    user_id: string;
+    full_name: string | null;
+    preferred_username: string | null;
+    avatar_url: string | null;
+    level?: number;
+}
+
+export interface QuizCommentMention {
+    id?: string;
+    comment_id?: string;
+    mentioned_user_id: string;
+    mention_text: string;
+    start_offset: number;
+    length: number;
 }
 
 // 퀴즈 좋아요
@@ -42,11 +62,46 @@ export interface QuizCommentCreateRequest {
     quiz_id: string;
     content: string;
     parent_id?: string;
+    mentions?: QuizCommentMention[];
 }
 
 // 퀴즈 댓글 수정 요청
 export interface QuizCommentUpdateRequest {
     content: string;
+    mentions?: QuizCommentMention[];
+}
+
+export interface MyQuizComment {
+    id: string;
+    quiz_id: string;
+    user_id: string;
+    parent_id: string | null;
+    content: string;
+    created_at: string;
+    updated_at: string;
+    quizzes: {
+        title: string;
+        category: string;
+    } | null;
+}
+
+export interface CommentMentionNotification {
+    id: string;
+    recipient_id: string;
+    actor_id: string;
+    quiz_id: string;
+    comment_id: string;
+    preview: string;
+    is_read: boolean;
+    created_at: string;
+    actor?: {
+        full_name: string | null;
+        preferred_username: string | null;
+        avatar_url: string | null;
+    } | null;
+    quiz?: {
+        title: string;
+    } | null;
 }
 
 // 퀴즈 좋아요 상태

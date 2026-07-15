@@ -21,13 +21,15 @@ const error = ref<string | null>(null);
 // SEO
 useSeoMeta({
     title: () =>
-        quiz.value ? `${quiz.value.title} - 고고퀴즈킹(GoGo QuizKing)` : '퀴즈 상세 - 고고퀴즈킹(GoGo QuizKing)',
-    description: () =>
-        quiz.value?.description || '고고퀴즈킹에서 재미있는 퀴즈에 도전해보세요!',
+        quiz.value
+            ? `${quiz.value.title} - 고고퀴즈킹(GoGo QuizKing)`
+            : '퀴즈 상세 - 고고퀴즈킹(GoGo QuizKing)',
+    description: () => quiz.value?.description || '고고퀴즈킹에서 재미있는 퀴즈에 도전해보세요!',
     ogTitle: () =>
-        quiz.value ? `${quiz.value.title} - 고고퀴즈킹(GoGo QuizKing)` : '퀴즈 상세 - 고고퀴즈킹(GoGo QuizKing)',
-    ogDescription: () =>
-        quiz.value?.description || '친구들과 함께 퀴즈를 풀고 랭킹에 도전하세요!',
+        quiz.value
+            ? `${quiz.value.title} - 고고퀴즈킹(GoGo QuizKing)`
+            : '퀴즈 상세 - 고고퀴즈킹(GoGo QuizKing)',
+    ogDescription: () => quiz.value?.description || '친구들과 함께 퀴즈를 풀고 랭킹에 도전하세요!',
 });
 
 onMounted(async () => {
@@ -177,10 +179,10 @@ const formattedDate = computed(() => {
 
                     <!-- 메타 정보 -->
                     <div class="quiz-meta">
-                        <div class="meta-item">
+                        <NuxtLink :to="`/profile/${quiz.created_by}`" class="meta-item author-link">
                             <q-icon name="person" size="18px" />
                             <span>{{ authorName }}</span>
-                        </div>
+                        </NuxtLink>
                         <div class="meta-item">
                             <q-icon name="calendar_today" size="18px" />
                             <span>{{ formattedDate }}</span>
@@ -300,6 +302,11 @@ const formattedDate = computed(() => {
                 gap: 6px;
                 color: var(--text-light);
                 font-size: 14px;
+            }
+
+            .author-link {
+                color: inherit;
+                text-decoration: none;
             }
         }
 

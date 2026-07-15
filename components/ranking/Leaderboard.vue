@@ -5,7 +5,11 @@
             <h3 class="section-title">🏆 TOP 3</h3>
             <div class="top-three-grid">
                 <!-- 2등 (왼쪽) -->
-                <div v-if="topThree[1]" class="top-card rank-2">
+                <NuxtLink
+                    v-if="topThree[1]"
+                    :to="`/profile/${topThree[1].user_id}`"
+                    class="top-card rank-2"
+                >
                     <div class="medal">🥈</div>
                     <q-avatar size="56px" class="user-avatar">
                         <img
@@ -18,10 +22,14 @@
                     <span class="user-name">{{ getDisplayName(topThree[1]) }}</span>
                     <LevelBadge :level="topThree[1].level" />
                     <span class="points">{{ formatPoints(topThree[1]) }}</span>
-                </div>
+                </NuxtLink>
 
                 <!-- 1등 (가운데, 강조) -->
-                <div v-if="topThree[0]" class="top-card rank-1">
+                <NuxtLink
+                    v-if="topThree[0]"
+                    :to="`/profile/${topThree[0].user_id}`"
+                    class="top-card rank-1"
+                >
                     <div class="crown">👑</div>
                     <div class="medal">🥇</div>
                     <q-avatar size="72px" class="user-avatar">
@@ -35,10 +43,14 @@
                     <span class="user-name">{{ getDisplayName(topThree[0]) }}</span>
                     <LevelBadge :level="topThree[0].level" />
                     <span class="points">{{ formatPoints(topThree[0]) }}</span>
-                </div>
+                </NuxtLink>
 
                 <!-- 3등 (오른쪽) -->
-                <div v-if="topThree[2]" class="top-card rank-3">
+                <NuxtLink
+                    v-if="topThree[2]"
+                    :to="`/profile/${topThree[2].user_id}`"
+                    class="top-card rank-3"
+                >
                     <div class="medal">🥉</div>
                     <q-avatar size="56px" class="user-avatar">
                         <img
@@ -51,7 +63,7 @@
                     <span class="user-name">{{ getDisplayName(topThree[2]) }}</span>
                     <LevelBadge :level="topThree[2].level" />
                     <span class="points">{{ formatPoints(topThree[2]) }}</span>
-                </div>
+                </NuxtLink>
             </div>
         </div>
 
@@ -193,6 +205,8 @@ function formatPoints(entry: AnyRankingEntry): string {
     border-radius: 16px;
     box-shadow: 0 4px 12px var(--shadow-color);
     position: relative;
+    color: inherit;
+    text-decoration: none;
 
     .medal {
         font-size: 28px;

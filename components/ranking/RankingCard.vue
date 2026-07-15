@@ -1,5 +1,10 @@
 <template>
-    <div class="ranking-card" :class="{ 'is-top-three': isTopThree, 'is-me': isCurrentUser }">
+    <NuxtLink
+        :to="`/profile/${entry.user_id}`"
+        class="ranking-card"
+        :class="{ 'is-top-three': isTopThree, 'is-me': isCurrentUser }"
+        :aria-label="`${displayName} 프로필 보기`"
+    >
         <div class="rank-section">
             <div
                 v-if="rankBadge"
@@ -28,7 +33,7 @@
             <span class="points-value">{{ formattedPoints }}</span>
             <span class="points-label">{{ pointsLabel }}</span>
         </div>
-    </div>
+    </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -88,6 +93,8 @@ const pointsLabel = computed(() => {
     border-radius: 12px;
     border: 1px solid #e0e0e0;
     transition: all 0.2s ease;
+    color: inherit;
+    text-decoration: none;
 
     &:hover {
         transform: translateY(-2px);
@@ -103,6 +110,31 @@ const pointsLabel = computed(() => {
         background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
         border-color: #2196f3;
         border-width: 2px;
+    }
+}
+
+@media (max-width: 600px) {
+    .ranking-card {
+        gap: 8px;
+        padding: 11px 10px;
+    }
+    .rank-section {
+        min-width: 38px;
+    }
+    .rank-badge {
+        width: 36px;
+        height: 36px;
+    }
+    .user-section {
+        gap: 8px;
+        min-width: 0;
+    }
+    .points-section {
+        min-width: 48px;
+        gap: 4px;
+    }
+    .points-value {
+        font-size: 20px;
     }
 }
 

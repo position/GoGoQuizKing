@@ -166,6 +166,218 @@ export interface Database {
                     completed_at?: string;
                 };
             };
+            quiz_comments: {
+                Row: {
+                    id: string;
+                    quiz_id: string;
+                    user_id: string;
+                    parent_id: string | null;
+                    content: string;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    quiz_id: string;
+                    user_id: string;
+                    parent_id?: string | null;
+                    content: string;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    quiz_id?: string;
+                    user_id?: string;
+                    parent_id?: string | null;
+                    content?: string;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+            };
+            quiz_comment_mentions: {
+                Row: {
+                    id: string;
+                    comment_id: string;
+                    mentioned_user_id: string;
+                    mention_text: string;
+                    start_offset: number;
+                    length: number;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    comment_id: string;
+                    mentioned_user_id: string;
+                    mention_text: string;
+                    start_offset: number;
+                    length: number;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    comment_id?: string;
+                    mentioned_user_id?: string;
+                    mention_text?: string;
+                    start_offset?: number;
+                    length?: number;
+                    created_at?: string;
+                };
+            };
+            comment_mention_notifications: {
+                Row: {
+                    id: string;
+                    recipient_id: string;
+                    actor_id: string;
+                    quiz_id: string;
+                    comment_id: string;
+                    preview: string;
+                    is_read: boolean;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    recipient_id: string;
+                    actor_id: string;
+                    quiz_id: string;
+                    comment_id: string;
+                    preview?: string;
+                    is_read?: boolean;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    recipient_id?: string;
+                    actor_id?: string;
+                    quiz_id?: string;
+                    comment_id?: string;
+                    preview?: string;
+                    is_read?: boolean;
+                    created_at?: string;
+                };
+            };
+            profile_guestbook_settings: {
+                Row: {
+                    profile_id: string;
+                    is_enabled: boolean;
+                    visibility: 'members' | 'friends' | 'private';
+                    updated_at: string;
+                };
+                Insert: {
+                    profile_id: string;
+                    is_enabled?: boolean;
+                    visibility?: 'members' | 'friends' | 'private';
+                    updated_at?: string;
+                };
+                Update: {
+                    is_enabled?: boolean;
+                    visibility?: 'members' | 'friends' | 'private';
+                    updated_at?: string;
+                };
+            };
+            profile_guestbook_entries: {
+                Row: {
+                    id: string;
+                    profile_owner_id: string;
+                    author_id: string;
+                    content: string;
+                    status: 'visible' | 'hidden' | 'deleted';
+                    hidden_by: string | null;
+                    hidden_at: string | null;
+                    created_at: string;
+                    updated_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    profile_owner_id: string;
+                    author_id: string;
+                    content: string;
+                    status?: 'visible' | 'hidden' | 'deleted';
+                    hidden_by?: string | null;
+                    hidden_at?: string | null;
+                    created_at?: string;
+                    updated_at?: string;
+                };
+                Update: {
+                    content?: string;
+                    status?: 'visible' | 'hidden' | 'deleted';
+                    hidden_by?: string | null;
+                    hidden_at?: string | null;
+                    updated_at?: string;
+                };
+            };
+            profile_blocks: {
+                Row: { id: string; blocker_id: string; blocked_id: string; created_at: string };
+                Insert: {
+                    id?: string;
+                    blocker_id: string;
+                    blocked_id: string;
+                    created_at?: string;
+                };
+                Update: never;
+            };
+            guestbook_notifications: {
+                Row: {
+                    id: string;
+                    recipient_id: string;
+                    actor_id: string;
+                    entry_id: string;
+                    preview: string;
+                    is_read: boolean;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    recipient_id: string;
+                    actor_id: string;
+                    entry_id: string;
+                    preview?: string;
+                    is_read?: boolean;
+                    created_at?: string;
+                };
+                Update: { is_read?: boolean };
+            };
+            community_reports: {
+                Row: {
+                    id: string;
+                    reporter_id: string;
+                    target_type: 'guestbook';
+                    target_id: string;
+                    reason: 'spam' | 'abuse' | 'privacy' | 'other';
+                    detail: string | null;
+                    status: 'pending' | 'reviewed' | 'resolved' | 'dismissed';
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    reporter_id: string;
+                    target_type: 'guestbook';
+                    target_id: string;
+                    reason: 'spam' | 'abuse' | 'privacy' | 'other';
+                    detail?: string | null;
+                };
+                Update: never;
+            };
+            quiz_likes: {
+                Row: {
+                    id: string;
+                    quiz_id: string;
+                    user_id: string;
+                    created_at: string;
+                };
+                Insert: {
+                    id?: string;
+                    quiz_id: string;
+                    user_id: string;
+                    created_at?: string;
+                };
+                Update: {
+                    id?: string;
+                    quiz_id?: string;
+                    user_id?: string;
+                    created_at?: string;
+                };
+            };
             notices: {
                 Row: {
                     id: string;
@@ -648,6 +860,25 @@ export interface Database {
             };
         };
         Functions: {
+            create_profile_guestbook_entry: {
+                Args: { p_profile_owner_id: string; p_content: string };
+                Returns: string;
+            };
+            update_profile_guestbook_entry: {
+                Args: { p_entry_id: string; p_content: string };
+                Returns: undefined;
+            };
+            set_profile_guestbook_entry_status: {
+                Args: { p_entry_id: string; p_status: 'visible' | 'hidden' | 'deleted' };
+                Returns: undefined;
+            };
+            sync_quiz_comment_mentions: {
+                Args: {
+                    p_comment_id: string;
+                    p_mentions?: Json;
+                };
+                Returns: void;
+            };
             increment_quiz_play_count: {
                 Args: { quiz_uuid: string };
                 Returns: void;

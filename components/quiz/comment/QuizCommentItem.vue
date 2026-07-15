@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import type { QuizComment } from '~/models/comment';
+import type { MentionCandidate, QuizComment, QuizCommentMention } from '~/models/comment';
 
 interface Props {
     comment: QuizComment;
     currentUserId?: string;
+    mentionCandidates?: MentionCandidate[];
+    highlightedCommentId?: string | null;
     depth?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     depth: 0,
+    mentionCandidates: () => [],
+    highlightedCommentId: null,
 });
 
 const emit = defineEmits<{
     (e: 'reply', commentId: string): void;
-    (e: 'update', commentId: string, content: string): void;
+    (e: 'update', commentId: string, content: string, mentions: QuizCommentMention[]): void;
     (e: 'delete', commentId: string): void;
 }>();
 
@@ -29,7 +33,11 @@ const isOwner = computed(() => {
 });
 
 const displayName = computed(() => {
-    return props.comment.profiles?.full_name || '익명 사용자';
+    return (
+        props.comment.profiles?.preferred_username ||
+        props.comment.profiles?.full_name ||
+        '익명 사용자'
+    ).replace(/^@+/, '');
 });
 
 const avatarUrl = computed(() => {
@@ -41,6 +49,41 @@ const isEdited = computed(() => {
         return false;
     }
     return props.comment.updated_at !== props.comment.created_at;
+});
+
+const contentSegments = computed(() => {
+    const mentions = [...(props.comment.mentions || [])].sort(
+        (a, b) => a.start_offset - b.start_offset,
+    );
+    const segments: Array<{ text: string; isMention: boolean; userId?: string }> = [];
+    let cursor = 0;
+
+    mentions.forEach((mention) => {
+        if (mention.start_offset < cursor || mention.start_offset >= props.comment.content.length) {
+            return;
+        }
+
+        if (mention.start_offset > cursor) {
+            segments.push({
+                text: props.comment.content.slice(cursor, mention.start_offset),
+                isMention: false,
+            });
+        }
+
+        const end = Math.min(props.comment.content.length, mention.start_offset + mention.length);
+        segments.push({
+            text: props.comment.content.slice(mention.start_offset, end),
+            isMention: true,
+            userId: mention.mentioned_user_id,
+        });
+        cursor = end;
+    });
+
+    if (cursor < props.comment.content.length) {
+        segments.push({ text: props.comment.content.slice(cursor), isMention: false });
+    }
+
+    return segments.length ? segments : [{ text: props.comment.content, isMention: false }];
 });
 
 const formattedDate = computed(() => {
@@ -82,12 +125,8 @@ function handleCancelEdit() {
     editContent.value = '';
 }
 
-function handleSubmitEdit() {
-    const trimmed = editContent.value.trim();
-    if (!trimmed) {
-        return;
-    }
-    emit('update', props.comment.id, trimmed);
+function handleSubmitEdit(content: string, mentions: QuizCommentMention[]) {
+    emit('update', props.comment.id, content, mentions);
     isEditing.value = false;
     editContent.value = '';
 }
@@ -114,7 +153,12 @@ function handleDelete() {
 </script>
 
 <template>
-    <div class="quiz-comment-item" :style="{ marginLeft: `${depth * 24}px` }">
+    <div
+        :id="`comment-${comment.id}`"
+        class="quiz-comment-item"
+        :class="{ 'is-highlighted': highlightedCommentId === comment.id }"
+        :style="{ marginLeft: `${depth * 24}px` }"
+    >
         <div class="comment-container">
             <!-- 대댓글 표시선 -->
             <div v-if="depth > 0" class="reply-indicator">
@@ -124,13 +168,21 @@ function handleDelete() {
             <div class="comment-content">
                 <!-- 헤더: 아바타, 이름, 날짜 -->
                 <div class="comment-header">
-                    <q-avatar size="32px" class="avatar">
-                        <q-img v-if="avatarUrl" :src="avatarUrl" />
-                        <q-icon v-else name="person" color="grey-6" />
-                    </q-avatar>
+                    <NuxtLink
+                        :to="`/profile/${comment.user_id}`"
+                        class="profile-link"
+                        :aria-label="`${displayName} 프로필 보기`"
+                    >
+                        <q-avatar size="32px" class="avatar">
+                            <q-img v-if="avatarUrl" :src="avatarUrl" />
+                            <q-icon v-else name="person" color="grey-6" />
+                        </q-avatar>
+                    </NuxtLink>
 
                     <div class="header-info">
-                        <span class="author-name">{{ displayName }}</span>
+                        <NuxtLink :to="`/profile/${comment.user_id}`" class="author-name">{{
+                            displayName
+                        }}</NuxtLink>
                         <span class="comment-date">
                             {{ formattedDate }}
                             <span v-if="isEdited" class="edited-badge">(수정됨)</span>
@@ -168,43 +220,29 @@ function handleDelete() {
 
                 <!-- 인라인 수정 폼 -->
                 <div v-if="isEditing" class="edit-form">
-                    <q-input
-                        v-model="editContent"
-                        type="textarea"
-                        outlined
-                        autogrow
-                        :max-height="150"
+                    <QuizCommentForm
+                        :quiz-id="comment.quiz_id"
                         placeholder="댓글을 수정하세요..."
-                        class="edit-input"
-                        @keydown.ctrl.enter="handleSubmitEdit"
-                        @keydown.meta.enter="handleSubmitEdit"
+                        submit-label="수정"
+                        :initial-content="editContent"
+                        :initial-mentions="comment.mentions || []"
+                        :mention-candidates="mentionCandidates"
+                        is-edit
+                        @submit="handleSubmitEdit"
+                        @cancel="handleCancelEdit"
                     />
-                    <div class="edit-actions">
-                        <q-btn
-                            flat
-                            no-caps
-                            color="grey-7"
-                            label="취소"
-                            size="md"
-                            @click="handleCancelEdit"
-                            class="text-no-wrap"
-                        />
-                        <q-btn
-                            unelevated
-                            no-caps
-                            color="primary"
-                            label="수정"
-                            size="md"
-                            :disable="!editContent.trim()"
-                            @click="handleSubmitEdit"
-                            class="text-no-wrap"
-                        />
-                    </div>
                 </div>
 
                 <!-- 댓글 본문 -->
                 <div v-else class="comment-body">
-                    {{ comment.content }}
+                    <component
+                        v-for="(segment, index) in contentSegments"
+                        :key="index"
+                        :is="segment.isMention ? resolveComponent('NuxtLink') : 'span'"
+                        :to="segment.isMention ? `/profile/${segment.userId}` : undefined"
+                        :class="{ mention: segment.isMention }"
+                        >{{ segment.text }}</component
+                    >
                 </div>
 
                 <!-- 액션 버튼 -->
@@ -230,9 +268,14 @@ function handleDelete() {
                 :key="reply.id"
                 :comment="reply"
                 :current-user-id="currentUserId"
+                :mention-candidates="mentionCandidates"
+                :highlighted-comment-id="highlightedCommentId"
                 :depth="depth + 1"
                 @reply="$emit('reply', $event)"
-                @update="(id: string, content: string) => $emit('update', id, content)"
+                @update="
+                    (id: string, content: string, mentions: QuizCommentMention[]) =>
+                        $emit('update', id, content, mentions)
+                "
                 @delete="$emit('delete', $event)"
             />
         </template>
@@ -242,6 +285,15 @@ function handleDelete() {
 <style scoped lang="scss">
 .quiz-comment-item {
     margin-bottom: 8px;
+    scroll-margin-top: 80px;
+    transition:
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
+
+    &.is-highlighted > .comment-container > .comment-content {
+        background: color-mix(in srgb, var(--color-accent, #ffe66d) 28%, var(--bg-card, white));
+        box-shadow: 0 0 0 2px var(--color-accent, #ffe66d);
+    }
 }
 
 .comment-container {
@@ -285,6 +337,12 @@ function handleDelete() {
     color: var(--text-primary, #333);
 }
 
+.profile-link,
+.author-name,
+.mention {
+    text-decoration: none;
+}
+
 .comment-date {
     font-size: 12px;
     color: var(--text-light, #888);
@@ -301,6 +359,11 @@ function handleDelete() {
     color: var(--text-primary, #333);
     white-space: pre-wrap;
     word-break: break-word;
+
+    .mention {
+        color: var(--color-primary, #ff6b6b);
+        font-weight: 700;
+    }
 }
 
 .comment-actions {
@@ -309,18 +372,5 @@ function handleDelete() {
 
 .edit-form {
     margin-top: 4px;
-
-    .edit-input {
-        :deep(.q-field__control) {
-            border-radius: 8px;
-        }
-    }
-
-    .edit-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        margin-top: 8px;
-    }
 }
 </style>

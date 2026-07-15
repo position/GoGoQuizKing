@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useQuizComments } from '~/composables/use-quiz-comments';
+import { ToastMessage } from '~/helper/message';
+import type { MentionCandidate, QuizComment, QuizCommentMention } from '~/models/comment';
 import type { Database } from '~/models/database.types';
 
 interface Props {
@@ -13,6 +15,7 @@ const {
     loading,
     error,
     totalCount,
+    mentionCandidates,
     fetchComments,
     createComment,
     updateComment,
@@ -21,26 +24,75 @@ const {
 
 // 현재 사용자 ID
 const supabase = useSupabaseClient<Database>();
+const route = useRoute();
 const currentUserId = ref<string | undefined>();
 
 // 대댓글 작성 상태
 const replyingTo = ref<string | null>(null);
+const highlightedCommentId = ref<string | null>(null);
+
+function flattenComments(items: readonly QuizComment[]): QuizComment[] {
+    return items.flatMap((comment) => [comment, ...flattenComments(comment.replies || [])]);
+}
+
+const replyTarget = computed(() => {
+    if (!replyingTo.value) {
+        return null;
+    }
+    return (
+        flattenComments(comments.value).find((comment) => comment.id === replyingTo.value) || null
+    );
+});
+
+const replyTargetCandidate = computed<MentionCandidate | null>(() => {
+    if (!replyTarget.value) {
+        return null;
+    }
+    return (
+        mentionCandidates.value.find(
+            (candidate) => candidate.user_id === replyTarget.value?.user_id,
+        ) || null
+    );
+});
+
+const replyRootId = computed(() => {
+    if (!replyingTo.value) {
+        return null;
+    }
+
+    const containsTarget = (comment: QuizComment): boolean =>
+        comment.id === replyingTo.value ||
+        Boolean(comment.replies?.some((reply) => containsTarget(reply)));
+
+    return comments.value.find((comment) => containsTarget(comment))?.id || null;
+});
 
 onMounted(async () => {
     await fetchComments();
 
     const { data } = await supabase.auth.getUser();
     currentUserId.value = data.user?.id;
+    await scrollToRequestedComment();
 });
 
-async function handleCreateComment(content: string) {
+watch(
+    () => route.query.comment,
+    (current, previous) => {
+        if (current && current !== previous && comments.value.length) {
+            scrollToRequestedComment();
+        }
+    },
+);
+
+async function handleCreateComment(content: string, mentions: QuizCommentMention[]) {
     await createComment({
         quiz_id: props.quizId,
         content,
+        mentions,
     });
 }
 
-async function handleCreateReply(content: string) {
+async function handleCreateReply(content: string, mentions: QuizCommentMention[]) {
     if (!replyingTo.value) {
         return;
     }
@@ -49,6 +101,7 @@ async function handleCreateReply(content: string) {
         quiz_id: props.quizId,
         content,
         parent_id: replyingTo.value,
+        mentions,
     });
 
     if (result) {
@@ -56,8 +109,12 @@ async function handleCreateReply(content: string) {
     }
 }
 
-async function handleUpdateComment(commentId: string, content: string) {
-    await updateComment(commentId, content);
+async function handleUpdateComment(
+    commentId: string,
+    content: string,
+    mentions: QuizCommentMention[],
+) {
+    await updateComment(commentId, content, mentions);
 }
 
 async function handleDeleteComment(commentId: string) {
@@ -70,6 +127,31 @@ function handleReply(commentId: string) {
 
 function handleCancelReply() {
     replyingTo.value = null;
+}
+
+async function scrollToRequestedComment() {
+    const requested = Array.isArray(route.query.comment)
+        ? route.query.comment[0]
+        : route.query.comment;
+    if (!requested) {
+        return;
+    }
+
+    await nextTick();
+    const element = document.getElementById(`comment-${requested}`);
+    if (!element) {
+        ToastMessage.warning('댓글을 찾을 수 없어요. 삭제되었거나 볼 수 없는 댓글일 수 있습니다.');
+        document.querySelector('.quiz-comment-list')?.scrollIntoView({ behavior: 'smooth' });
+        return;
+    }
+
+    highlightedCommentId.value = requested;
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.setTimeout(() => {
+        if (highlightedCommentId.value === requested) {
+            highlightedCommentId.value = null;
+        }
+    }, 2200);
 }
 </script>
 
@@ -101,6 +183,7 @@ function handleCancelReply() {
         <div class="comment-form-container q-mb-md">
             <QuizCommentForm
                 :quiz-id="quizId"
+                :mention-candidates="mentionCandidates"
                 placeholder="퀴즈에 대한 의견을 남겨주세요!"
                 @submit="handleCreateComment"
             />
@@ -112,16 +195,21 @@ function handleCancelReply() {
                 <QuizCommentItem
                     :comment="comment"
                     :current-user-id="currentUserId"
+                    :mention-candidates="mentionCandidates"
+                    :highlighted-comment-id="highlightedCommentId"
                     @reply="handleReply"
                     @update="handleUpdateComment"
                     @delete="handleDeleteComment"
                 />
 
                 <!-- 대댓글 작성 폼 -->
-                <div v-if="replyingTo === comment.id" class="reply-form-container">
+                <div v-if="replyRootId === comment.id" class="reply-form-container">
                     <QuizCommentForm
+                        :key="replyingTo || undefined"
                         :quiz-id="quizId"
-                        :parent-id="comment.id"
+                        :parent-id="replyingTo || undefined"
+                        :mention-candidates="mentionCandidates"
+                        :auto-mention="replyTargetCandidate"
                         placeholder="답글을 입력하세요..."
                         submit-label="답글"
                         @submit="handleCreateReply"
@@ -178,7 +266,6 @@ function handleCancelReply() {
         margin-left: 32px;
         margin-top: 8px;
     }
-
 
     .comments-container {
         display: flex;

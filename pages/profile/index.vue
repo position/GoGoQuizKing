@@ -142,6 +142,8 @@
                 <RecentPerformanceList :data="statsStore.recentPerformance" />
             </section>
 
+            <GuestbookSettingsCard />
+
             <!-- 메뉴 링크 -->
             <section class="menu-section">
                 <q-list class="menu-list">
@@ -171,7 +173,33 @@
                         </q-item-section>
                     </q-item>
 
-                    <q-item clickable v-ripple @click="$router.push('/quiz/my')">
+                    <q-item clickable v-ripple @click="$router.push('/profile/comments')">
+                        <q-item-section avatar>
+                            <q-icon name="chat_bubble_outline" color="primary" />
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label>내가 쓴 댓글</q-item-label>
+                            <q-item-label caption>내 댓글과 답글 다시 보기</q-item-label>
+                        </q-item-section>
+                        <q-item-section side>
+                            <q-icon name="chevron_right" color="grey" />
+                        </q-item-section>
+                    </q-item>
+
+                    <q-item clickable v-ripple @click="$router.push('/profile/notifications')">
+                        <q-item-section avatar>
+                            <q-icon name="notifications_none" color="deep-orange" />
+                        </q-item-section>
+                        <q-item-section>
+                            <q-item-label>커뮤니티 알림</q-item-label>
+                            <q-item-label caption>멘션과 새 방명록 확인</q-item-label>
+                        </q-item-section>
+                        <q-item-section side>
+                            <q-icon name="chevron_right" color="grey" />
+                        </q-item-section>
+                    </q-item>
+
+                    <q-item clickable v-ripple @click="$router.push('/quiz/my-quizzes')">
                         <q-item-section avatar>
                             <q-icon name="edit_note" color="secondary" />
                         </q-item-section>
@@ -212,6 +240,7 @@ import { useStatsStore } from '@/store/stats.store';
 import { useBadgeStore } from '@/store/badge.store';
 import { StatsSummaryCards, RecentPerformanceList } from '@/components/stats';
 import ProfileEditDialog from '@/components/profile/ProfileEditDialog.vue';
+import GuestbookSettingsCard from '@/components/profile/GuestbookSettingsCard.vue';
 
 // SEO 설정 - 개인 프로필 페이지는 검색 엔진에서 제외
 useSeoMeta({
