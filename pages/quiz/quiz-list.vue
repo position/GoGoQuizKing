@@ -92,7 +92,7 @@
 
                 <!-- 필터 초기화 버튼 -->
                 <q-btn
-                    v-if="hasActiveFilter"
+                    :disable="!hasActiveFilter"
                     label="필터 초기화"
                     icon="refresh"
                     flat

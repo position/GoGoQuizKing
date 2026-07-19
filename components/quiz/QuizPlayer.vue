@@ -66,14 +66,12 @@
                         :class="['ox-btn', 'o-btn', { selected: selectedAnswer === 'O' }]"
                     >
                         <span class="ox-icon">⭕</span>
-                        <span class="ox-label">O</span>
                     </button>
                     <button
                         @click="selectAnswer('X')"
                         :class="['ox-btn', 'x-btn', { selected: selectedAnswer === 'X' }]"
                     >
                         <span class="ox-icon">❌</span>
-                        <span class="ox-label">X</span>
                     </button>
                 </div>
 
@@ -116,7 +114,7 @@
             <q-btn
                 v-if="currentIndex > 0"
                 @click="$emit('prev')"
-                label="⬅️ 이전"
+                label="이전"
                 icon="arrow_back"
                 flat
                 color="white"
@@ -128,7 +126,7 @@
             <q-btn
                 v-if="!isLastQuestion"
                 @click="handleNext"
-                label="다음 ➡️"
+                label="다음️"
                 icon-right="arrow_forward"
                 color="primary"
                 unelevated
@@ -182,7 +180,7 @@ const isLastQuestion = computed(() => props.currentIndex === props.questions.len
 const questionTypeLabel = computed(() => {
     const labels: Record<string, string> = {
         multiple: '📝 객관식',
-        ox: '⭕ OX 퀴즈',
+        ox: '⭕❌ 퀴즈',
         short: '✏️ 단답형',
     };
     return labels[currentQuestion.value?.question_type || 'multiple'];
