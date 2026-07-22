@@ -695,7 +695,6 @@ const quizTemplates: QuizTemplate[] = [
         ],
     },
 ];
-const DAILY_DIVERSE_QUIZ_COUNT = 6;
 const DAILY_AI_QUESTION_COUNT = 5;
 const KOREA_TIME_ZONE = 'Asia/Seoul';
 const GEMINI_MODEL = 'gemini-2.5-flash';
@@ -815,41 +814,6 @@ function selectDailyAiSpecs(date: Date): DailyQuizSpec[] {
     }
 
     return specs;
-}
-
-function selectDailyDiverseTemplates(date: Date, count = DAILY_DIVERSE_QUIZ_COUNT): QuizTemplate[] {
-    const dayOfYear = getDayOfYear(date);
-    const hour = getKoreanHour(date);
-    const hourlySeed = dayOfYear * 24 + hour;
-    const selected: QuizTemplate[] = [];
-    const selectedTitles = new Set<string>();
-
-    for (const gradeLevel of [1, 2, 3, 4, 5, 6]) {
-        const candidates = quizTemplates.filter((template) => template.grade_level === gradeLevel);
-
-        if (candidates.length === 0) {
-            continue;
-        }
-
-        const template = candidates[(hourlySeed + gradeLevel) % candidates.length];
-        selected.push(template);
-        selectedTitles.add(template.title);
-
-        if (selected.length >= count) {
-            return selected;
-        }
-    }
-
-    for (let i = 0; selected.length < count && i < quizTemplates.length; i++) {
-        const template = quizTemplates[(hourlySeed + i) % quizTemplates.length];
-
-        if (!selectedTitles.has(template.title)) {
-            selected.push(template);
-            selectedTitles.add(template.title);
-        }
-    }
-
-    return selected;
 }
 
 function buildGeminiPrompt(spec: DailyQuizSpec, dateLabel: string, sequence: number): string {
@@ -1008,14 +972,6 @@ function isRetryableGeminiStatus(status: number): boolean {
     return status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
 }
 
-function shouldUseTemplateFallback(error: unknown, enableTemplateFallback: boolean): boolean {
-    if (enableTemplateFallback) {
-        return true;
-    }
-
-    return error instanceof GeminiApiError && error.retryable;
-}
-
 async function generateQuizTemplateWithGemini(
     spec: DailyQuizSpec,
     dateLabel: string,
@@ -1054,13 +1010,10 @@ async function generateQuizTemplateWithGemini(
             if (!response.ok) {
                 const errorText = await response.text();
                 const retryable = isRetryableGeminiStatus(response.status);
-                throw new GeminiApiError(
-                    `Gemini API 호출 실패: ${response.status} ${errorText}`,
-                    {
-                        status: response.status,
-                        retryable,
-                    },
-                );
+                throw new GeminiApiError(`Gemini API 호출 실패: ${response.status} ${errorText}`, {
+                    status: response.status,
+                    retryable,
+                });
             }
 
             const data = (await response.json()) as GeminiResponse;
@@ -1077,9 +1030,7 @@ async function generateQuizTemplateWithGemini(
         } catch (error) {
             lastError = error;
             const retryable =
-                error instanceof GeminiApiError
-                    ? error.retryable
-                    : error instanceof TypeError;
+                error instanceof GeminiApiError ? error.retryable : error instanceof TypeError;
 
             if (!retryable) {
                 throw error;
@@ -1307,11 +1258,9 @@ Deno.serve(async (req: Request) => {
 
             case 'daily':
             default: {
-                // 매일 한국 날짜 기준으로 학년별/과목별 AI 퀴즈를 새로 생성
+                // 매시간 한국 날짜/시간 기준으로 학년별/과목별 AI 퀴즈를 새로 생성
                 const dateLabel = formatKoreanDate(today);
                 const specs = selectDailyAiSpecs(today);
-                const enableTemplateFallback =
-                    Deno.env.get('ENABLE_DAILY_AI_TEMPLATE_FALLBACK') === 'true';
 
                 for (let i = 0; i < specs.length; i++) {
                     let template: QuizTemplate;
@@ -1324,12 +1273,7 @@ Deno.serve(async (req: Request) => {
                             error: aiError instanceof Error ? aiError.message : aiError,
                         });
 
-                        if (!shouldUseTemplateFallback(aiError, enableTemplateFallback)) {
-                            throw aiError;
-                        }
-
-                        const fallbackTemplates = selectDailyDiverseTemplates(today);
-                        template = fallbackTemplates[i % fallbackTemplates.length];
+                        throw aiError;
                     }
 
                     const result = await createQuizFromTemplate(

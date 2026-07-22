@@ -112,9 +112,9 @@ WHERE jobname = 'daily-quiz-generation';
 
 ## ⚙️ 커스터마이징
 
-### fallback 퀴즈 템플릿 추가
+### 수동 생성 퀴즈 템플릿 추가
 
-자동 실행은 AI로 생성합니다. `quizTemplates` 배열은 수동 생성 모드와 Gemini 429/5xx 같은 일시 장애 fallback에 사용합니다.
+자동 실행은 AI로 생성합니다. `quizTemplates` 배열은 `all`, `single`, `batch` 수동 생성 모드에서만 사용하며 자동 생성 실패 시 fallback으로 사용하지 않습니다.
 
 `supabase/functions/generate-daily-quiz/index.ts`의 `quizTemplates` 배열에 추가:
 

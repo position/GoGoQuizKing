@@ -8,7 +8,7 @@
 
 - Deno 런타임에서 실행되는 서버리스 함수
 - Gemini API를 호출해 매시간 새로운 학년별/과목별 퀴즈 생성
-- 사전 정의된 퀴즈 템플릿은 수동 생성 모드와 AI 실패 fallback 용도로 유지
+- 사전 정의된 퀴즈 템플릿은 `all`, `single`, `batch` 수동 생성 모드에서만 사용
 
 ### 2. 데이터베이스 스케줄러 (pg_cron)
 
@@ -46,7 +46,6 @@ Supabase Dashboard > Project Settings > Edge Functions에서:
 - `SUPABASE_URL`: 프로젝트 URL
 - `SUPABASE_SERVICE_ROLE_KEY`: 서비스 역할 키
 - `GEMINI_API_KEY`: Gemini API 키
-- `ENABLE_DAILY_AI_TEMPLATE_FALLBACK`: 선택값. `true`이면 모든 AI 실패 시 기존 템플릿으로 대체 생성
 
 ### 4. pg_cron 활성화
 
@@ -109,9 +108,9 @@ SELECT public.generate_quiz_now();
 5. **5학년**: 과학, 수학, 사회, 국어
 6. **6학년**: 수학, 영어, 과학, 사회
 
-`quizTemplates` 배열은 `all`, `single`, `batch` 수동 모드와 대체 생성에 사용됩니다. Gemini 429/5xx 같은 일시 장애는 3회 재시도 후 자동으로 템플릿 대체 생성되며, `ENABLE_DAILY_AI_TEMPLATE_FALLBACK=true`이면 응답 형식 오류 같은 일반 AI 실패도 대체 생성됩니다.
+`quizTemplates` 배열은 `all`, `single`, `batch` 수동 모드에서만 사용됩니다. 자동 실행(`daily`)은 AI 생성에 실패해도 `quizTemplates`로 대체 생성하지 않습니다.
 
-### fallback 템플릿 추가 방법
+### 수동 생성 템플릿 추가 방법
 
 `supabase/functions/generate-daily-quiz/index.ts` 파일의 `quizTemplates` 배열에 새로운 템플릿을 추가하세요.
 
@@ -187,7 +186,7 @@ SELECT * FROM net._http_response ORDER BY created DESC LIMIT 10;
 1. `quiz_generation_history` 테이블의 `error_message` 확인
 2. Edge Function 로그 확인
 3. 데이터베이스 연결 상태 확인
-4. Gemini 503/429가 반복되면 Edge Function은 3회 재시도 후 템플릿 대체 생성으로 진행합니다
+4. Gemini 503/429가 반복되면 Edge Function은 3회 재시도 후 실패 응답을 반환하며 템플릿 대체 생성은 하지 않습니다
 
 ## 🔐 보안
 

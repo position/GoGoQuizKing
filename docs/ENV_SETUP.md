@@ -23,11 +23,6 @@ SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 GEMINI_API_KEY=your-gemini-api-key
 
-# 선택사항: 모든 AI 실패 시 기존 quizTemplates로 대체 생성
-# Gemini 429/5xx 일시 장애는 false여도 3회 재시도 후 자동 대체 생성됩니다.
-
-ENABLE_DAILY_AI_TEMPLATE_FALLBACK=false
-
 ## pg_cron 설정
 
 Supabase Dashboard > Database > Extensions에서 `pg_cron`, `pg_net`을 활성화한 뒤 SQL Editor에서 설정합니다.

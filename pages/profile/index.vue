@@ -337,6 +337,7 @@ onMounted(() => {
             background: white;
             img {
                 border: 3px solid rgba(255, 255, 255, 0.3);
+                object-fit: cover;
             }
         }
 
