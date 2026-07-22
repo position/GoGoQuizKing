@@ -542,6 +542,10 @@ function handlePlay(quizId: string) {
 
             .reset-btn {
                 font-size: 13px;
+                &[disabled]:hover {
+                    background-color: transparent;
+                    border-color: transparent;
+                }
             }
         }
     }
